@@ -3,7 +3,7 @@ IF OBJECT_ID (N'all_columns_info', N'V') IS NOT NULL
 GO
 -- ==============================================================
 --      Author: YuanRui
--- Create date: 2014-7-24
+-- Create date: 2015-7-8
 -- Description:	查看当前数据库的数据表中每一列的具体信息
 -- ==============================================================
 CREATE VIEW all_columns_info
