@@ -18,15 +18,21 @@ namespace Banana.AutoCode
         public Main()
         {
             InitializeComponent();
+            Init();
+        }
+
+        protected void Init()
+        {
+            this.Text = this.Text + " - v" + About.VersionNumber;
         }
 
         private void ShowNewForm(object sender, EventArgs e)
         {
-            var childForm = new DocumentForm();
-            childForm.MdiParent = this;
-            childForm.Text = "窗口 " + childFormNumber++;
-            childForm.Show(this.dockPanel);
-            childForm.DockTo(this.dockPanel, DockStyle.Left);
+            //var childForm = new DbPanel();
+            //childForm.MdiParent = this;
+            //childForm.Text = "窗口 " + childFormNumber++;
+            //childForm.Show(this.dockPanel);
+            //childForm.DockTo(this.dockPanel, DockStyle.Left);
         }
 
         private void OpenFile(object sender, EventArgs e)
@@ -115,6 +121,14 @@ namespace Banana.AutoCode
 
         private void tsbtnDatabase_Click(object sender, EventArgs e)
         {
+            if (DbPanel.IsDisposed)
+            {
+                DbPanel = new DbPanel();
+                DbPanel.Show(this.dockPanel);
+                tsbtnDatabase.Checked = !tsbtnDatabase.Checked;
+                return;
+            }
+
             if (tsbtnDatabase.Checked)
             {
                 DbPanel.Hide();

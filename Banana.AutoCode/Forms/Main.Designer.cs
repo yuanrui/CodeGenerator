@@ -67,11 +67,11 @@
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbtnDatabase = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.tsbtnDatabase = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -402,6 +402,16 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
+            // tsbtnDatabase
+            // 
+            this.tsbtnDatabase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnDatabase.Image = global::Banana.AutoCode.Properties.Resources.datas;
+            this.tsbtnDatabase.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnDatabase.Name = "tsbtnDatabase";
+            this.tsbtnDatabase.Size = new System.Drawing.Size(23, 22);
+            this.tsbtnDatabase.Text = "toolStripButton1";
+            this.tsbtnDatabase.Click += new System.EventHandler(this.tsbtnDatabase_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -426,16 +436,6 @@
             this.dockPanel.Size = new System.Drawing.Size(632, 364);
             this.dockPanel.TabIndex = 6;
             // 
-            // tsbtnDatabase
-            // 
-            this.tsbtnDatabase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnDatabase.Image = global::Banana.AutoCode.Properties.Resources.datas;
-            this.tsbtnDatabase.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnDatabase.Name = "tsbtnDatabase";
-            this.tsbtnDatabase.Size = new System.Drawing.Size(23, 22);
-            this.tsbtnDatabase.Text = "toolStripButton1";
-            this.tsbtnDatabase.Click += new System.EventHandler(this.tsbtnDatabase_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -448,7 +448,7 @@
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
-            this.Text = "MDIParent1";
+            this.Text = "Banana AutoCode";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);

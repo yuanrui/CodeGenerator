@@ -12,7 +12,7 @@ namespace Banana.AutoCode.Core
         private const string KeyPrefix = "Simple.DataContextScope.";
         private const string DefaultConnectionName = "DefaultConnectionString";
 
-        internal DataContext DataContext { get; private set; }
+        public DataContext DataContext { get; private set; }
 
         public static DataContextScope Current
         {
