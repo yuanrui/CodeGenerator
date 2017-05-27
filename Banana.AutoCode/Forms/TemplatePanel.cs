@@ -6,10 +6,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode.Forms
 {
-    public partial class TemplatePanel : Form
+    public partial class TemplatePanel : DockContent
     {
         public TemplatePanel()
         {

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Banana.AutoCode.DbSchema
 {
+    [Serializable]
     public class Table
     {
         public Table()
@@ -21,5 +22,10 @@ namespace Banana.AutoCode.DbSchema
         public string DbName { get; set; }
 
         public IList<Column> Columns { get; set; }
+
+        public override string ToString()
+        {
+            return DbName + "." + Name;
+        }
     }
 }

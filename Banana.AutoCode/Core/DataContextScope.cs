@@ -52,12 +52,6 @@ namespace Banana.AutoCode.Core
         private DataContextScope(string connectionName)
         {
             DataContext = new DataContext(connectionName);
-            
-            //if (HttpContext.Current != null && HttpContext.Current.ApplicationInstance != null)
-            //{
-            //    //未起作用
-            //    HttpContext.Current.ApplicationInstance.EndRequest += (sender, e) => DataContext.DoDispose(true);
-            //}
         }
 
         public DataContextScope Begin()

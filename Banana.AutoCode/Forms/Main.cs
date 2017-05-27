@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Banana.AutoCode.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode
 {
@@ -14,6 +16,15 @@ namespace Banana.AutoCode
     {
         private int childFormNumber = 0;
         DbPanel DbPanel = new DbPanel();
+        OutputPanel OutputPanel = new OutputPanel();
+
+        public DockPanel MainDockPanel 
+        { 
+            get 
+            {
+                return this.dockPanel;
+            }
+        }
 
         public Main()
         {
@@ -24,15 +35,17 @@ namespace Banana.AutoCode
         protected void Init()
         {
             this.Text = this.Text + " - v" + About.VersionNumber;
+            Trace.Listeners.Add(new OutputTraceListener(OutputPanel));
+            OutputPanel.Show(this.dockPanel);
         }
 
         private void ShowNewForm(object sender, EventArgs e)
         {
-            //var childForm = new DbPanel();
+            //var childForm = new TablePanel(null);
             //childForm.MdiParent = this;
             //childForm.Text = "窗口 " + childFormNumber++;
             //childForm.Show(this.dockPanel);
-            //childForm.DockTo(this.dockPanel, DockStyle.Left);
+            ////childForm.DockTo(this.dockPanel);
         }
 
         private void OpenFile(object sender, EventArgs e)

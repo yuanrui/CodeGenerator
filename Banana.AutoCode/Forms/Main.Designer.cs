@@ -63,11 +63,11 @@
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.tsbtnDatabase = new System.Windows.Forms.ToolStripButton();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbtnDatabase = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -89,7 +89,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.MdiWindowListItem = this.windowsMenu;
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(632, 25);
+            this.menuStrip.Size = new System.Drawing.Size(761, 25);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "MenuStrip";
             // 
@@ -357,16 +357,26 @@
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsbtnDatabase,
             this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton,
-            this.toolStripSeparator1,
-            this.tsbtnDatabase});
+            this.toolStripSeparator1});
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(632, 25);
+            this.toolStrip.Size = new System.Drawing.Size(761, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "ToolStrip";
+            // 
+            // tsbtnDatabase
+            // 
+            this.tsbtnDatabase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbtnDatabase.Image = global::Banana.AutoCode.Properties.Resources.datas;
+            this.tsbtnDatabase.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbtnDatabase.Name = "tsbtnDatabase";
+            this.tsbtnDatabase.Size = new System.Drawing.Size(23, 22);
+            this.tsbtnDatabase.Text = "toolStripButton1";
+            this.tsbtnDatabase.Click += new System.EventHandler(this.tsbtnDatabase_Click);
             // 
             // newToolStripButton
             // 
@@ -402,23 +412,13 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // tsbtnDatabase
-            // 
-            this.tsbtnDatabase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnDatabase.Image = global::Banana.AutoCode.Properties.Resources.datas;
-            this.tsbtnDatabase.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbtnDatabase.Name = "tsbtnDatabase";
-            this.tsbtnDatabase.Size = new System.Drawing.Size(23, 22);
-            this.tsbtnDatabase.Text = "toolStripButton1";
-            this.tsbtnDatabase.Click += new System.EventHandler(this.tsbtnDatabase_Click);
-            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 414);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(632, 22);
+            this.statusStrip.Size = new System.Drawing.Size(761, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "StatusStrip";
             // 
@@ -433,14 +433,14 @@
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockPanel.Location = new System.Drawing.Point(0, 50);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(632, 364);
+            this.dockPanel.Size = new System.Drawing.Size(761, 364);
             this.dockPanel.TabIndex = 6;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 436);
+            this.ClientSize = new System.Drawing.Size(761, 436);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.toolStrip);

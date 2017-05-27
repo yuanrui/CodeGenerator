@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Banana.AutoCode.DbSchema
 {
+    [Serializable]
     public class Database
     {
         public string DbName { get; set; }

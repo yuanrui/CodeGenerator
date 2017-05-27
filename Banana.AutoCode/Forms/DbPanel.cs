@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -7,14 +8,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 using Banana.AutoCode.DbSchema;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode.Forms
 {
-    public partial class DbPanel : DockContent
+    public partial class DbPanel : DockContent, IDisposable
     {
         protected ImageList IconList;
+        protected ConnectionStringSettings CurrentConnSetting;
+        protected Hashtable TableMap;
 
         public DbPanel()
         {
@@ -24,26 +27,45 @@ namespace Banana.AutoCode.Forms
 
         protected void Init()
         {
+            TableMap = new Hashtable();
             IconList = new ImageList();
+
             IconList.Images.Add("databases", Properties.Resources.datas);
             IconList.Images.Add("database", Properties.Resources.data);
             IconList.Images.Add("databaseOff", Properties.Resources.data_off);
             IconList.Images.Add("tables", Properties.Resources.tables);
-           
+            
+            tvDb.ImageList = IconList;
+            tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
+            tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
+
+            Refresh();
+        }
+
+        protected void Refresh()
+        {
             cbConnStrings.Items.Clear();
             tvDb.Nodes.Clear();
-           
-            tvDb.ImageList = IconList;
+            
+            foreach (DictionaryEntry item in TableMap)
+            {
+                var tableForm = item.Value as TablePanel;
+                if (tableForm == null)
+                {
+                    continue;
+                }
+
+                tableForm.Close();
+            }
+
+            TableMap.Clear();
+            cbConnStrings.Text = string.Empty;
 
             foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
             {
                 cbConnStrings.Items.Add(css.Name);
             }
-
-            tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
-            tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
-            
-            tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
         }
 
         private void ClearOtherIcon(TreeNode currentNode, string imgOffKey)
@@ -72,6 +94,8 @@ namespace Banana.AutoCode.Forms
 
         void tvDb_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            var table = e.Node.Tag as Table;
+
             var imgKey = "database";
             if (e.Node.Level == 1)
             {
@@ -86,6 +110,24 @@ namespace Banana.AutoCode.Forms
                 var pNode = e.Node.Parent.PrevNode;
 
                 ClearOtherIcon(e.Node.Parent, "databaseOff");
+
+                if (table == null)
+                {
+                    return;
+                }
+
+                var tableForm = TableMap[table.ToString()] as TablePanel;
+                if (tableForm == null)
+                {
+                    tableForm = new TablePanel(table, CurrentConnSetting);
+                    TableMap[table.ToString()] = tableForm;
+                    tableForm.Text = e.Node.Text;
+                    tableForm.Show(((Main)this.ParentForm).MainDockPanel);
+                }
+                else
+                {
+                    tableForm.Activate();
+                }
             }
         }
         
@@ -102,12 +144,12 @@ namespace Banana.AutoCode.Forms
         private void cbConnStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
             tvDb.Nodes.Clear();
-            var connSetting = ConfigurationManager.ConnectionStrings[cbConnStrings.SelectedItem.ToString()];
-            var dbSchemaManager = new DbSchemaManager(connSetting);
+            CurrentConnSetting = ConfigurationManager.ConnectionStrings[cbConnStrings.SelectedItem.ToString()];
+            var dbSchemaManager = new DbSchemaManager(CurrentConnSetting);
 
             var dbs = dbSchemaManager.GetComplexDatabases();
-            var root = new TreeNode(connSetting.Name, 0, 0);
-            root.ToolTipText = connSetting.ConnectionString;
+            var root = new TreeNode(CurrentConnSetting.Name, 0, 0);
+            root.ToolTipText = CurrentConnSetting.ConnectionString;
             root.ImageKey = "databases";
             root.SelectedImageKey = root.ImageKey;
             //root.TreeView.CheckBoxes = false;
@@ -134,6 +176,19 @@ namespace Banana.AutoCode.Forms
 
                 root.Nodes.Add(dbNode);
             }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            Refresh();
+        }
+
+        void IDisposable.Dispose()
+        {
+            this.TableMap.Clear();
+            this.TableMap = null;
+
+            this.Dispose(true);
         }
     }
 }

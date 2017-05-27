@@ -28,11 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // TemplatePanel
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(724, 634);
+            this.Name = "TemplatePanel";
             this.Text = "TemplatePanel";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
     }
 }

@@ -5,9 +5,11 @@ using System.Text;
 
 namespace Banana.AutoCode.DbSchema
 {
+    [Serializable]
     public class Column
     {
         private Type type;
+        
         private string typeName;
         
         public string Id { get; set; }
@@ -22,12 +24,13 @@ namespace Banana.AutoCode.DbSchema
 
         public string Comment { get; set; }
 
-        public Table Table { get; set; }
-
         public bool IsPrimaryKey { get; set; }
 
         public bool IsForeignKey { get; set; }
 
         public bool IsNullAble { get; set; }
+
+        [NonSerialized]
+        public Table Table;
     }
 }

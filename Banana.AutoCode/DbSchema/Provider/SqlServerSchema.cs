@@ -27,11 +27,6 @@ select a.object_id as Id, a.name as Name, b.value as Comment from sys.tables a
 left join sys.extended_properties b on a.object_id = b.major_id and minor_id =0;", db.DbName);
             var result = Context.Query<Table>(sql);
             
-            foreach (var item in result)
-	        {
-                item.DbName = db.DbName;
-	        }
-
             return result;
         }
 
@@ -53,11 +48,6 @@ LEFT JOIN sys.extended_properties d on a.object_id = d.major_id and d.minor_id =
 where a.name = @TableName ", table.DbName);
 
             var result = Context.Query<Column>(sql, new { TableName = table.Name });
-
-            foreach (var item in result)
-            {
-                item.Table = table;
-            }
 
             return result;
         }
