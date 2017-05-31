@@ -38,7 +38,7 @@ namespace Banana.AutoCode.DbSchema
                             {
                                 foreach (var table in db.Tables)
                                 {
-                                    table.DbName = db.DbName;
+                                    table.Owner = db.Name;
                                 }
                             }
                         }

@@ -19,13 +19,13 @@ namespace Banana.AutoCode.DbSchema
         
         public string Comment { get; set; }
 
-        public string DbName { get; set; }
+        public string Owner { get; set; }
 
         public IList<Column> Columns { get; set; }
 
         public override string ToString()
         {
-            return DbName + "." + Name;
+            return Owner + "." + Name;
         }
     }
 }

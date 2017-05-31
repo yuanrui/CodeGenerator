@@ -91,6 +91,7 @@
     <Compile Include="DbSchema\DbSchemaFactory.cs" />
     <Compile Include="DbSchema\DbSchemaManager.cs" />
     <Compile Include="DbSchema\DBTypeMapper.cs" />
+    <Compile Include="DbSchema\Provider\OracleSchema.cs" />
     <Compile Include="DbSchema\Provider\SqlServerSchema.cs" />
     <Compile Include="DbSchema\Table.cs" />
     <Compile Include="Forms\About.cs">

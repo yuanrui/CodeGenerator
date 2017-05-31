@@ -28,7 +28,7 @@ namespace Banana.AutoCode.DbSchema
 
         public bool IsForeignKey { get; set; }
 
-        public bool IsNullAble { get; set; }
+        public bool IsNullable { get; set; }
 
         [NonSerialized]
         public Table Table;

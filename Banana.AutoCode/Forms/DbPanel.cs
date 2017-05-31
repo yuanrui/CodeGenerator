@@ -40,10 +40,10 @@ namespace Banana.AutoCode.Forms
             tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
             tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
 
-            Refresh();
+            RefreshTreeView();
         }
 
-        protected void Refresh()
+        protected void RefreshTreeView()
         {
             cbConnStrings.Items.Clear();
             tvDb.Nodes.Clear();
@@ -116,7 +116,8 @@ namespace Banana.AutoCode.Forms
                     return;
                 }
 
-                var tableForm = TableMap[table.ToString()] as TablePanel;
+                var tableMapKey = cbConnStrings.Text + "." + table.ToString();
+                var tableForm = TableMap[tableMapKey] as TablePanel;
                 if (tableForm == null)
                 {
                     tableForm = new TablePanel(table, CurrentConnSetting);
@@ -158,9 +159,9 @@ namespace Banana.AutoCode.Forms
             
             foreach (var db in dbs)
             {
-                var dbNode = new TreeNode(db.DbName, 1, 1);
+                var dbNode = new TreeNode(db.Name, 1, 1);
                 dbNode.Tag = db;
-                dbNode.ToolTipText = db.DbName;
+                dbNode.ToolTipText = db.Name;
                 dbNode.ImageKey = "databaseOff";
                 dbNode.SelectedImageKey = dbNode.ImageKey;
 
@@ -180,7 +181,7 @@ namespace Banana.AutoCode.Forms
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            Refresh();
+            RefreshTreeView();
         }
 
         void IDisposable.Dispose()
