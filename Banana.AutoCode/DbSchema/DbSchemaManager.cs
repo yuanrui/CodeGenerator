@@ -20,6 +20,25 @@ namespace Banana.AutoCode.DbSchema
             Provider = DbSchemaFactory.Create(connSetting);
         }
 
+        public virtual List<Database> GetDatabases()
+        {
+            try
+            {
+                using (var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
+                {
+                    var dbs = Provider.GetDatabases();
+
+                    return dbs;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Get Databases Exception:" + ex.ToString());
+            }
+
+            return new List<Database>();
+        }
+
         public virtual List<Database> GetComplexDatabases()
         {
             try
@@ -53,6 +72,33 @@ namespace Banana.AutoCode.DbSchema
             }
 
             return new List<Database>();
+        }
+
+        public virtual List<Table> GetTables(Database db)
+        {
+            try
+            {
+                using (var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
+                {
+                    var tables = Provider.GetTables(db);
+
+                    if (tables != null)
+                    {
+                        foreach (var table in tables)
+                        {
+                            table.Owner = db.Name;
+                        }
+                    }
+
+                    return tables;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Get GetTables Exception:" + ex.ToString());
+            }
+
+            return new List<Table>(); 
         }
 
         public virtual List<Column> GetColumns(Table table)

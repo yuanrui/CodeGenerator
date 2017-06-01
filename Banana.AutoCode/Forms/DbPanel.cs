@@ -17,6 +17,8 @@ namespace Banana.AutoCode.Forms
     {
         protected ImageList IconList;
         protected ConnectionStringSettings CurrentConnSetting;
+
+        protected Hashtable ManagerMap;
         protected Hashtable TableMap;
 
         public DbPanel()
@@ -27,6 +29,7 @@ namespace Banana.AutoCode.Forms
 
         protected void Init()
         {
+            ManagerMap = new Hashtable();
             TableMap = new Hashtable();
             IconList = new ImageList();
 
@@ -39,7 +42,8 @@ namespace Banana.AutoCode.Forms
             tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
             tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
             tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
-
+            tvDb.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseDoubleClick);
+            
             RefreshTreeView();
         }
 
@@ -62,6 +66,7 @@ namespace Banana.AutoCode.Forms
             TableMap.Clear();
             cbConnStrings.Text = string.Empty;
 
+            ConfigurationManager.RefreshSection("connectionStrings");
             foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
             {
                 cbConnStrings.Items.Add(css.Name);
@@ -121,7 +126,7 @@ namespace Banana.AutoCode.Forms
                 if (tableForm == null)
                 {
                     tableForm = new TablePanel(table, CurrentConnSetting);
-                    TableMap[table.ToString()] = tableForm;
+                    TableMap[tableMapKey] = tableForm;
                     tableForm.Text = e.Node.Text;
                     tableForm.Show(((Main)this.ParentForm).MainDockPanel);
                 }
@@ -130,6 +135,40 @@ namespace Banana.AutoCode.Forms
                     tableForm.Activate();
                 }
             }
+        }
+
+        void tvDb_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.Level != 1)
+            {
+                return;
+            }
+
+            var dbNode = e.Node;
+
+            var db = dbNode.Tag as Database;
+            if (db == null)
+            {
+                return;
+            }
+
+            if (db.Tables == null)
+            {
+                var tables = GetManager().GetTables(db);
+                db.Tables = tables;
+
+                foreach (var table in tables)
+                {
+                    var tableNode = new TreeNode(table.Name, 2, 2);
+                    tableNode.Tag = table;
+                    tableNode.ToolTipText = string.IsNullOrWhiteSpace(table.Comment) ? table.Name : table.Comment;
+                    tableNode.ImageKey = "tables";
+                    tableNode.SelectedImageKey = tableNode.ImageKey;
+                    dbNode.Nodes.Add(tableNode);
+                }
+            }
+
+            e.Node.Expand();
         }
         
         void tvDb_DrawNode(object sender, DrawTreeNodeEventArgs e)
@@ -146,9 +185,9 @@ namespace Banana.AutoCode.Forms
         {
             tvDb.Nodes.Clear();
             CurrentConnSetting = ConfigurationManager.ConnectionStrings[cbConnStrings.SelectedItem.ToString()];
-            var dbSchemaManager = new DbSchemaManager(CurrentConnSetting);
+            var dbSchemaManager = GetManager();
 
-            var dbs = dbSchemaManager.GetComplexDatabases();
+            var dbs = dbSchemaManager.GetDatabases();
             var root = new TreeNode(CurrentConnSetting.Name, 0, 0);
             root.ToolTipText = CurrentConnSetting.ConnectionString;
             root.ImageKey = "databases";
@@ -164,17 +203,7 @@ namespace Banana.AutoCode.Forms
                 dbNode.ToolTipText = db.Name;
                 dbNode.ImageKey = "databaseOff";
                 dbNode.SelectedImageKey = dbNode.ImageKey;
-
-                foreach (var table in db.Tables)
-                {
-                    var tableNode = new TreeNode(table.Name, 2, 2);
-                    tableNode.Tag = table;
-                    tableNode.ToolTipText = string.IsNullOrWhiteSpace(table.Comment) ? table.Name : table.Comment;
-                    tableNode.ImageKey = "tables";
-                    tableNode.SelectedImageKey = tableNode.ImageKey;
-                    dbNode.Nodes.Add(tableNode);
-                }
-
+                
                 root.Nodes.Add(dbNode);
             }
         }
@@ -184,8 +213,23 @@ namespace Banana.AutoCode.Forms
             RefreshTreeView();
         }
 
+        private DbSchemaManager GetManager()
+        {
+            var dbSchemaManager = ManagerMap[CurrentConnSetting] as DbSchemaManager;
+            if (dbSchemaManager == null)
+            {
+                dbSchemaManager = new DbSchemaManager(CurrentConnSetting);
+                ManagerMap[CurrentConnSetting] = dbSchemaManager;
+            }
+
+            return dbSchemaManager;
+        }
+
         void IDisposable.Dispose()
         {
+            this.ManagerMap.Clear();
+            this.ManagerMap = null;
+
             this.TableMap.Clear();
             this.TableMap = null;
 

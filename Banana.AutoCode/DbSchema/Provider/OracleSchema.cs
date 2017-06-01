@@ -21,10 +21,12 @@ namespace Banana.AutoCode.DbSchema.Provider
 
         public override List<Table> GetTables(Database db)
         {
-            const string sql = @"select o.OBJECT_ID as Id, t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
+            const string sql = @"select 
+--o.OBJECT_ID as Id, 
+t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
 from dba_tables t 
 left join dba_tab_comments c on t.TABLE_NAME = c.TABLE_NAME 
-left join ALL_OBJECTS o on t.TABLE_NAME = o.OBJECT_NAME and t.OWNER = o.OWNER
+--left join ALL_OBJECTS o on t.TABLE_NAME = o.OBJECT_NAME and t.OWNER = o.OWNER
 where t.owner=:Owner";
 
             var result = Context.Query<Table>(sql, new { Owner = db.Name });
@@ -42,7 +44,7 @@ WITH colConsCTE AS (
 )
 
 SELECT tab.COLUMN_ID AS Id, tab.TABLE_NAME AS TableName, tab.COLUMN_NAME AS Name, col.COMMENTS AS ""Comment""
-  , tab.DATA_TYPE AS DbType
+  , tab.DATA_TYPE AS RawType
   , tab.DATA_LENGTH AS Length
   , tab.DATA_PRECISION AS Precision
   , tab.DATA_SCALE AS Scale

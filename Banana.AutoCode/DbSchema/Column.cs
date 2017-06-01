@@ -16,8 +16,8 @@ namespace Banana.AutoCode.DbSchema
         
         public string Name { get; set; }
 
-        public string DbType { get; set; }
-
+        public string RawType { get; set; }
+        
         public Type Type { get; set; }
 
         public string TypeName { get; set; }

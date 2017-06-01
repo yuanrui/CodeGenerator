@@ -37,7 +37,7 @@ WITH colConsCTE(TABLE_NAME, COLUMN_NAME, CONSTRAINT_TYPE) AS (
      SELECT A.TABLE_NAME, A.COLUMN_NAME, B.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE A
      LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS B ON A.CONSTRAINT_NAME = B.CONSTRAINT_NAME AND A.TABLE_NAME = B.TABLE_NAME 
 )
-SELECT a.object_id AS TableID, a.name AS TableName, b.column_id AS Id, b.name as Name, d.value AS Comment , c.name AS DBType, b.max_length AS 'Length',
+SELECT a.object_id AS TableID, a.name AS TableName, b.column_id AS Id, b.name as Name, d.value AS Comment , c.name AS RawType, b.max_length AS 'Length',
 	CASE WHEN (SELECT COUNT(1) FROM colConsCTE cte WHERE b.name = cte.COLUMN_NAME AND a.name = cte.TABLE_NAME AND cte.CONSTRAINT_TYPE ='PRIMARY KEY') > 0 THEN 1 ELSE 0 END AS IsPrimaryKey,
 	CASE WHEN (SELECT COUNT(1) FROM colConsCTE cte WHERE b.name = cte.COLUMN_NAME AND a.name = cte.TABLE_NAME AND cte.CONSTRAINT_TYPE ='FOREIGN KEY') > 0 THEN 1 ELSE 0 END AS IsForeignKey,
 	b.IS_NULLABLE as 'IsNullable'
