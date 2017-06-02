@@ -15,8 +15,16 @@ namespace Banana.AutoCode.Forms
 {
     public partial class DbPanel : DockContent, IDisposable
     {
+        const Int32 ROOT_NODE_LEVEL = 0;
+        const Int32 DB_NODE_LEVEL = 1;
+        const Int32 TABLE_NODE_LEVEL = 2;
+        const String DB_ON_ICON = "database";
+        const String DB_OFF_ICON = "databaseOff";
+
         protected ImageList IconList;
         protected ConnectionStringSettings CurrentConnSetting;
+
+        protected TreeNode LastDbNode;
 
         protected Hashtable ManagerMap;
         protected Hashtable TableMap;
@@ -64,7 +72,7 @@ namespace Banana.AutoCode.Forms
             }
 
             TableMap.Clear();
-            cbConnStrings.Text = string.Empty;
+            cbConnStrings.Text = String.Empty;
 
             ConfigurationManager.RefreshSection("connectionStrings");
             foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
@@ -73,49 +81,36 @@ namespace Banana.AutoCode.Forms
             }
         }
 
-        private void ClearOtherIcon(TreeNode currentNode, string imgOffKey)
+        private void ResetDbNodeIcon(TreeNode dbNode)
         {
-            if (currentNode == null)
+            if (dbNode == null || dbNode == LastDbNode)
             {
                 return;
             }
 
-            var pNode = currentNode.PrevNode;
-            while (pNode != null)
+            if (LastDbNode != null)
             {
-                pNode.ImageKey = imgOffKey;
-                pNode.SelectedImageKey = imgOffKey;
-                pNode = pNode.PrevNode;
+                LastDbNode.ImageKey = DB_OFF_ICON;
+                LastDbNode.SelectedImageKey = DB_OFF_ICON;
             }
-
-            var nNode = currentNode.NextNode;
-            while (nNode != null)
-            {
-                nNode.ImageKey = imgOffKey;
-                nNode.SelectedImageKey = imgOffKey;
-                nNode = nNode.NextNode;
-            }
+            LastDbNode = dbNode;
+            LastDbNode.ImageKey = DB_ON_ICON;
+            LastDbNode.SelectedImageKey = DB_ON_ICON;
         }
 
         void tvDb_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             var table = e.Node.Tag as Table;
 
-            var imgKey = "database";
-            if (e.Node.Level == 1)
+            if (e.Node.Level == DB_NODE_LEVEL)
             {
-                e.Node.SelectedImageKey = imgKey;
-                ClearOtherIcon(e.Node, "databaseOff");
+                ResetDbNodeIcon(e.Node);
             }
-            
-            if (e.Node.Level == 2)
+
+            if (e.Node.Level == TABLE_NODE_LEVEL)
             {
-                e.Node.Parent.ImageKey = imgKey;
-                e.Node.Parent.SelectedImageKey = imgKey;
-                var pNode = e.Node.Parent.PrevNode;
-
-                ClearOtherIcon(e.Node.Parent, "databaseOff");
-
+                ResetDbNodeIcon(e.Node.Parent);
+                
                 if (table == null)
                 {
                     return;
@@ -139,7 +134,7 @@ namespace Banana.AutoCode.Forms
 
         void tvDb_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Level != 1)
+            if (e.Node.Level != DB_NODE_LEVEL)
             {
                 return;
             }
@@ -173,7 +168,7 @@ namespace Banana.AutoCode.Forms
         
         void tvDb_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
-            if (e.Node.Level == 0 || e.Node.Level == 1)
+            if (e.Node.Level == ROOT_NODE_LEVEL || e.Node.Level == TABLE_NODE_LEVEL)
             {
                 e.Node.HideCheckBox();
             }

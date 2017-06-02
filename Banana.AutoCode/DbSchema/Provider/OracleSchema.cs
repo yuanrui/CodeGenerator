@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -22,11 +23,11 @@ namespace Banana.AutoCode.DbSchema.Provider
         public override List<Table> GetTables(Database db)
         {
             const string sql = @"select 
---o.OBJECT_ID as Id, 
+o.OBJECT_ID as Id, 
 t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
 from dba_tables t 
 left join dba_tab_comments c on t.TABLE_NAME = c.TABLE_NAME 
---left join ALL_OBJECTS o on t.TABLE_NAME = o.OBJECT_NAME and t.OWNER = o.OWNER
+left join ALL_OBJECTS o on t.TABLE_NAME = o.OBJECT_NAME and t.OWNER = o.OWNER
 where t.owner=:Owner";
 
             var result = Context.Query<Table>(sql, new { Owner = db.Name });
@@ -58,10 +59,38 @@ FROM USER_TAB_COLUMNS tab
 LEFT JOIN USER_COL_COMMENTS col ON tab.table_name = col.table_name AND tab.COLUMN_NAME = col.COLUMN_NAME
 WHERE tab.table_name = :TableName 
 ORDER BY tab.COLUMN_ID ASC ";
+            var result = new List<Column>();
+            var cmd = Context.DatabaseObject.GetSqlStringCommand(sql);
+            Context.DatabaseObject.AddInParameter(cmd, "TableName", DbType.String, table.Name);
 
-            var result = Context.Query<Column>(sql, new { TableName = table.Name });
+            using (var reader = Context.ExecuteReader(cmd))
+            {
+                while (reader.Read())
+                {
+                    var column = new Column();
+                    column.Id = Convert.ToString(reader.GetValue(reader.GetOrdinal("Id")));
+                    column.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    column.Comment = reader.GetString(reader.GetOrdinal("Comment"));
+                    column.RawType = reader.GetString(reader.GetOrdinal("RawType"));
+                    //column.Comment = reader.GetString(reader.GetOrdinal("Comment"));
+
+                    result.Add(column);
+                }
+            }
+
+            //var result = Context.Query<Column>(sql, new { TableName = table.Name });
 
             return result;
+        }
+
+        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        {
+            return typeof(object);
+        }
+
+        public override DbType GetDbType(string rawType, short precision, short scale)
+        {
+            return DbType.Object;
         }
     }
 }
