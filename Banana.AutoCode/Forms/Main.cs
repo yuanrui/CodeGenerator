@@ -9,6 +9,9 @@ using System.Text;
 using System.Windows.Forms;
 using Banana.AutoCode.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Microsoft.VisualStudio.TextTemplating;
+using Banana.AutoCode.Core;
+using System.IO;
 
 namespace Banana.AutoCode
 {
@@ -34,9 +37,22 @@ namespace Banana.AutoCode
 
         protected void Init()
         {
+            Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             this.Text = this.Text + " - v" + About.VersionNumber;
             Trace.Listeners.Add(new OutputTraceListener(OutputPanel));
             OutputPanel.Show(this.dockPanel);
+        }
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Trace.TraceError(e.ExceptionObject.ToString());
+        }
+
+        void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Trace.TraceError(e.Exception.ToString());
         }
 
         private void ShowNewForm(object sender, EventArgs e)
@@ -151,6 +167,27 @@ namespace Banana.AutoCode
                 DbPanel.Show(this.dockPanel);
             }
             tsbtnDatabase.Checked = ! tsbtnDatabase.Checked;
+        }
+
+        private void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            Engine engine = new Engine();
+            var host = new CustomHost();
+            var files = Directory.EnumerateFiles("Templates", "*.tt", SearchOption.AllDirectories);
+            var basePath = "Output";
+            if (! Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+            foreach (var path in files)
+            {
+                var content = File.ReadAllText(path);
+                host.TemplateFile = path;
+                var result = engine.ProcessTemplate(content, host);
+
+                File.WriteAllText(Path.Combine(basePath, Path.GetFileNameWithoutExtension(path) + ".cs"), result);
+            }
+            
         }
     }
 }

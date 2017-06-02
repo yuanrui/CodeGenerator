@@ -33,9 +33,6 @@
             this.txtClazz = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
             this.dgvColumns = new System.Windows.Forms.DataGridView();
-            this.lblComment = new System.Windows.Forms.Label();
-            this.lblClazz = new System.Windows.Forms.Label();
-            this.txtTable = new System.Windows.Forms.TextBox();
             this.ColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RawType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,6 +42,9 @@
             this.IsForeignKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsUnique = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsNullAble = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblComment = new System.Windows.Forms.Label();
+            this.lblClazz = new System.Windows.Forms.Label();
+            this.txtTable = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).BeginInit();
             this.SuspendLayout();
@@ -133,37 +133,6 @@
             this.dgvColumns.Size = new System.Drawing.Size(936, 455);
             this.dgvColumns.TabIndex = 3;
             // 
-            // lblComment
-            // 
-            this.lblComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblComment.AutoSize = true;
-            this.lblComment.Location = new System.Drawing.Point(44, 38);
-            this.lblComment.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(53, 12);
-            this.lblComment.TabIndex = 5;
-            this.lblComment.Text = "Comment:";
-            // 
-            // lblClazz
-            // 
-            this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblClazz.AutoSize = true;
-            this.lblClazz.Location = new System.Drawing.Point(497, 8);
-            this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblClazz.Name = "lblClazz";
-            this.lblClazz.Size = new System.Drawing.Size(71, 12);
-            this.lblClazz.TabIndex = 7;
-            this.lblClazz.Text = "Class Name:";
-            // 
-            // txtTable
-            // 
-            this.txtTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTable.Location = new System.Drawing.Point(103, 3);
-            this.txtTable.Name = "txtTable";
-            this.txtTable.ReadOnly = true;
-            this.txtTable.Size = new System.Drawing.Size(365, 21);
-            this.txtTable.TabIndex = 8;
-            // 
             // ColumnName
             // 
             this.ColumnName.DataPropertyName = "Name";
@@ -250,6 +219,37 @@
             this.IsNullAble.Name = "IsNullAble";
             this.IsNullAble.ReadOnly = true;
             this.IsNullAble.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // lblComment
+            // 
+            this.lblComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblComment.AutoSize = true;
+            this.lblComment.Location = new System.Drawing.Point(44, 38);
+            this.lblComment.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
+            this.lblComment.Name = "lblComment";
+            this.lblComment.Size = new System.Drawing.Size(53, 12);
+            this.lblComment.TabIndex = 5;
+            this.lblComment.Text = "Comment:";
+            // 
+            // lblClazz
+            // 
+            this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblClazz.AutoSize = true;
+            this.lblClazz.Location = new System.Drawing.Point(497, 8);
+            this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
+            this.lblClazz.Name = "lblClazz";
+            this.lblClazz.Size = new System.Drawing.Size(71, 12);
+            this.lblClazz.TabIndex = 7;
+            this.lblClazz.Text = "Class Name:";
+            // 
+            // txtTable
+            // 
+            this.txtTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtTable.Location = new System.Drawing.Point(103, 3);
+            this.txtTable.Name = "txtTable";
+            this.txtTable.ReadOnly = true;
+            this.txtTable.Size = new System.Drawing.Size(365, 21);
+            this.txtTable.TabIndex = 8;
             // 
             // TablePanel
             // 
