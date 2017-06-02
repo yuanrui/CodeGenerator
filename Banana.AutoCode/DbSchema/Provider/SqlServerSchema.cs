@@ -55,7 +55,7 @@ where a.name = @TableName ", table.Owner);
             var cmd = Context.DatabaseObject.GetSqlStringCommand(sql);
             Context.DatabaseObject.AddInParameter(cmd, "TableName", DbType.String, table.Name);
 
-            var result = new List<Column>();// Context.Query<Column>(sql, new { TableName = table.Name });
+            var result = new List<Column>();
 
             using (var reader = Context.ExecuteReader(cmd))
             {
@@ -72,6 +72,11 @@ where a.name = @TableName ", table.Owner);
 
         public override Type GetType(string rawType, short precision, short scale, bool isNullable)
         {
+            if (String.IsNullOrEmpty(rawType))
+            {
+                throw new ArgumentException("The rawType is null or empty.", "rawType");
+            }
+
             switch (rawType.ToLowerInvariant())
             {
                 case "date":
@@ -118,14 +123,81 @@ where a.name = @TableName ", table.Owner);
                     return typeof(byte[]);
                 case "uniqueidentifier":
                     return GetTypeOf<Guid>(isNullable);
+                case "xml":
+                    return typeof(string);
                 default:
                     return rawType.Contains("int") ? GetTypeOf<Int32>(isNullable) : typeof(string);
             }
         }
 
+        /// <summary>
+        /// http://msdn.microsoft.com/en-us/library/cc716729.aspx
+        /// </summary>
+        /// <param name="rawType"></param>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <returns></returns>
         public override DbType GetDbType(string rawType, short precision, short scale)
         {
-            return DbType.Object;
+            if (String.IsNullOrEmpty(rawType))
+            {
+                throw new ArgumentException("The rawType is null or empty.", "rawType");
+            }
+
+            switch (rawType.ToLowerInvariant())
+            {
+                case "date":
+                case "datetime":
+                case "datetime2":
+                case "smalldatetime":
+                    return DbType.DateTime;
+                case "time":
+                    return DbType.Time;
+                case "bit":
+                case "boolean":
+                    return DbType.Boolean;
+                case "tinyint":
+                    return DbType.Byte;
+                case "smallint":
+                    return DbType.Int16;
+                case "int":
+                case "integer":
+                    return DbType.Int32;
+                case "bigint":
+                case "long":
+                    return DbType.Int64;
+                case "decimal":
+                case "smallmoney":
+                case "money":
+                case "numeric":
+                    return DbType.Decimal;
+                case "real":
+                    return DbType.Single;
+                case "float":
+                    return DbType.Double;
+                case "char":
+                    return DbType.AnsiStringFixedLength;
+                case "varchar":
+                case "text":
+                    return DbType.AnsiString;
+                case "nchar":
+                case "nvarchar":
+                case "ntext":
+                    return DbType.String;
+                case "blob":
+                case "binary":
+                case "image":
+                case "rowversion":
+                case "timestamp":
+                case "varbinary":
+                    return DbType.Binary;
+                case "uniqueidentifier":
+                    return DbType.Guid;
+                case "xml":
+                    return DbType.Xml;
+                default:
+                    return DbType.Object;
+            }
         }
     }
 }

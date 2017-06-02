@@ -35,7 +35,7 @@ namespace Banana.AutoCode.DbSchema
 
         public abstract DbType GetDbType(String rawType, Int16 precision, Int16 scale);
 
-        protected virtual Type GetTypeOf<T>(Boolean isNullable) where T : struct
+        protected static Type GetTypeOf<T>(Boolean isNullable) where T : struct
         {
             if (isNullable)
             {

@@ -67,12 +67,7 @@ ORDER BY tab.COLUMN_ID ASC ";
             {
                 while (reader.Read())
                 {
-                    var column = new Column();
-                    column.Id = Convert.ToString(reader.GetValue(reader.GetOrdinal("Id")));
-                    column.Name = reader.GetString(reader.GetOrdinal("Name"));
-                    column.Comment = reader.GetString(reader.GetOrdinal("Comment"));
-                    column.RawType = reader.GetString(reader.GetOrdinal("RawType"));
-                    //column.Comment = reader.GetString(reader.GetOrdinal("Comment"));
+                    var column = Fill(reader);
 
                     result.Add(column);
                 }
@@ -83,14 +78,135 @@ ORDER BY tab.COLUMN_ID ASC ";
             return result;
         }
 
-        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        /// <summary>
+        /// convert Oracle number type
+        /// http://docs.oracle.com/cd/E51173_01/win.122/e17732/entityDataTypeMapping.htm
+        /// </summary>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <param name="isNullable"></param>
+        /// <returns></returns>
+        private static Type ConvertNumberToType(Int16 precision, Int16 scale, Boolean isNullable)
         {
-            return typeof(object);
+            if (scale == 0)
+            {
+                if (precision == 0)
+                {
+                    return GetTypeOf<Int64>(isNullable);
+                }
+
+                if (precision == 1)
+                {
+                    return GetTypeOf<Boolean>(isNullable);
+                }
+
+                if (precision <= 3)
+                {
+                    return GetTypeOf<Byte>(isNullable);
+                }
+
+                if (precision <= 4)
+                {
+                    return GetTypeOf<Int16>(isNullable);
+                }
+
+                if (precision <= 9)
+                {
+                    return GetTypeOf<Int32>(isNullable);
+                }
+
+                if (precision <= 18)
+                {
+                    return GetTypeOf<Int64>(isNullable);
+                }
+            }
+
+            return GetTypeOf<Decimal>(isNullable);
         }
 
+        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        {
+            if (String.IsNullOrEmpty(rawType))
+            {
+                throw new ArgumentException("The rawType is null or empty.", "rawType");
+            }
+
+            switch (rawType.ToUpper())
+            {
+                case "BFILE": 
+                case "BLOB":
+                case "RAW":
+                case "LONG RAW":
+                    return typeof(Byte[]);
+                case "UNSIGNED INTEGER":
+                case "FLOAT": 
+                    return GetTypeOf<Decimal>(isNullable);
+                case "INTEGER":
+                    return GetTypeOf<Int64>(isNullable);
+                case "INTERVAL YEAR TO MONTH":
+                    return GetTypeOf<Int32>(isNullable);
+                case "NUMBER": 
+                    return ConvertNumberToType(precision, scale, isNullable);
+                case "INTERVAL DAY TO SECOND":
+                    return GetTypeOf<TimeSpan>(isNullable);
+                case "DATE": 
+                case "TIMESTAMP": 
+                case "TIMESTAMP WITH LOCAL TIME ZONE": 
+                case "TIMESTAMP WITH TIME ZONE":
+                    return GetTypeOf<DateTime>(isNullable);
+                case "CHAR":
+                case "CLOB":
+                case "LONG":
+                case "NCHAR":
+                case "NCLOB":
+                case "ROWID":
+                case "NVARCHAR2":
+                case "VARCHAR2": 
+                    return typeof(String);
+                default: 
+                    return typeof(Object);
+            }
+        }
+
+        /// <summary>
+        /// http://docs.oracle.com/html/B14164_01/featOraCommand.htm
+        /// https://msdn.microsoft.com/en-us/library/yk72thhd%28v=vs.80%29.aspx
+        /// </summary>
+        /// <param name="rawType"></param>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <returns></returns>
         public override DbType GetDbType(string rawType, short precision, short scale)
         {
-            return DbType.Object;
+            var csharpDbType = DbType.Object;
+            switch (rawType.ToUpper())
+            {
+                case "BFILE": csharpDbType = DbType.Object; break;
+                case "BLOB": csharpDbType = DbType.Object; break;
+                case "CHAR": csharpDbType = DbType.AnsiStringFixedLength; break;
+                case "CLOB": csharpDbType = DbType.Object; break;
+                case "DATE": csharpDbType = DbType.DateTime; break;
+                case "FLOAT": csharpDbType = DbType.Decimal; break;
+                case "INTEGER": csharpDbType = DbType.Int64; break;
+                case "INTERVAL YEAR TO MONTH": csharpDbType = DbType.Int32; break;
+                case "INTERVAL DAY TO SECOND": csharpDbType = DbType.Object; break;
+                case "LONG": csharpDbType = DbType.AnsiString; break;
+                case "LONG RAW": csharpDbType = DbType.Binary; break;
+                case "NCHAR": csharpDbType = DbType.StringFixedLength; break;
+                case "NCLOB": csharpDbType = DbType.Object; break;
+                case "NUMBER": csharpDbType = DbType.Decimal; break;
+                case "NVARCHAR2": csharpDbType = DbType.String; break;
+                case "RAW": csharpDbType = DbType.Binary; break;
+                case "ROWID": csharpDbType = DbType.AnsiString; break;
+                case "TIMESTAMP": csharpDbType = DbType.DateTime; break;
+                case "TIMESTAMP WITH LOCAL TIME ZONE": csharpDbType = DbType.DateTime; break;
+                case "TIMESTAMP WITH TIME ZONE": csharpDbType = DbType.DateTime; break;
+                case "UNSIGNED INTEGER": csharpDbType = DbType.Decimal; break;
+                case "VARCHAR2": csharpDbType = DbType.AnsiString; break;
+                default: csharpDbType = DbType.Object; break;
+            }
+
+            return csharpDbType;
         }
     }
 }

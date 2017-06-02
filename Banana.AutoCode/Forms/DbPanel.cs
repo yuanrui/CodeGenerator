@@ -18,8 +18,11 @@ namespace Banana.AutoCode.Forms
         const Int32 ROOT_NODE_LEVEL = 0;
         const Int32 DB_NODE_LEVEL = 1;
         const Int32 TABLE_NODE_LEVEL = 2;
+
+        const String ROOT_ON_ICON = "databases";
         const String DB_ON_ICON = "database";
         const String DB_OFF_ICON = "databaseOff";
+        const String TABLE_OFF_ICON = "tables";
 
         protected ImageList IconList;
         protected ConnectionStringSettings CurrentConnSetting;
@@ -157,7 +160,7 @@ namespace Banana.AutoCode.Forms
                     var tableNode = new TreeNode(table.Name, 2, 2);
                     tableNode.Tag = table;
                     tableNode.ToolTipText = string.IsNullOrWhiteSpace(table.Comment) ? table.Name : table.Comment;
-                    tableNode.ImageKey = "tables";
+                    tableNode.ImageKey = TABLE_OFF_ICON;
                     tableNode.SelectedImageKey = tableNode.ImageKey;
                     dbNode.Nodes.Add(tableNode);
                 }
@@ -185,9 +188,8 @@ namespace Banana.AutoCode.Forms
             var dbs = dbSchemaManager.GetDatabases();
             var root = new TreeNode(CurrentConnSetting.Name, 0, 0);
             root.ToolTipText = CurrentConnSetting.ConnectionString;
-            root.ImageKey = "databases";
+            root.ImageKey = ROOT_ON_ICON;
             root.SelectedImageKey = root.ImageKey;
-            //root.TreeView.CheckBoxes = false;
             tvDb.Nodes.Add(root);
             tvDb.CheckBoxes = true;
             
@@ -196,7 +198,7 @@ namespace Banana.AutoCode.Forms
                 var dbNode = new TreeNode(db.Name, 1, 1);
                 dbNode.Tag = db;
                 dbNode.ToolTipText = db.Name;
-                dbNode.ImageKey = "databaseOff";
+                dbNode.ImageKey = DB_OFF_ICON;
                 dbNode.SelectedImageKey = dbNode.ImageKey;
                 
                 root.Nodes.Add(dbNode);
