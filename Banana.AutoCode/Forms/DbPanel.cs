@@ -232,5 +232,11 @@ namespace Banana.AutoCode.Forms
 
             this.Dispose(true);
         }
+
+        public override void Refresh()
+        {
+            base.Refresh();
+            RefreshTreeView();
+        }
     }
 }

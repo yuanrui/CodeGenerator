@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Reflection;
+using System.Diagnostics;
+using System.IO;
 
 namespace Banana.AutoCode
 {

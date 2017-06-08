@@ -20,6 +20,7 @@ namespace Banana.AutoCode
         private int childFormNumber = 0;
         DbPanel DbPanel = new DbPanel();
         OutputPanel OutputPanel = new OutputPanel();
+        TemplatePanel TemplatePanel = null;
 
         public DockPanel MainDockPanel 
         { 
@@ -188,6 +189,35 @@ namespace Banana.AutoCode
                 File.WriteAllText(Path.Combine(basePath, Path.GetFileNameWithoutExtension(path) + ".cs"), result);
             }
             
+        }
+
+        private void templateToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (TemplatePanel == null)
+            {
+                TemplatePanel = new TemplatePanel();
+            }
+            
+            if (templateToolStripButton.Checked)
+            {
+                TemplatePanel.Hide();
+            }
+            else
+            {
+                TemplatePanel.Show(this.dockPanel);
+            }
+
+            templateToolStripButton.Checked = !templateToolStripButton.Checked;
+        }
+
+        private void reloadToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (TemplatePanel != null)
+            {
+                TemplatePanel.Refresh();
+            }
+
+            DbPanel.Refresh();
         }
     }
 }

@@ -68,10 +68,6 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>_Libs\Microsoft.VisualStudio.TextTemplating.10.0.dll</HintPath>
@@ -118,6 +114,7 @@
     <Compile Include="Core\DataContext.cs" />
     <Compile Include="Core\DataContextScope.cs" />
     <Compile Include="Core\DbUtils.cs" />
+    <Compile Include="Core\IconUtils.cs" />
     <Compile Include="Core\SqlMapper.cs" />
     <Compile Include="DbSchema\Column.cs" />
     <Compile Include="DbSchema\Database.cs" />
@@ -229,6 +226,8 @@
     <None Include="Resources\data_off.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Components.png" />
+    <None Include="Resources\Reload.png" />
     <Content Include="Templates\T4\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Test.cs</LastGenOutput>
