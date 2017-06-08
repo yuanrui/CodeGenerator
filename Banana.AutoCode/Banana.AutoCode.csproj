@@ -214,20 +214,24 @@
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\data.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\datas.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\tables.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\data_off.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\Components.png" />
-    <None Include="Resources\Reload.png" />
+    <None Include="Resources\Icons.16x16.BrowserWindow.png" />
+    <None Include="Resources\Icons.16x16.BuildCombine.png" />
+    <None Include="Resources\Icons.16x16.BrowserRefresh.png" />
+    <None Include="Resources\Icons.16x16.StopProcess.png" />
+    <None Include="Resources\Icons.16x16.RunProgramIcon.png" />
+    <None Include="Resources\Icons.16x16.Refresh.png" />
+    <None Include="Resources\Icons.16x16.DataInactive.png" />
+    <None Include="Resources\Icons.16x16.Datas.png" />
+    <None Include="Resources\Icons.16x16.DataActive.png" />
+    <None Include="Resources\Icons.16x16.OpenCollection.png" />
+    <None Include="Resources\Icons.16x16.Component.png" />
+    <None Include="Resources\Icons.16x16.Module.png" />
+    <None Include="Resources\Icons.16x16.Table.png" />
+    <Content Include="Templates\T4\Entity.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Entity.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\T4\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Test.cs</LastGenOutput>

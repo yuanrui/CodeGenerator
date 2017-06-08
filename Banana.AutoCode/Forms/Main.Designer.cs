@@ -64,6 +64,7 @@
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.reloadToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.templateToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +74,7 @@
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.runToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -288,7 +289,8 @@
             this.saveToolStripButton,
             this.reloadToolStripButton,
             this.templateToolStripButton,
-            this.toolStripSeparator1});
+            this.toolStripSeparator1,
+            this.runToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 25);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(761, 25);
@@ -327,11 +329,11 @@
             // tsbtnDatabase
             // 
             this.tsbtnDatabase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbtnDatabase.Image = global::Banana.AutoCode.Properties.Resources.datas;
+            this.tsbtnDatabase.Image = ((System.Drawing.Image)(resources.GetObject("tsbtnDatabase.Image")));
             this.tsbtnDatabase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbtnDatabase.Name = "tsbtnDatabase";
             this.tsbtnDatabase.Size = new System.Drawing.Size(23, 22);
-            this.tsbtnDatabase.Text = "toolStripButton1";
+            this.tsbtnDatabase.Text = "Databases";
             this.tsbtnDatabase.Click += new System.EventHandler(this.tsbtnDatabase_Click);
             // 
             // newToolStripButton
@@ -342,6 +344,7 @@
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.newToolStripButton.Text = "新建";
+            this.newToolStripButton.Visible = false;
             this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
             // 
             // openToolStripButton
@@ -352,6 +355,7 @@
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.openToolStripButton.Text = "打开";
+            this.openToolStripButton.Visible = false;
             this.openToolStripButton.Click += new System.EventHandler(this.OpenFile);
             // 
             // saveToolStripButton
@@ -362,16 +366,27 @@
             this.saveToolStripButton.Name = "saveToolStripButton";
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.saveToolStripButton.Text = "保存";
+            this.saveToolStripButton.Visible = false;
             this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripButton_Click);
+            // 
+            // reloadToolStripButton
+            // 
+            this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.reloadToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_Refresh;
+            this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.reloadToolStripButton.Name = "reloadToolStripButton";
+            this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.reloadToolStripButton.Text = "Refresh";
+            this.reloadToolStripButton.Click += new System.EventHandler(this.reloadToolStripButton_Click);
             // 
             // templateToolStripButton
             // 
             this.templateToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.templateToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Components;
+            this.templateToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_OpenCollection;
             this.templateToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.templateToolStripButton.Name = "templateToolStripButton";
             this.templateToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.templateToolStripButton.Text = "toolStripButton1";
+            this.templateToolStripButton.Text = "Open Templates";
             this.templateToolStripButton.Click += new System.EventHandler(this.templateToolStripButton_Click);
             // 
             // newToolStripMenuItem
@@ -451,15 +466,15 @@
             this.pasteToolStripMenuItem.Text = "粘贴(&P)";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
             // 
-            // reloadToolStripButton
+            // runToolStripButton
             // 
-            this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.reloadToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Reload;
-            this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.reloadToolStripButton.Name = "reloadToolStripButton";
-            this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.reloadToolStripButton.Text = "toolStripButton1";
-            this.reloadToolStripButton.Click += new System.EventHandler(this.reloadToolStripButton_Click);
+            this.runToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.runToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_RunProgramIcon;
+            this.runToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.runToolStripButton.Name = "runToolStripButton";
+            this.runToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.runToolStripButton.Text = "Run";
+            this.runToolStripButton.Click += new System.EventHandler(this.runToolStripButton_Click);
             // 
             // Main
             // 
@@ -531,6 +546,7 @@
         private System.Windows.Forms.ToolStripButton tsbtnDatabase;
         private System.Windows.Forms.ToolStripButton templateToolStripButton;
         private System.Windows.Forms.ToolStripButton reloadToolStripButton;
+        private System.Windows.Forms.ToolStripButton runToolStripButton;
     }
 }
 

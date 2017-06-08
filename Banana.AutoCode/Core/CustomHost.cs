@@ -6,12 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TextTemplating;
+using Banana.AutoCode.DbSchema;
 
 namespace Banana.AutoCode.Core
 {
     [Serializable]
     public class CustomHost : ITextTemplatingEngineHost
     {
+        public Table Table { get; set; }
+
         //the path and file name of the text template that is being processed  
         //---------------------------------------------------------------------  
         public string TemplateFile { get; set; }

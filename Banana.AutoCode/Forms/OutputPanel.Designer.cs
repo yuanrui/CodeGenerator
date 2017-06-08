@@ -93,9 +93,9 @@
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.CloseButtonVisible = false;
             this.Controls.Add(this.richTextBox);
-            this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom;
+            this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Name = "OutputPanel";
-            this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;
             this.Text = "Output";
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);

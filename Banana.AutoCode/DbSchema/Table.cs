@@ -23,6 +23,54 @@ namespace Banana.AutoCode.DbSchema
 
         public IList<Column> Columns { get; set; }
 
+        public List<Column> PrimaryKeyColumns
+        {
+            get
+            {
+                if (! Columns.Any(m => m.IsPrimaryKey))
+                {
+                    throw new ArgumentException(Name + " no primary key");
+                }
+
+                return Columns.Where(m => m.IsPrimaryKey).ToList() ?? new List<Column>();
+            }
+        }
+
+        public bool PrimaryKeyIsNumber
+        {
+            get
+            {
+                if (PrimaryKeyColumns.Count != 1)
+                {
+                    return false;
+                }
+
+                var typeName = PrimaryKeyColumns.First().TypeName;
+                switch (typeName)
+                {
+                    case "Byte":
+                    case "Int16":
+                    case "Int32":
+                    case "Int64":
+                    case "Single":
+                    case "Double":
+                    case "Decimal":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+
+        public List<Column> NonPrimaryKeyColumns
+        {
+            get
+            {
+                return Columns.Where(m => !m.IsPrimaryKey).ToList() ?? new List<Column>();
+            }
+        }
+
         public override string ToString()
         {
             return Owner + "." + Name;

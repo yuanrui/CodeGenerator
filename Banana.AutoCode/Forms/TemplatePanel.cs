@@ -10,13 +10,15 @@ using System.Text;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
 using WeifenLuo.WinFormsUI.Docking;
+using System.Collections;
 
 namespace Banana.AutoCode.Forms
 {
-    public partial class TemplatePanel : DockContent
+    public partial class TemplatePanel : DockContent, IDisposable
     {
         const string TEMPLATE_PATH = "Templates";
         const String DIRECTORY_ICON = "dir";
+        protected Hashtable FileMap;
 
         public TemplatePanel()
         {
@@ -26,6 +28,7 @@ namespace Banana.AutoCode.Forms
 
         public void Init()
         {
+            FileMap = new Hashtable();
             var iconList = new ImageList();
             var basePath = GetBasePath();
             if (!Directory.Exists(basePath))
@@ -36,10 +39,38 @@ namespace Banana.AutoCode.Forms
 
             InitImageList(iconList, basePath);
             tvTemplates.ImageList = iconList;
+            tvTemplates.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(tvTemplates_NodeMouseDoubleClick);
 
             RefreshTreeView();
         }
 
+        void tvTemplates_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            var tuple = e.Node.Tag as Tuple<Boolean, String>;
+
+            if (tuple == null || !tuple.Item1)
+            {
+                return;
+            }
+
+            var path = tuple.Item2;
+            var outputPanel = FileMap[path] as OutputPanel;
+            if (outputPanel == null)
+            {
+                outputPanel = new OutputPanel(true, false, true);
+                outputPanel.Text = GetFileName(path);
+                var text = File.ReadAllText(path);
+                outputPanel.AppendText(text, Color.BlueViolet);
+                outputPanel.Show(((Main)this.ParentForm).MainDockPanel, DockState.Document);
+                
+                FileMap[path] = outputPanel;
+            }
+            else
+            {
+                outputPanel.Activate();
+            }
+        }
+        
         private string GetBasePath()
         {
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TEMPLATE_PATH);
@@ -48,6 +79,19 @@ namespace Banana.AutoCode.Forms
         protected void RefreshTreeView()
         {
             tvTemplates.Nodes.Clear();
+
+            foreach (DictionaryEntry item in FileMap)
+            {
+                var form = item.Value as OutputPanel;
+                if (form == null)
+                {
+                    continue;
+                }
+
+                form.Close();
+            }
+
+            FileMap.Clear();
 
             var basePath = GetBasePath();
 
@@ -72,7 +116,7 @@ namespace Banana.AutoCode.Forms
             foreach (var dir in dirs)
             {
                 var node = new TreeNode(GetFileName(dir));
-                node.Tag = dir;
+                node.Tag = Tuple.Create(false, dir);
                 node.ImageKey = DIRECTORY_ICON;
                 node.SelectedImageKey = node.ImageKey;
 
@@ -86,7 +130,7 @@ namespace Banana.AutoCode.Forms
             foreach (var filePath in files)
             {
                 var node = new TreeNode(GetFileName(filePath));
-                node.Tag = filePath;
+                node.Tag = Tuple.Create(true, filePath);
                 node.ImageKey = GetExtension(filePath);
                 node.SelectedImageKey = node.ImageKey;
                 currentNode.Nodes.Add(node);
@@ -133,6 +177,14 @@ namespace Banana.AutoCode.Forms
             base.Refresh();
 
             RefreshTreeView();
+        }
+
+        void IDisposable.Dispose()
+        {
+            this.FileMap.Clear();
+            this.FileMap = null;
+
+            this.Dispose(true);
         }
     }
 }

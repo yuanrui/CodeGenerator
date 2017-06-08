@@ -63,9 +63,9 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Components {
+        internal static System.Drawing.Bitmap Icons_16x16_BrowserRefresh {
             get {
-                object obj = ResourceManager.GetObject("Components", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_BrowserRefresh", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap data {
+        internal static System.Drawing.Bitmap Icons_16x16_BrowserWindow {
             get {
-                object obj = ResourceManager.GetObject("data", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_BrowserWindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap data_off {
+        internal static System.Drawing.Bitmap Icons_16x16_BuildCombine {
             get {
-                object obj = ResourceManager.GetObject("data_off", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_BuildCombine", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap datas {
+        internal static System.Drawing.Bitmap Icons_16x16_Component {
             get {
-                object obj = ResourceManager.GetObject("datas", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_Component", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Reload {
+        internal static System.Drawing.Bitmap Icons_16x16_DataActive {
             get {
-                object obj = ResourceManager.GetObject("Reload", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_DataActive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,79 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap tables {
+        internal static System.Drawing.Bitmap Icons_16x16_DataInactive {
             get {
-                object obj = ResourceManager.GetObject("tables", resourceCulture);
+                object obj = ResourceManager.GetObject("Icons_16x16_DataInactive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Datas {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Datas", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Module {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Module", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_OpenCollection {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_OpenCollection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Refresh {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Refresh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_RunProgramIcon {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_RunProgramIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_StopProcess {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_StopProcess", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Table {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Table", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

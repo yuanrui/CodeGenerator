@@ -19,13 +19,21 @@ namespace Banana.AutoCode.Forms
             InitializeComponent();
         }
 
+        public OutputPanel(bool isReadOnly, bool enableMenuStrip, bool closeButtonVisible)
+        {
+            InitializeComponent();
+            this.CloseButtonVisible = closeButtonVisible;
+            this.richTextBox.ReadOnly = isReadOnly;
+            this.contextMenuStrip.Enabled = enableMenuStrip;
+        }
+
         public void AppendText(string message, Color foreColor)
         {
             if (richTextBox.IsDisposed)
             {
                 return;
             }
-
+            
             if (richTextBox.InvokeRequired)
             {
                 var action = new AppendTextAction(AppendText);

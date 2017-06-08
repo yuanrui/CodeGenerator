@@ -44,10 +44,10 @@ namespace Banana.AutoCode.Forms
             TableMap = new Hashtable();
             IconList = new ImageList();
 
-            IconList.Images.Add("databases", Properties.Resources.datas);
-            IconList.Images.Add("database", Properties.Resources.data);
-            IconList.Images.Add("databaseOff", Properties.Resources.data_off);
-            IconList.Images.Add("tables", Properties.Resources.tables);
+            IconList.Images.Add("databases", Properties.Resources.Icons_16x16_Datas);
+            IconList.Images.Add("database", Properties.Resources.Icons_16x16_DataActive);
+            IconList.Images.Add("databaseOff", Properties.Resources.Icons_16x16_DataInactive);
+            IconList.Images.Add("tables", Properties.Resources.Icons_16x16_Table);
             
             tvDb.ImageList = IconList;
             tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
@@ -65,13 +65,13 @@ namespace Banana.AutoCode.Forms
             
             foreach (DictionaryEntry item in TableMap)
             {
-                var tableForm = item.Value as TablePanel;
-                if (tableForm == null)
+                var form = item.Value as TablePanel;
+                if (form == null)
                 {
                     continue;
                 }
 
-                tableForm.Close();
+                form.Close();
             }
 
             TableMap.Clear();
@@ -171,7 +171,7 @@ namespace Banana.AutoCode.Forms
         
         void tvDb_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
-            if (e.Node.Level == ROOT_NODE_LEVEL || e.Node.Level == TABLE_NODE_LEVEL)
+            if (e.Node.Level == ROOT_NODE_LEVEL || e.Node.Level == DB_NODE_LEVEL)
             {
                 e.Node.HideCheckBox();
             }
