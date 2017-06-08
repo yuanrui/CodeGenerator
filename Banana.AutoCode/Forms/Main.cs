@@ -17,7 +17,6 @@ namespace Banana.AutoCode
 {
     public partial class Main : Form
     {
-        private int childFormNumber = 0;
         DbPanel DbPanel = new DbPanel();
         OutputPanel OutputPanel = new OutputPanel();
         TemplatePanel TemplatePanel = null;
@@ -206,22 +205,53 @@ namespace Banana.AutoCode
 
         private void runToolStripButton_Click(object sender, EventArgs e)
         {
+            var tables = DbPanel.GetTables();
+
+            if (tables == null || ! tables.Any())
+            {
+                Trace.WriteLine("Unchecked tables can not generate code");
+                return;
+            }
+
             Engine engine = new Engine();
             var host = new CustomHost();
-            var files = Directory.EnumerateFiles("Templates", "*.tt", SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles("Templates", "*.tt", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles("Templates", "*.ttinclude", SearchOption.AllDirectories));
+
             var basePath = "Output";
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(basePath);
             }
+
             foreach (var path in files)
             {
                 var content = File.ReadAllText(path);
-                host.TemplateFile = path;
-                var result = engine.ProcessTemplate(content, host);
+                Trace.WriteLine("Template:" + Path.GetFileName(path));
 
-                File.WriteAllText(Path.Combine(basePath, Path.GetFileNameWithoutExtension(path) + ".cs"), result);
+                foreach (var table in tables)
+                {
+                    host.TemplateFile = path;
+                    host.Table = table;
+                    Trace.WriteLine("Generate table:" + host.Table.Name);
+                    var result = engine.ProcessTemplate(content, host);
+                    var targetPath = Path.Combine(basePath, table.Owner, Path.GetFileNameWithoutExtension(path), Path.GetFileNameWithoutExtension(table.Name) + ".cs");
+                    var targetDir = Path.GetDirectoryName(targetPath);
+
+                    if (! Directory.Exists(targetDir))
+                    {
+                        Directory.CreateDirectory(targetDir);
+                    }
+
+                    File.WriteAllText(targetPath, result);
+                    Trace.WriteLine("Finish generate table " + host.Table.Name + " code.");
+                }
             }
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

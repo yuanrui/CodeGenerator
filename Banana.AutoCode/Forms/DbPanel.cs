@@ -32,6 +32,8 @@ namespace Banana.AutoCode.Forms
         protected Hashtable ManagerMap;
         protected Hashtable TableMap;
 
+        public string DatabaseName { get; private set; }
+
         public DbPanel()
         {
             InitializeComponent();
@@ -107,6 +109,7 @@ namespace Banana.AutoCode.Forms
 
             if (e.Node.Level == DB_NODE_LEVEL)
             {
+                DatabaseName = e.Node.Text;
                 ResetDbNodeIcon(e.Node);
             }
 
@@ -149,6 +152,8 @@ namespace Banana.AutoCode.Forms
             {
                 return;
             }
+            
+            DatabaseName = db.Name;
 
             if (db.Tables == null)
             {
@@ -220,6 +225,37 @@ namespace Banana.AutoCode.Forms
             }
 
             return dbSchemaManager;
+        }
+
+        public List<Table> GetTables()
+        {
+            var result = new List<Table>();
+            var nodes = tvDb.Nodes;
+
+            foreach (TreeNode rootNode in nodes)
+            {
+                foreach (TreeNode dbNode in rootNode.Nodes)
+                {
+                    if (dbNode.Text != DatabaseName)
+                    {
+                        continue;
+                    }
+
+                    foreach (TreeNode tableNode in dbNode.Nodes)
+                    {
+                        if (tableNode.Checked)
+                        {
+                            var table = tableNode.Tag as Table;
+                            if (table != null)
+                            {
+                                result.Add(table);
+                            }                            
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         void IDisposable.Dispose()
