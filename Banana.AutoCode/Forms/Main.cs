@@ -235,7 +235,7 @@ namespace Banana.AutoCode
                     host.Table = table;
                     Trace.WriteLine("Generate table:" + host.Table.Name);
                     var result = engine.ProcessTemplate(content, host);
-                    var targetPath = Path.Combine(basePath, table.Owner, Path.GetFileNameWithoutExtension(path), Path.GetFileNameWithoutExtension(table.Name) + ".cs");
+                    var targetPath = Path.Combine(basePath, table.Owner, Path.GetFileNameWithoutExtension(path), Path.GetFileNameWithoutExtension(table.Name) + host.FileExtension);
                     var targetDir = Path.GetDirectoryName(targetPath);
 
                     if (! Directory.Exists(targetDir))

@@ -234,7 +234,7 @@
     </Content>
     <Content Include="Templates\T4\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Test.cs</LastGenOutput>
+      <LastGenOutput>Test.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
