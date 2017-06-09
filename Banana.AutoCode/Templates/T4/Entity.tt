@@ -1,23 +1,24 @@
 <#@ template language="C#" hostSpecific="true" debug="false" #>
-<#@ output extension=".cs" #>
+<#@ output encoding="utf-8" extension=".cs" #>
 <# 
-	CustomHost host = (CustomHost)(Host); 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
 #>
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-<# 
-foreach(var nameSpace in host.StandardImports)
+public partial class <#= table.Name #>
 {
-#>
-using <#= nameSpace #><#
-}
-#>
-
-//<#= host.TemplateFile #>
-
 <# 
-foreach(var refAssembly in host.StandardAssemblyReferences)
-{
+	foreach(var column in table.Columns)
+	{
 #>
-// <#= refAssembly #><#
+	/// <summary>
+    /// get or set <#= column.Comment.Replace("\n", "") #>
+    /// </summary>
+    public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
+<#
+	}
+#>
 }
-#>

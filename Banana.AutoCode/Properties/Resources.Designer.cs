@@ -153,6 +153,16 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Options {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Options", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap Icons_16x16_Refresh {
             get {
                 object obj = ResourceManager.GetObject("Icons_16x16_Refresh", resourceCulture);

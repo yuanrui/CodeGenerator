@@ -54,27 +54,7 @@ namespace Banana.AutoCode
         {
             Trace.TraceError(e.Exception.ToString());
         }
-
-        private void ShowNewForm(object sender, EventArgs e)
-        {
-            //var childForm = new TablePanel(null);
-            //childForm.MdiParent = this;
-            //childForm.Text = "窗口 " + childFormNumber++;
-            //childForm.Show(this.dockPanel);
-            ////childForm.DockTo(this.dockPanel);
-        }
-
-        private void OpenFile(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            openFileDialog.Filter = "文本文件(*.txt)|*.txt|所有文件(*.*)|*.*";
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string FileName = openFileDialog.FileName;
-            }
-        }
-
+        
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -249,9 +229,14 @@ namespace Banana.AutoCode
             }
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void optionsToolStripButton_Click(object sender, EventArgs e)
         {
 
         }
+
+        //private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+
+        //}
     }
 }

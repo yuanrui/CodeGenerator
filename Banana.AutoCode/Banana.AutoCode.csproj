@@ -143,6 +143,12 @@
     <Compile Include="Forms\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\OptionsPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OptionsPanel.Designer.cs">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\OutputPanel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,6 +233,7 @@
     <None Include="Resources\Icons.16x16.Component.png" />
     <None Include="Resources\Icons.16x16.Module.png" />
     <None Include="Resources\Icons.16x16.Table.png" />
+    <None Include="Resources\Icons.16x16.Options.png" />
     <Content Include="Templates\T4\Entity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Entity.cs</LastGenOutput>
