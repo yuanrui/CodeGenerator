@@ -19,6 +19,8 @@ namespace Banana.AutoCode.DbSchema
         
         public string Comment { get; set; }
 
+        public string DisplayName { get; set; }
+
         public string Owner { get; set; }
 
         public IList<Column> Columns { get; set; }

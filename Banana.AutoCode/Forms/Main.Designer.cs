@@ -65,8 +65,8 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.tsbtnDatabase = new System.Windows.Forms.ToolStripButton();
             this.optionsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.reloadToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.templateToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.reloadToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.runToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -389,18 +389,7 @@
             this.optionsToolStripButton.Name = "optionsToolStripButton";
             this.optionsToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.optionsToolStripButton.Text = "toolStripButton1";
-            this.optionsToolStripButton.Visible = false;
             this.optionsToolStripButton.Click += new System.EventHandler(this.optionsToolStripButton_Click);
-            // 
-            // reloadToolStripButton
-            // 
-            this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.reloadToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_Refresh;
-            this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.reloadToolStripButton.Name = "reloadToolStripButton";
-            this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.reloadToolStripButton.Text = "Refresh";
-            this.reloadToolStripButton.Click += new System.EventHandler(this.reloadToolStripButton_Click);
             // 
             // templateToolStripButton
             // 
@@ -411,6 +400,16 @@
             this.templateToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.templateToolStripButton.Text = "Open Templates";
             this.templateToolStripButton.Click += new System.EventHandler(this.templateToolStripButton_Click);
+            // 
+            // reloadToolStripButton
+            // 
+            this.reloadToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.reloadToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_Refresh;
+            this.reloadToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.reloadToolStripButton.Name = "reloadToolStripButton";
+            this.reloadToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.reloadToolStripButton.Text = "Refresh";
+            this.reloadToolStripButton.Click += new System.EventHandler(this.reloadToolStripButton_Click);
             // 
             // toolStripSeparator1
             // 

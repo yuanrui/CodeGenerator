@@ -114,6 +114,7 @@
     <Compile Include="Core\DataContext.cs" />
     <Compile Include="Core\DataContextScope.cs" />
     <Compile Include="Core\DbUtils.cs" />
+    <Compile Include="Core\GlobalSetting.cs" />
     <Compile Include="Core\IconUtils.cs" />
     <Compile Include="Core\SqlMapper.cs" />
     <Compile Include="DbSchema\Column.cs" />
@@ -180,6 +181,9 @@
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionsPanel.resx">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\OutputPanel.resx">
       <DependentUpon>OutputPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -211,9 +215,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.dll" />
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.Resources.dll" />

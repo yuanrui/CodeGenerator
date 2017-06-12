@@ -231,7 +231,8 @@ namespace Banana.AutoCode
 
         private void optionsToolStripButton_Click(object sender, EventArgs e)
         {
-
+            OptionsPanel panel = new OptionsPanel();
+            panel.Show(this);
         }
 
         //private void optionsToolStripMenuItem_Click(object sender, EventArgs e)

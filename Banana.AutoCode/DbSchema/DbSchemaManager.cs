@@ -20,6 +20,28 @@ namespace Banana.AutoCode.DbSchema
             Provider = DbSchemaFactory.Create(connSetting);
         }
 
+        private void FixTables(List<Table> tables)
+        {
+            if (tables == null)
+            {
+                return;
+            }
+
+            foreach (var table in tables)
+            {
+                table.DisplayName = table.Name;
+                foreach (var prefix in GlobalSetting.RemovePrefixList)
+                {
+                    if (table.Name.StartsWith(prefix))
+                    {
+                        table.DisplayName = table.Name.Remove(0, prefix.Count());
+                    }
+
+                }
+
+            }
+        }
+
         public virtual List<Database> GetDatabases()
         {
             try
