@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 
 /// <summary>
-/// <#= table.Comment == table.Name ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+/// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
 /// </summary>
 public partial class <#= table.DisplayName #>Entity
 {
@@ -21,7 +21,7 @@ public partial class <#= table.DisplayName #>Entity
 	{
 #>
 	/// <summary>
-    /// get or set <#= column.Comment.Replace("\n", "") #>
+    /// get or set <#= column.Comment #>
     /// </summary>
     public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
 

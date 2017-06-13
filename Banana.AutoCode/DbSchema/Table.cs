@@ -23,12 +23,7 @@ namespace Banana.AutoCode.DbSchema
         {
             get
             {
-                var result = (_comment ?? String.Empty).Trim().Replace("\n", String.Empty);
-                if (String.IsNullOrEmpty(_comment))
-                {
-                    result = Name;
-                }
-                return _comment;
+                return (_comment ?? String.Empty).Replace("\n", String.Empty).Trim();
             }
             set { _comment = value; }
         }
