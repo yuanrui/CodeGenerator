@@ -8,7 +8,9 @@ namespace Banana.AutoCode.DbSchema
 {
     [Serializable]
     public class Column
-    {        
+    {
+        private string _comment;
+     
         public string Id { get; set; }
         
         public string Name { get; set; }
@@ -21,7 +23,19 @@ namespace Banana.AutoCode.DbSchema
 
         public string TypeName { get; set; }
 
-        public string Comment { get; set; }
+        public string Comment
+        {
+            get
+            {
+                var result = (_comment ?? String.Empty).Trim().Replace("\n", String.Empty);
+                if (String.IsNullOrEmpty(_comment))
+                {
+                    result = Name;
+                }
+                return _comment;
+            }
+            set { _comment = value; }
+        }
 
         public bool IsPrimaryKey { get; set; }
 

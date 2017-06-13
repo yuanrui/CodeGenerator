@@ -5,6 +5,7 @@ using System.Text;
 using System.Configuration;
 using Banana.AutoCode.Core;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Banana.AutoCode.DbSchema
 {
@@ -20,7 +21,60 @@ namespace Banana.AutoCode.DbSchema
             Provider = DbSchemaFactory.Create(connSetting);
         }
 
-        private void FixTables(List<Table> tables)
+        public static string GetCamelCaseName(string name)
+        {
+            if (name == null)
+                return string.Empty;
+            string pascalName = GetPascalCaseName(name);
+            return pascalName.Substring(0, 1).ToLower() + pascalName.Substring(1);
+        }
+
+        private static string GetPascalCaseName(string name)
+        {
+            name = FixPrefixAndSuffix(name);
+            string[] splitNames;
+            name = Regex.Replace(name, "^[^a-zA-Z]+", string.Empty).Trim();
+
+            char[] splitter = { '_', ' ' };
+            splitNames = name.Split(splitter);
+
+            string pascalName = "";
+            foreach (string s in splitNames)
+            {
+                if (s.Length > 0)
+                    pascalName += s.Substring(0, 1).ToUpper() + s.Substring(1);
+            }
+
+            //pascalName = FixPrefixAndSuffix(pascalName);
+            return pascalName;
+        }
+
+        private static string FixPrefixAndSuffix(string name)
+        {
+            foreach (var prefix in GlobalSetting.RemovePrefixList)
+            {
+                if (!name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                name = name.Remove(0, prefix.Count());
+            }
+
+            foreach (var suffix in GlobalSetting.RemoveSuffixList)
+            {
+                if (!name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                name = name.Remove(0, suffix.Count());
+            }
+
+            return name;
+        }
+
+        private void FixTables(IList<Table> tables)
         {
             if (tables == null)
             {
@@ -29,16 +83,7 @@ namespace Banana.AutoCode.DbSchema
 
             foreach (var table in tables)
             {
-                table.DisplayName = table.Name;
-                foreach (var prefix in GlobalSetting.RemovePrefixList)
-                {
-                    if (table.Name.StartsWith(prefix))
-                    {
-                        table.DisplayName = table.Name.Remove(0, prefix.Count());
-                    }
-
-                }
-
+                table.DisplayName = GetPascalCaseName(table.Name.ToLower());
             }
         }
 
@@ -74,6 +119,8 @@ namespace Banana.AutoCode.DbSchema
                         foreach (var db in dbs)
                         {
                             db.Tables = Provider.GetTables(db);
+                            
+                            FixTables(db.Tables);
 
                             if (db.Tables != null)
                             {
@@ -111,6 +158,8 @@ namespace Banana.AutoCode.DbSchema
                             table.Owner = db.Name;
                         }
                     }
+                    
+                    FixTables(tables);
 
                     return tables;
                 }

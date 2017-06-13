@@ -32,7 +32,7 @@ namespace Banana.AutoCode.Forms
             this.dgvColumns.AutoGenerateColumns = false;
 
             this.txtTable.Text = this.Table.Name;
-            this.txtClazz.Text = this.Table.Name;
+            this.txtClazz.Text = this.Table.DisplayName;
             this.txtComment.Text = this.Table.Comment;
 
             if (Table.Columns != null && Table.Columns.Any())

@@ -8,6 +8,8 @@ namespace Banana.AutoCode.DbSchema
     [Serializable]
     public class Table
     {
+        private string _comment;
+
         public Table()
         {
             Columns = new List<Column>();
@@ -16,8 +18,20 @@ namespace Banana.AutoCode.DbSchema
         public string Id { get; set; }
 
         public string Name { get; set; }
-        
-        public string Comment { get; set; }
+
+        public string Comment
+        {
+            get
+            {
+                var result = (_comment ?? String.Empty).Trim().Replace("\n", String.Empty);
+                if (String.IsNullOrEmpty(_comment))
+                {
+                    result = Name;
+                }
+                return _comment;
+            }
+            set { _comment = value; }
+        }
 
         public string DisplayName { get; set; }
 

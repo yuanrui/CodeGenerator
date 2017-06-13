@@ -1,7 +1,11 @@
 <#@ template language="C#" hostSpecific="true" debug="false" #>
 <#@ output extension=".txt" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
 <# 
 	CustomHost host = (CustomHost)(Host); 
+	var table = host.Table;
+	var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + ".txt", host.GetValue("OutputPath").ToString());
 #>
 
 <# 
@@ -18,6 +22,12 @@ using <#= nameSpace #><#
 foreach(var refAssembly in host.StandardAssemblyReferences)
 {
 #>
-// <#= refAssembly #><#
+// <#= refAssembly #>
+<#
 }
+#>
+
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
 #>

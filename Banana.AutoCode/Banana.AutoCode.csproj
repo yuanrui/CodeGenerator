@@ -217,6 +217,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Templates\TemplateFileManager.ttinclude">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.dll" />
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.Resources.dll" />
     <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll" />
@@ -238,8 +241,8 @@
     <None Include="Resources\Icons.16x16.Options.png" />
     <Content Include="Templates\T4\Entity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Entity.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LastGenOutput>Entity.cs</LastGenOutput>
     </Content>
     <Content Include="Templates\T4\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

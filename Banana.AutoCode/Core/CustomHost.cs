@@ -15,6 +15,25 @@ namespace Banana.AutoCode.Core
     {
         public Table Table { get; set; }
 
+        private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
+
+        public void SetValue(string key, object value)
+        {
+            _extendProperties[key] = value;
+        }
+
+        public object GetValue(string key)
+        {
+            if (_extendProperties.ContainsKey(key))
+            {
+                return _extendProperties[key];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         //the path and file name of the text template that is being processed  
         //---------------------------------------------------------------------  
         public string TemplateFile { get; set; }

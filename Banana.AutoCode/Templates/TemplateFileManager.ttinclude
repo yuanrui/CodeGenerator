@@ -1,0 +1,121 @@
+<#@ assembly name="System.Core"
+#><#@ assembly name="System.Data.Linq"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#+
+// https://raw.github.com/damieng/DamienGKit
+// http://damieng.com/blog/2009/11/06/multiple-outputs-from-t4-made-easy-revisited
+
+// Manager class records the various blocks so it can split them up
+class Manager {
+    private class Block {
+        public String Name;
+        public int Start, Length;
+        public bool IncludeInDefault;
+		public String Folder;
+    }
+
+    private Block currentBlock;
+    private readonly List<Block> files = new List<Block>();
+    private readonly Block footer = new Block();
+    private readonly Block header = new Block();
+    private readonly ITextTemplatingEngineHost host;
+    private readonly StringBuilder template;
+    protected readonly List<String> generatedFileNames = new List<String>();
+
+    public static Manager Create(ITextTemplatingEngineHost host, StringBuilder template) {
+        return new Manager(host, template);
+    }
+
+    public void StartNewFile(String name) {
+        if (name == null)
+            throw new ArgumentNullException("name");
+        CurrentBlock = new Block { Name = name };
+    }
+
+	public void StartNewFile(String name, String folder) {
+        if (name == null)
+            throw new ArgumentNullException("name");
+		if (folder == null)
+            throw new ArgumentNullException("folder");
+		
+        CurrentBlock = new Block { Name = name, Folder = folder };
+    }
+
+    public void StartFooter(bool includeInDefault = true) {
+        CurrentBlock = footer;
+        footer.IncludeInDefault = includeInDefault;
+    }
+
+    public void StartHeader(bool includeInDefault = true) {
+        CurrentBlock = header;
+        header.IncludeInDefault = includeInDefault;
+    }
+
+    public void EndBlock() {
+        if (CurrentBlock == null)
+            return;
+        CurrentBlock.Length = template.Length - CurrentBlock.Start;
+        if (CurrentBlock != header && CurrentBlock != footer)
+            files.Add(CurrentBlock);
+        currentBlock = null;
+    }
+
+    public virtual void Process(bool split, bool sync = true) {
+        if (split) {
+            EndBlock();
+            String headerText = template.ToString(header.Start, header.Length);
+            String footerText = template.ToString(footer.Start, footer.Length);
+            String outputPath = Path.GetDirectoryName(host.TemplateFile);
+            files.Reverse();
+            if (!footer.IncludeInDefault)
+                template.Remove(footer.Start, footer.Length);
+            foreach(Block block in files) {
+				String fileName = Path.Combine(block.Folder ?? outputPath, block.Name);
+                String content = headerText + template.ToString(block.Start, block.Length) + footerText;
+                generatedFileNames.Add(fileName);
+                CreateFile(fileName, content);
+                template.Remove(block.Start, block.Length);
+            }
+            if (!header.IncludeInDefault)
+                template.Remove(header.Start, header.Length);
+        }
+    }
+
+    protected virtual void CreateFile(String fileName, String content) {
+        if (IsFileContentDifferent(fileName, content))
+            File.WriteAllText(fileName, content);
+    }
+
+    public virtual String GetCustomToolNamespace(String fileName) {
+        return null;
+    }
+
+    public virtual String DefaultProjectNamespace {
+        get { return null; }
+    }
+
+    protected bool IsFileContentDifferent(String fileName, String newContent) {
+        return !(File.Exists(fileName) && File.ReadAllText(fileName) == newContent);
+    }
+
+    private Manager(ITextTemplatingEngineHost host, StringBuilder template) {
+        this.host = host;
+        this.template = template;
+    }
+
+    private Block CurrentBlock {
+        get { return currentBlock; }
+        set {
+            if (CurrentBlock != null)
+                EndBlock();
+            if (value != null)
+                value.Start = template.Length;
+            currentBlock = value;
+        }
+    }
+} #>

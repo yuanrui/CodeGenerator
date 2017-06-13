@@ -89,6 +89,7 @@
             this.txtClazz.Location = new System.Drawing.Point(574, 3);
             this.txtClazz.Name = "txtClazz";
             this.txtClazz.ReadOnly = true;
+            this.txtClazz.ShortcutsEnabled = false;
             this.txtClazz.Size = new System.Drawing.Size(365, 21);
             this.txtClazz.TabIndex = 9;
             // 
@@ -235,12 +236,12 @@
             // 
             this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblClazz.AutoSize = true;
-            this.lblClazz.Location = new System.Drawing.Point(497, 8);
+            this.lblClazz.Location = new System.Drawing.Point(485, 8);
             this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
             this.lblClazz.Name = "lblClazz";
-            this.lblClazz.Size = new System.Drawing.Size(71, 12);
+            this.lblClazz.Size = new System.Drawing.Size(83, 12);
             this.lblClazz.TabIndex = 7;
-            this.lblClazz.Text = "Class Name:";
+            this.lblClazz.Text = "Display Name:";
             // 
             // txtTable
             // 

@@ -1,14 +1,20 @@
 <#@ template language="C#" hostSpecific="true" debug="false" #>
 <#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
 <# 
 	CustomHost host = (CustomHost)(Host);
 	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.generated.cs", host.GetValue("OutputPath").ToString());
 #>
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-public partial class <#= table.Name #>
+/// <summary>
+/// <#= table.Comment == table.Name ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+/// </summary>
+public partial class <#= table.DisplayName #>Entity
 {
 <# 
 	foreach(var column in table.Columns)
@@ -18,7 +24,12 @@ public partial class <#= table.Name #>
     /// get or set <#= column.Comment.Replace("\n", "") #>
     /// </summary>
     public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
+
 <#
 	}
 #>
 }
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

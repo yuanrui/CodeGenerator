@@ -4,19 +4,22 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Banana.AutoCode.Forms;
-using WeifenLuo.WinFormsUI.Docking;
-using Microsoft.VisualStudio.TextTemplating;
 using Banana.AutoCode.Core;
-using System.IO;
+using Banana.AutoCode.Forms;
+using Microsoft.VisualStudio.TextTemplating;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode
 {
     public partial class Main : Form
     {
+        const string TEMPLATES_DIR = "Templates";
+        const string OUTPUT_DIR = "Output";
+
         DbPanel DbPanel = new DbPanel();
         OutputPanel OutputPanel = new OutputPanel();
         TemplatePanel TemplatePanel = null;
@@ -183,6 +186,20 @@ namespace Banana.AutoCode
             DbPanel.Refresh();
         }
 
+        private string GetOutputPath(Banana.AutoCode.DbSchema.Table table, string templateFile, string basePath)
+        {
+            var targetDir = Path.Combine(basePath, table.Owner
+                , Path.GetDirectoryName(templateFile).Replace(TEMPLATES_DIR, string.Empty).Trim('\\')
+                , Path.GetFileNameWithoutExtension(templateFile));
+
+            if (!Directory.Exists(targetDir))
+            {
+                Directory.CreateDirectory(targetDir);
+            }
+
+            return targetDir;
+        }
+
         private void runToolStripButton_Click(object sender, EventArgs e)
         {
             var tables = DbPanel.GetTables();
@@ -195,10 +212,10 @@ namespace Banana.AutoCode
 
             Engine engine = new Engine();
             var host = new CustomHost();
-            var files = Directory.EnumerateFiles("Templates", "*.tt", SearchOption.AllDirectories)
-                .Concat(Directory.EnumerateFiles("Templates", "*.ttinclude", SearchOption.AllDirectories));
+            var files = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories)
+                .Concat(Directory.EnumerateFiles(TEMPLATES_DIR, "*.ttinclude", SearchOption.AllDirectories));
 
-            var basePath = "Output";
+            var basePath = OUTPUT_DIR;
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(basePath);
@@ -207,26 +224,34 @@ namespace Banana.AutoCode
             foreach (var path in files)
             {
                 var content = File.ReadAllText(path);
-                Trace.WriteLine("Template:" + Path.GetFileName(path));
-
+                var templateName = Path.GetFileName(path);
+                Trace.WriteLine("Template:" + templateName);
+                
                 foreach (var table in tables)
                 {
                     host.TemplateFile = path;
                     host.Table = table;
-                    Trace.WriteLine("Generate table:" + host.Table.Name);
-                    var result = engine.ProcessTemplate(content, host);
-                    var targetPath = Path.Combine(basePath, table.Owner, Path.GetFileNameWithoutExtension(path), Path.GetFileNameWithoutExtension(table.Name) + host.FileExtension);
-                    var targetDir = Path.GetDirectoryName(targetPath);
+                    
+                    var outputPath = GetOutputPath(table, path, basePath);
+                    host.SetValue("OutputPath", outputPath);
 
-                    if (! Directory.Exists(targetDir))
+                    Trace.WriteLine("Generate table:" + host.Table.Name + " TemplateName:" + templateName + " OutputPath:" + outputPath);
+                    var result = engine.ProcessTemplate(content, host);
+                    
+                    if (string.IsNullOrWhiteSpace(result))
                     {
-                        Directory.CreateDirectory(targetDir);
+                        Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code, no result.");
+                        continue;
                     }
 
+                    var targetPath = Path.Combine(outputPath, host.Table.DisplayName + host.FileExtension);
+
                     File.WriteAllText(targetPath, result);
-                    Trace.WriteLine("Finish generate table " + host.Table.Name + " code.");
+                    Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code.");
                 }
             }
+
+            Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath));
         }
 
         private void optionsToolStripButton_Click(object sender, EventArgs e)
@@ -234,10 +259,5 @@ namespace Banana.AutoCode
             OptionsPanel panel = new OptionsPanel();
             panel.Show(this);
         }
-
-        //private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
-        //{
-
-        //}
     }
 }
