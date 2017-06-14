@@ -133,6 +133,16 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Help {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap Icons_16x16_Module {
             get {
                 object obj = ResourceManager.GetObject("Icons_16x16_Module", resourceCulture);
@@ -146,16 +156,6 @@ namespace Banana.AutoCode.Properties {
         internal static System.Drawing.Bitmap Icons_16x16_OpenCollection {
             get {
                 object obj = ResourceManager.GetObject("Icons_16x16_OpenCollection", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
-        /// </summary>
-        internal static System.Drawing.Bitmap Icons_16x16_Options {
-            get {
-                object obj = ResourceManager.GetObject("Icons_16x16_Options", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -196,6 +196,16 @@ namespace Banana.AutoCode.Properties {
         internal static System.Drawing.Bitmap Icons_16x16_Table {
             get {
                 object obj = ResourceManager.GetObject("Icons_16x16_Table", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Tools {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Tools", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

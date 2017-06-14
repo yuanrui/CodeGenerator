@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle("Banana.AutoCode")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("https://github.com/yuanrui")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Banana Research")]
 [assembly: AssemblyProduct("Banana.AutoCode")]

@@ -217,6 +217,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Resources\Icons.16x16.Help.png" />
+    <None Include="Resources\Icons.16x16.Tools.png" />
     <Content Include="Templates\TemplateFileManager.ttinclude">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -238,7 +240,6 @@
     <None Include="Resources\Icons.16x16.Component.png" />
     <None Include="Resources\Icons.16x16.Module.png" />
     <None Include="Resources\Icons.16x16.Table.png" />
-    <None Include="Resources\Icons.16x16.Options.png" />
     <Content Include="Templates\T4\Entity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
