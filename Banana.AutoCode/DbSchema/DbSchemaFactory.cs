@@ -16,7 +16,7 @@ namespace Banana.AutoCode.DbSchema
                 case "System.Data.SqlClient":
                     return new SqlServerSchema(connSetting.Name);
                 case "System.Data.SQLite":
-                    return null;
+                    return new SQLiteSchema(connSetting.Name);
                 case "Oracle.ManagedDataAccess.Client":
                     return new OracleSchema(connSetting.Name);
                 default:

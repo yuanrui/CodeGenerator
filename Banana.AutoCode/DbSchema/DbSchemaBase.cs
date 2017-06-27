@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Banana.AutoCode.Core;
-using System.Data;
 
 namespace Banana.AutoCode.DbSchema
 {
@@ -12,12 +13,79 @@ namespace Banana.AutoCode.DbSchema
         protected virtual String ConnectionName { get; set; }
 
         public virtual DataContext Context { get; set; }
+        
+        public virtual string MetaDataCollectionName_Databases { get { return "Databases"; } }
+        
+        public virtual string MetaDataCollectionName_Tables { get { return "Tables"; } }
 
-        public abstract List<Database> GetDatabases();
+        public virtual string MetaDataCollectionName_Columns { get { return "Columns"; } }
 
-        public abstract List<Table> GetTables(Database db);
+        public virtual List<Database> GetDatabases()
+        {
+            var result = new List<Database>();
 
-        public abstract List<Column> GetColumns(Table table);
+            var dt = GetSchema(MetaDataCollectionName_Databases, null);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var db = new Database();
+                db.Name = dr["database_name"].ToString();
+
+                result.Add(db);
+            }
+
+            return result;
+        }
+
+        public virtual List<Table> GetTables(Database db)
+        {
+            var result = new List<Table>();
+
+            string[] restrictions = new string[4];
+            restrictions[0] = db.Name;
+            DataTable dt = GetSchema(MetaDataCollectionName_Tables, restrictions);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var table = new Table();
+                table.Name = dr["table_name"].ToString();
+                table.Owner = db.Name;
+
+                result.Add(table);
+            }
+
+            return result;
+        }
+
+        public virtual List<Column> GetColumns(Table table)
+        {
+            var result = new List<Column>();
+
+            string[] restrictions = new string[4];
+            restrictions[0] = table.Owner;
+            restrictions[2] = table.Name;
+            DataTable dt = GetSchema(MetaDataCollectionName_Columns, restrictions);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var column = new Column();
+                column.Name = dr["column_name"].ToString();
+                column.Comment = column.Name;
+                column.IsNullable = dr["is_nullable"].ToString() == "YES" ? true : false;
+                column.RawType = dr["data_type"].ToString();
+                column.Length = dr["character_maximum_length"] == DBNull.Value ? -1 : Convert.ToInt32(dr["character_maximum_length"]);
+                column.Precision = dr["numeric_precision"] == DBNull.Value ? (Int16)(-1) : Convert.ToInt16(dr["numeric_precision"]);
+                column.Scale = dr["numeric_scale"] == DBNull.Value ? (Int16)(-1) : Convert.ToInt16(dr["numeric_scale"]);
+                
+                column.Type = this.GetType(column.RawType, column.Precision, column.Scale, column.IsNullable);
+                column.TypeName = this.GetTypeName(column.RawType, column.Precision, column.Scale, column.IsNullable);
+                column.DataType = this.GetDbType(column.RawType, column.Precision, column.Scale);
+
+                result.Add(column);
+            }
+
+            return result;
+        }
 
         public abstract Type GetType(String rawType, Int16 precision, Int16 scale, Boolean isNullable);
 
@@ -75,6 +143,34 @@ namespace Banana.AutoCode.DbSchema
             ConnectionName = connName;
 
             Context = DataContextScope.GetCurrent(ConnectionName).DataContext;
+        }
+
+        public virtual DataTable GetSchema(string metaDataCollectionName, string[] restrictions)
+        {
+            DataTable resultTable;
+            using (DbConnection conn = Context.DbProviderFactory.CreateConnection())
+            {
+                conn.ConnectionString = Context.GetConnectionString();
+                conn.Open();
+
+                if (string.IsNullOrEmpty(metaDataCollectionName))
+                {
+                    resultTable = conn.GetSchema();
+                }
+                else
+                {
+                    if (restrictions == null || restrictions.All(s => s == null))
+                    {
+                        resultTable = conn.GetSchema(metaDataCollectionName);
+                    }
+                    else
+                    {
+                        resultTable = conn.GetSchema(metaDataCollectionName, restrictions);
+                    }
+                }
+            }
+
+            return resultTable;
         }
     }
 }

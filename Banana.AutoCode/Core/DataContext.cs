@@ -78,6 +78,11 @@ namespace Banana.AutoCode.Core
             IsDisposed = false;
         }
 
+        public string GetConnectionString()
+        {
+            return _dbConnection.ConnectionString;
+        }
+
         public void BeginTransaction()
         {
             _dbTransaction = _dbConnection.BeginTransaction();
