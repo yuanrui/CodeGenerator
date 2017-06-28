@@ -38,19 +38,33 @@ namespace Banana.AutoCode.DbSchema.Provider
             {
                 throw new ArgumentException("The rawType is null or empty.", "rawType");
             }
-
+            
             switch (rawType.ToLower())
             {
                 case "bit":
                     return GetTypeOf<Boolean>(isNullable);
+                case "smallint":
+                    return GetTypeOf<Int16>(isNullable);
                 case "int":
                 case "integer":
-                    return GetTypeOf<Int64>(isNullable);
+                    return GetTypeOf<Int32>(isNullable);
+                case "float":
+                    return GetTypeOf<Single>(isNullable);
+                case "double":
+                    return GetTypeOf<Double>(isNullable);
+                case "decimal":
                 case "numeric":
                 case "real":
                     return GetTypeOf<Decimal>(isNullable);
+                case "date":
+                case "time":
+                case "timestamp":
                 case "datetime":
                     return GetTypeOf<DateTime>(isNullable);
+                case "char":
+                case "varchar":
+                case "graphic":
+                case "vargraphic":
                 case "nvarchar":
                 case "text":
                     return typeof(String);
@@ -72,14 +86,28 @@ namespace Banana.AutoCode.DbSchema.Provider
             {
                 case "bit":
                     return DbType.Boolean;
+                case "smallint":
+                    return DbType.Int16;
                 case "int":
                 case "integer":
-                    return DbType.Int64;
+                    return DbType.Int32;
+                case "float":
+                    return DbType.Single;
+                case "double":
+                    return DbType.Double;
+                case "decimal":
                 case "numeric":
                 case "real":
                     return DbType.Decimal;
+                case "date":
+                case "time":
+                case "timestamp":
                 case "datetime":
                     return DbType.DateTime;
+                case "char":
+                case "varchar":
+                case "graphic":
+                case "vargraphic":
                 case "nvarchar":
                 case "text":
                     return DbType.String;

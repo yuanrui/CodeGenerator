@@ -189,8 +189,7 @@ namespace Banana.AutoCode
         private string GetOutputPath(Banana.AutoCode.DbSchema.Table table, string templateFile, string basePath)
         {
             var targetDir = Path.Combine(basePath, table.Owner
-                , Path.GetDirectoryName(templateFile).Replace(TEMPLATES_DIR, string.Empty).Trim('\\')
-                , Path.GetFileNameWithoutExtension(templateFile));
+                , Path.GetDirectoryName(templateFile).Replace(TEMPLATES_DIR, string.Empty).Trim('\\'));
 
             if (!Directory.Exists(targetDir))
             {
