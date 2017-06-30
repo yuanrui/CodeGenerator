@@ -15,7 +15,7 @@ namespace Banana.AutoCode.DbSchema.Provider
 
         public override List<Database> GetDatabases()
         {
-            const string sql = "select USERNAME as Name from dba_users";
+            const string sql = "select USERNAME as Name from all_users";
 
             return Context.Query<Database>(sql);
         }
@@ -25,9 +25,9 @@ namespace Banana.AutoCode.DbSchema.Provider
             const string sql = @"select 
 o.OBJECT_ID as Id, 
 t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
-from dba_tables t 
-left join dba_tab_comments c on t.TABLE_NAME = c.TABLE_NAME 
-left join ALL_OBJECTS o on t.TABLE_NAME = o.OBJECT_NAME and t.OWNER = o.OWNER
+from all_tables t 
+left join all_tab_comments c on t.owner = c.owner and t.TABLE_NAME = c.TABLE_NAME 
+left join ALL_OBJECTS o on t.OWNER = o.OWNER and t.TABLE_NAME = o.OBJECT_NAME 
 where t.owner=:Owner";
 
             var result = Context.Query<Table>(sql, new { Owner = db.Name });
@@ -39,9 +39,9 @@ where t.owner=:Owner";
         {
             const string sql = @"
 WITH colConsCTE AS (
-    SELECT a.*, b.CONSTRAINT_TYPE FROM user_cons_columns a
-    LEFT JOIN user_constraints b ON a.constraint_name = b.constraint_name AND a.table_name = b.table_name 
-    WHERE a.TABLE_NAME = :TableName 
+    SELECT a.*, b.CONSTRAINT_TYPE FROM all_cons_columns a
+    LEFT JOIN all_constraints b ON a.owner = b.owner AND a.constraint_name = b.constraint_name AND a.table_name = b.table_name 
+    WHERE a.owner = :Owner and a.TABLE_NAME = :TableName 
 )
 
 SELECT tab.COLUMN_ID AS Id, tab.TABLE_NAME AS TableName, tab.COLUMN_NAME AS Name, col.COMMENTS AS ""Comment""
@@ -55,12 +55,13 @@ SELECT tab.COLUMN_ID AS Id, tab.TABLE_NAME AS TableName, tab.COLUMN_NAME AS Name
   , CASE WHEN (SELECT COUNT(1) FROM colConsCTE cte WHERE tab.COLUMN_NAME = cte.COLUMN_NAME AND tab.TABLE_NAME = cte.TABLE_NAME AND cte.CONSTRAINT_TYPE ='U') > 0 THEN 1 ELSE 0 END AS IsUnique
   , CASE WHEN (SELECT COUNT(1) FROM colConsCTE cte WHERE tab.COLUMN_NAME = cte.COLUMN_NAME AND tab.TABLE_NAME = cte.TABLE_NAME AND cte.CONSTRAINT_TYPE ='O') > 0 THEN 1 ELSE 0 END AS IsReadOnly
   , 0 AS IsIdentity
-FROM USER_TAB_COLUMNS tab
-LEFT JOIN USER_COL_COMMENTS col ON tab.table_name = col.table_name AND tab.COLUMN_NAME = col.COLUMN_NAME
-WHERE tab.table_name = :TableName 
+FROM ALL_TAB_COLUMNS tab
+LEFT JOIN ALL_COL_COMMENTS col ON tab.owner = col.owner AND tab.table_name = col.table_name AND tab.COLUMN_NAME = col.COLUMN_NAME
+WHERE tab.owner = :Owner AND tab.table_name = :TableName 
 ORDER BY tab.COLUMN_ID ASC ";
             var result = new List<Column>();
             var cmd = Context.DatabaseObject.GetSqlStringCommand(sql);
+            Context.DatabaseObject.AddInParameter(cmd, "Owner", DbType.String, table.Owner);
             Context.DatabaseObject.AddInParameter(cmd, "TableName", DbType.String, table.Name);
 
             using (var reader = Context.ExecuteReader(cmd))
