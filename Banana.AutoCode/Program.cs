@@ -10,6 +10,11 @@ namespace Banana.AutoCode
 {
     static class Program
     {
+        static Program()
+        {
+            CosturaUtility.Initialize();
+        }
+
         /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
