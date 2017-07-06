@@ -37,7 +37,7 @@ namespace Banana.AutoCode.Forms
 
             if (Table.Columns != null && Table.Columns.Any())
             {
-                this.dgvColumns.DataSource = Table;
+                this.dgvColumns.DataSource = Table.Columns;
             }
             else
             {

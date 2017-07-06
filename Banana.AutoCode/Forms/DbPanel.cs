@@ -133,6 +133,15 @@ namespace Banana.AutoCode.Forms
                 }
                 else
                 {
+                    if (tableForm.IsDisposed)
+                    {
+                        tableForm = new TablePanel(table, CurrentConnSetting);
+                        tableForm.Text = e.Node.Text;
+                        tableForm.Show(((Main)this.ParentForm).MainDockPanel);
+                        
+                        return;
+                    }
+
                     tableForm.Activate();
                 }
             }
@@ -171,7 +180,7 @@ namespace Banana.AutoCode.Forms
                 }
             }
 
-            e.Node.Expand();
+            e.Node.Toggle();
         }
         
         void tvDb_DrawNode(object sender, DrawTreeNodeEventArgs e)

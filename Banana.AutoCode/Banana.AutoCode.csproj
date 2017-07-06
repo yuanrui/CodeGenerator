@@ -113,6 +113,10 @@
       <HintPath>..\packages\DockPanelSuite.2.15.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=2.15.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.ThemeVS2015.2.15.0\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
@@ -256,12 +260,12 @@
     <None Include="Resources\Icons.16x16.Component.png" />
     <None Include="Resources\Icons.16x16.Module.png" />
     <None Include="Resources\Icons.16x16.Table.png" />
-    <Content Include="Templates\T4\Entity.tt">
+    <Content Include="Templates\Entity\Entity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>Entity.cs</LastGenOutput>
     </Content>
-    <Content Include="Templates\T4\Test.tt">
+    <Content Include="Templates\Test\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Test.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

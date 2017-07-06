@@ -44,8 +44,30 @@ namespace Banana.AutoCode
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             this.Text = this.Text + " - v" + About.VersionNumber;
+            
+            var theme = new VS2015LightTheme();
+            this.dockPanel.Theme = theme;
+
             Trace.Listeners.Add(new OutputTraceListener(OutputPanel));
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
+
+            CheckDirectoryPath();
+        }
+
+        private void CheckDirectoryPath()
+        {
+            if (! Directory.Exists(TEMPLATES_DIR))
+            {
+                Trace.WriteLine("Templates directory not exists, auto create.");
+
+                Directory.CreateDirectory(TEMPLATES_DIR);
+            }
+
+            if (! Directory.Exists(OUTPUT_DIR))
+            {
+                Trace.WriteLine("Output directory not exists, auto create.");
+                Directory.CreateDirectory(OUTPUT_DIR);
+            }
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -214,12 +236,14 @@ namespace Banana.AutoCode
             var files = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(TEMPLATES_DIR, "*.ttinclude", SearchOption.AllDirectories));
 
-            var basePath = OUTPUT_DIR;
-            if (!Directory.Exists(basePath))
+            if (! files.Any())
             {
-                Directory.CreateDirectory(basePath);
+                Trace.WriteLine("No template file. run stop.");
+                return;
             }
 
+            var basePath = OUTPUT_DIR;
+            
             foreach (var path in files)
             {
                 var content = File.ReadAllText(path);
