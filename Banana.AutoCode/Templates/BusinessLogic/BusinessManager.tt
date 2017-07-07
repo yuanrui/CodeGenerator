@@ -28,7 +28,7 @@ public partial class <#= table.DisplayName #>Manager
 	public virtual bool Update(<#= entName #> entity)
 	{
 		const string sql = @"UPDATE <#= table.Name #> 
-		SET <#= string.Join(", ", table.Columns.Select(m => m.Name + "=@" + m.Name)) #>
+		SET <#= string.Join(", ", table.Columns.Select(m => m.Name + " = @" + m.Name)) #>
 		WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + "=@" + m.Name)) #>";
 		
 		return DbUtils.Execute(sql, entity) > 0;
@@ -36,8 +36,8 @@ public partial class <#= table.DisplayName #>Manager
 	
 	public virtual bool Delete(<#= entName #> entity)
 	{
-		const string sql = @"DELETE FROM <#= table.Name #> WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + "=@" + m.Name)) #>";
+		const string sql = @"DELETE FROM <#= table.Name #> WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + " = @" + m.Name)) #>";
 		
-		return DbUtils.Execute(sql, new { <#= string.Join(", ", table.PrimaryKeyColumns.Select(m => m.Name + "=" + m.Name)) #> }) > 0;
+		return DbUtils.Execute(sql, new { <#= string.Join(", ", table.PrimaryKeyColumns.Select(m => m.Name + " = entity." + m.Name)) #> }) > 0;
 	}
 }
