@@ -223,8 +223,9 @@ namespace Banana.AutoCode
 
         private void runToolStripButton_Click(object sender, EventArgs e)
         {
+            const string FILE_NAME_KEY = "FILE_NAME";
             var tables = DbPanel.GetTables();
-
+            
             if (tables == null || ! tables.Any())
             {
                 Trace.WriteLine("Unchecked tables can not generate code");
@@ -243,13 +244,13 @@ namespace Banana.AutoCode
             }
 
             var basePath = OUTPUT_DIR;
-            
+
             foreach (var path in files)
             {
                 var content = File.ReadAllText(path);
                 var templateName = Path.GetFileName(path);
                 Trace.WriteLine("Template:" + templateName);
-                
+
                 foreach (var table in tables)
                 {
                     host.TemplateFile = path;
@@ -267,7 +268,18 @@ namespace Banana.AutoCode
                         continue;
                     }
 
-                    var targetPath = Path.Combine(outputPath, host.Table.DisplayName + host.FileExtension);
+                    var fileName = host.GetValue(FILE_NAME_KEY) as String;
+
+                    if (string.IsNullOrWhiteSpace(fileName))
+                    {
+                        fileName = host.Table.DisplayName;
+                    }
+                    else
+                    {
+                        host.SetValue(FILE_NAME_KEY, null);
+                    }
+
+                    var targetPath = Path.Combine(outputPath, fileName + host.FileExtension);
 
                     File.WriteAllText(targetPath, result);
                     Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code.");

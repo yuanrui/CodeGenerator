@@ -13,25 +13,30 @@ namespace Banana.AutoCode.Core
     [Serializable]
     public class CustomHost : ITextTemplatingEngineHost
     {
+        public CustomHost() : this(AppDomain.CreateDomain("Generation App Domain"))
+        { 
+            
+        }
+
+        public CustomHost(AppDomain appDomain)
+        {
+            HostDomain = appDomain;
+        }
+
+        protected AppDomain HostDomain { get; private set; }
+
         public Table Table { get; set; }
 
-        private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
+        //private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
 
         public void SetValue(string key, object value)
         {
-            _extendProperties[key] = value;
+            HostDomain.SetData(key, value);
         }
 
         public object GetValue(string key)
         {
-            if (_extendProperties.ContainsKey(key))
-            {
-                return _extendProperties[key];
-            }
-            else
-            {
-                return null;
-            }
+            return HostDomain.GetData(key);
         }
 
         //the path and file name of the text template that is being processed  
@@ -317,7 +322,8 @@ namespace Banana.AutoCode.Core
             //This host will provide a new application domain each time the   
             //engine processes a text template.  
             //-------------------------------------------------------------  
-            return AppDomain.CreateDomain("Generation App Domain");
+            return HostDomain;
+            //return AppDomain.CreateDomain("Generation App Domain");
             //This could be changed to return the current appdomain, but new   
             //assemblies are loaded into this AppDomain on a regular basis.  
             //If the AppDomain lasts too long, it will grow indefintely,   

@@ -233,12 +233,22 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Templates\Test\Test2.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Test2.txt</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\Icons.16x16.Help.png" />
     <None Include="Resources\Icons.16x16.Tools.png" />
     <None Include="Resources\Icons.128x128.Logo.ico" />
     <None Include="FodyWeavers.xml" />
     <EmbeddedResource Include="costura32\SQLite.Interop.dll" />
     <EmbeddedResource Include="costura64\SQLite.Interop.dll" />
+    <Content Include="Templates\BusinessLogic\BusinessManager.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>BusinessManager.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\TemplateFileManager.ttinclude">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -267,8 +277,8 @@
     </Content>
     <Content Include="Templates\Test\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Test.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LastGenOutput>Test.txt</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

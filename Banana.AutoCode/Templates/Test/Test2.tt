@@ -4,8 +4,6 @@
 <# 
 	CustomHost host = (CustomHost)(Host); 
 	var table = host.Table;
-	var manager = Manager.Create(host, GenerationEnvironment);
-	manager.StartNewFile(table.DisplayName + ".txt", host.GetValue("OutputPath").ToString());
 #>
 
 <# 
@@ -27,7 +25,3 @@ foreach(var refAssembly in host.StandardAssemblyReferences)
 }
 #>
 <#= AppDomain.CurrentDomain.FriendlyName #>
-<# 
-	manager.EndBlock(); 
-	manager.Process(true);
-#>
