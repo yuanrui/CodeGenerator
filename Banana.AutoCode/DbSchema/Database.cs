@@ -8,7 +8,7 @@ namespace Banana.AutoCode.DbSchema
     [Serializable]
     public class Database
     {
-        public string Name { get; set; }
+        public String Name { get; set; }
 
         public IList<Table> Tables { get; set; } 
     }

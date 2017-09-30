@@ -9,44 +9,58 @@ namespace Banana.AutoCode.DbSchema
     [Serializable]
     public class Column
     {
-        private string _comment;
-     
-        public string Id { get; set; }
-        
-        public string Name { get; set; }
+        private String _comment;
 
-        public string RawType { get; set; }
+        private String _thriftType;
+
+        public String Id { get; set; }
+        
+        public String Name { get; set; }
+
+        public String RawType { get; set; }
 
         public DbType DataType { get; set; }
 
         public Type Type { get; set; }
 
-        public string TypeName { get; set; }
+        public String TypeName { get; set; }
 
-        public string Comment
+        public String Comment
         {
             get
             {
-                return (string.IsNullOrEmpty(_comment) ? Name : _comment).Replace("\n", String.Empty).Trim();
+                return (String.IsNullOrEmpty(_comment) ? Name : _comment).Replace("\n", String.Empty).Trim();
             }
             set { _comment = value; }
         }
 
-        public bool IsPrimaryKey { get; set; }
+        public Boolean IsPrimaryKey { get; set; }
 
-        public bool IsForeignKey { get; set; }
+        public Boolean IsForeignKey { get; set; }
 
-        public bool IsUnique { get; set; }
+        public Boolean IsUnique { get; set; }
 
-        public bool IsNullable { get; set; }
+        public Boolean IsNullable { get; set; }
 
-        public int Length { get; set; }
+        public Int32 Length { get; set; }
 
         public Int16 Precision { get; set; }
 
         public Int16 Scale { get; set; }
 
+        public Int32 Index { get; set; }
+
         [NonSerialized]
         public Table Table;
+        
+        public string GetThriftType()
+        {
+            return _thriftType;
+        }
+
+        public void SetThriftType(string thriftType)
+        {
+            _thriftType = thriftType;
+        }
     }
 }

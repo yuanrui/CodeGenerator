@@ -8,18 +8,18 @@ namespace Banana.AutoCode.DbSchema
     [Serializable]
     public class Table
     {
-        private string _comment;
+        private String _comment;
 
         public Table()
         {
             Columns = new List<Column>();
         }
 
-        public string Id { get; set; }
+        public String Id { get; set; }
 
-        public string Name { get; set; }
+        public String Name { get; set; }
 
-        public string Comment
+        public String Comment
         {
             get
             {
@@ -28,9 +28,9 @@ namespace Banana.AutoCode.DbSchema
             set { _comment = value; }
         }
 
-        public string DisplayName { get; set; }
+        public String DisplayName { get; set; }
 
-        public string Owner { get; set; }
+        public String Owner { get; set; }
 
         public IList<Column> Columns { get; set; }
 
@@ -38,16 +38,16 @@ namespace Banana.AutoCode.DbSchema
         {
             get
             {
-                if (! Columns.Any(m => m.IsPrimaryKey))
-                {
-                    throw new ArgumentException(Name + " no primary key");
-                }
+                //if (! Columns.Any(m => m.IsPrimaryKey))
+                //{
+                //    throw new ArgumentException(Name + " no primary key");
+                //}
 
                 return Columns.Where(m => m.IsPrimaryKey).ToList() ?? new List<Column>();
             }
         }
 
-        public bool PrimaryKeyIsNumber
+        public Boolean PrimaryKeyIsNumber
         {
             get
             {
@@ -82,7 +82,7 @@ namespace Banana.AutoCode.DbSchema
             }
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             return Owner + "." + Name;
         }

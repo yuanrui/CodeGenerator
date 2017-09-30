@@ -238,15 +238,23 @@
       <LastGenOutput>Test2.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Thrift\Entity.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LastGenOutput>Entity.thrift</LastGenOutput>
+    </Content>
+    <None Include="Thrift\thrift.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Icons.16x16.Help.png" />
     <None Include="Resources\Icons.16x16.Tools.png" />
     <None Include="Resources\Icons.128x128.Logo.ico" />
     <None Include="FodyWeavers.xml" />
     <EmbeddedResource Include="costura32\SQLite.Interop.dll" />
     <EmbeddedResource Include="costura64\SQLite.Interop.dll" />
-    <Content Include="Templates\BusinessLogic\BusinessManager.tt">
+    <Content Include="Templates\BusinessLogic\SimpleBusinessManager.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>BusinessManager.cs</LastGenOutput>
+      <LastGenOutput>SimpleBusinessManager.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\TemplateFileManager.ttinclude">

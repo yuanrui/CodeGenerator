@@ -1,0 +1,26 @@
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".thrift" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.generated.thrift", host.GetValue("OutputPath").ToString());
+#>
+struct <#= table.DisplayName #>Entity {
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+	/** <#= column.Comment #> */
+    <#= column.Index #>: <#= column.IsNullable ? "optional" : "required" #> <#= column.GetThriftType() #> <#= column.Name #>
+
+<#
+	}
+#>
+}
+
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

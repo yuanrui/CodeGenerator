@@ -14,11 +14,11 @@ namespace Banana.AutoCode.DbSchema
 
         public virtual DataContext Context { get; set; }
         
-        public virtual string MetaDataCollectionName_Databases { get { return "Databases"; } }
+        public virtual String MetaDataCollectionName_Databases { get { return "Databases"; } }
         
-        public virtual string MetaDataCollectionName_Tables { get { return "Tables"; } }
+        public virtual String MetaDataCollectionName_Tables { get { return "Tables"; } }
 
-        public virtual string MetaDataCollectionName_Columns { get { return "Columns"; } }
+        public virtual String MetaDataCollectionName_Columns { get { return "Columns"; } }
 
         public virtual List<Database> GetDatabases()
         {
@@ -65,6 +65,7 @@ namespace Banana.AutoCode.DbSchema
             restrictions[0] = table.Owner;
             restrictions[2] = table.Name;
             DataTable dt = GetSchema(MetaDataCollectionName_Columns, restrictions);
+            var index = 0;
 
             foreach (DataRow dr in dt.Rows)
             {
@@ -80,6 +81,8 @@ namespace Banana.AutoCode.DbSchema
                 column.Type = this.GetType(column.RawType, column.Precision, column.Scale, column.IsNullable);
                 column.TypeName = this.GetTypeName(column.RawType, column.Precision, column.Scale, column.IsNullable);
                 column.DataType = this.GetDbType(column.RawType, column.Precision, column.Scale);
+                column.SetThriftType(GetThriftType(column.Type));
+                column.Index = index++;
 
                 result.Add(column);
             }
@@ -134,6 +137,7 @@ namespace Banana.AutoCode.DbSchema
             column.Type = GetType(column.RawType, column.Precision, column.Scale, column.IsNullable);
             column.TypeName = GetTypeName(column.RawType, column.Precision, column.Scale, column.IsNullable);
             column.DataType = GetDbType(column.RawType, column.Precision, column.Scale);
+            column.SetThriftType(GetThriftType(column.Type));
 
             return column;
         }
@@ -145,7 +149,7 @@ namespace Banana.AutoCode.DbSchema
             Context = DataContextScope.GetCurrent(ConnectionName).DataContext;
         }
 
-        public virtual DataTable GetSchema(string metaDataCollectionName, string[] restrictions)
+        public virtual DataTable GetSchema(String metaDataCollectionName, string[] restrictions)
         {
             DataTable resultTable;
             using (DbConnection conn = Context.DbProviderFactory.CreateConnection())
@@ -171,6 +175,49 @@ namespace Banana.AutoCode.DbSchema
             }
 
             return resultTable;
+        }
+
+        public String GetThriftType(Type type)
+        {
+            const String BOOL = "bool";
+            const String BYTE = "byte";
+            const String I16 = "i16";
+            const String I32 = "i32";
+            const String I64 = "i64";
+            const String DOUBLE = "double";
+            const String STRING = "string";
+            const String BINARY = "binary";
+           
+            switch (type.Name)
+            {
+                case "String":
+                    return STRING;
+                case "Byte[]":
+                case "SByte[]":
+                    return BINARY;
+                case "Boolean":
+                    return BOOL;
+                case "Byte":
+                case "SByte":
+                    return BYTE;
+                case "Decimal":
+                case "Double":
+                case "Single":
+                    return DOUBLE;
+                case "Int16":
+                case "UInt16":
+                    return I16;
+                case "Int32":
+                case "UInt32":
+                    return I32;
+                case "Int64":
+                case "UInt64":
+                    return I64;
+                default:
+                    break;
+            }
+
+            return STRING;
         }
     }
 }

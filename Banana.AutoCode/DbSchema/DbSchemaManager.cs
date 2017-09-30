@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Configuration;
-using Banana.AutoCode.Core;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Banana.AutoCode.Core;
 
 namespace Banana.AutoCode.DbSchema
 {
@@ -183,10 +183,12 @@ namespace Banana.AutoCode.DbSchema
                     if (columns != null)
                     {
                         table.Columns = columns;
+                        var index = 0;
 
                         foreach (var column in columns)
                         {
                             column.Table = table;
+                            column.Index = index++;
                         }
                     }
 
