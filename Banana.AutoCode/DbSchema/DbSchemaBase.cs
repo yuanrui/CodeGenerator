@@ -116,6 +116,11 @@ namespace Banana.AutoCode.DbSchema
             return typeof(T);
         }
 
+        protected virtual void FixRawType(Column column)
+        { 
+            
+        }
+
         public virtual Column Fill(IDataReader reader)
         {
             var column = new Column();
@@ -133,7 +138,8 @@ namespace Banana.AutoCode.DbSchema
             column.Length = reader["Length"] == DBNull.Value ? 0 : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("Length")));
             column.Precision = reader["Precision"] == DBNull.Value ? (Int16)0 : Convert.ToInt16(reader.GetValue(reader.GetOrdinal("Precision")));
             column.Scale = reader["Scale"] == DBNull.Value ? (Int16)0 : Convert.ToInt16(reader.GetValue(reader.GetOrdinal("Scale")));
-
+            
+            FixRawType(column);
             column.Type = GetType(column.RawType, column.Precision, column.Scale, column.IsNullable);
             column.TypeName = GetTypeName(column.RawType, column.Precision, column.Scale, column.IsNullable);
             column.DataType = GetDbType(column.RawType, column.Precision, column.Scale);

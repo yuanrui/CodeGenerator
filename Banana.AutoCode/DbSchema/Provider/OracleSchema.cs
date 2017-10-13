@@ -79,6 +79,17 @@ ORDER BY tab.COLUMN_ID ASC ";
             return result;
         }
 
+        protected override void FixRawType(Column column)
+        {
+            if (column.RawType.StartsWith("TIMESTAMP", StringComparison.OrdinalIgnoreCase))
+            {
+                column.RawType = "TIMESTAMP";
+                return;
+            }
+
+            base.FixRawType(column);
+        }
+
         /// <summary>
         /// convert Oracle number type
         /// http://docs.oracle.com/cd/E51173_01/win.122/e17732/entityDataTypeMapping.htm
