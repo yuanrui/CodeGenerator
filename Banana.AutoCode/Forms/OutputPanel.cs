@@ -33,17 +33,12 @@ namespace Banana.AutoCode.Forms
             {
                 return;
             }
-            
-            if (richTextBox.InvokeRequired)
-            {
-                var action = new AppendTextAction(AppendText);
-                richTextBox.Invoke(action, message, foreColor);
-            }
-            else
-            {
-                richTextBox.ForeColor = foreColor;
-                richTextBox.AppendText(message);
-            }
+
+            richTextBox.InvokeIfRequired(c => {
+                var box = (RichTextBox)c;
+                box.ForeColor = foreColor;
+                box.AppendText(message);
+            });
         }
 
         private void tsmiCopy_Click(object sender, EventArgs e)
