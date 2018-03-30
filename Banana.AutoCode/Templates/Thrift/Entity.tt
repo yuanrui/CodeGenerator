@@ -13,7 +13,7 @@ struct <#= table.DisplayName #>Entity {
 	{
 #>
 	/** <#= column.Comment #> */
-    <#= column.Index #>: <#= column.IsNullable ? "optional" : "required" #> <#= column.GetThriftType() #> <#= column.Name #>
+    <#= column.Index + 1 #>: <#= column.IsNullable ? "optional" : "required" #> <#= column.GetThriftType() #> <#= column.Name #>
 
 <#
 	}

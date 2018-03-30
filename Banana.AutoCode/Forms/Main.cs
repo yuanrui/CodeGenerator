@@ -12,6 +12,7 @@ using Banana.AutoCode.Core;
 using Banana.AutoCode.Forms;
 using Microsoft.VisualStudio.TextTemplating;
 using WeifenLuo.WinFormsUI.Docking;
+using System.Threading.Tasks;
 
 namespace Banana.AutoCode
 {
@@ -286,7 +287,70 @@ namespace Banana.AutoCode
                 }
             }
 
-            Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath));
+            var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
+            
+            Task.Factory.StartNew(() => 
+            {
+                BuildThriftCode(outputBasePath);
+            });
+
+            Process.Start(outputBasePath);
+        }
+
+        private void DoGenerateCode(string codePath)
+        {
+            var thriftPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thrift");
+            var thriftExe = Path.Combine(thriftPath, "thrift.exe");
+            if (!File.Exists(thriftExe))
+            {
+                return;
+            }
+
+            var cmdText = "--gen csharp \"" + codePath + "\"";
+
+            Process process = Process.Start(new ProcessStartInfo(thriftExe, cmdText)
+            {
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                WorkingDirectory = Path.GetDirectoryName(codePath)
+            });
+
+            process.OutputDataReceived += (sender, e) =>
+            {
+                if (e.Data == null)
+                {
+                    return;
+                }
+
+                Trace.WriteLine(e.Data);
+            };
+
+            process.ErrorDataReceived += delegate(object o, DataReceivedEventArgs args)
+            {
+                if (args.Data == null)
+                {
+                    return;
+                }
+
+                Trace.WriteLine(args.Data);
+            };
+        }
+
+        private void BuildThriftCode(string basePath)
+        {
+            var files = Directory.EnumerateFiles(basePath, "*.thrift", SearchOption.AllDirectories);
+
+            if (files == null)
+            {
+                return;
+            }
+
+            foreach (var path in files)
+            {
+                DoGenerateCode(path);
+            }
         }
 
         private void optionsToolStripButton_Click(object sender, EventArgs e)
