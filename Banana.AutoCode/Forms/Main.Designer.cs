@@ -74,6 +74,7 @@
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -366,7 +367,8 @@
             this.reloadToolStripButton,
             this.toolStripSeparator1,
             this.runToolStripButton,
-            this.helpToolStripButton});
+            this.helpToolStripButton,
+            this.buildToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(761, 25);
@@ -464,6 +466,16 @@
             this.dockPanel.Size = new System.Drawing.Size(761, 389);
             this.dockPanel.TabIndex = 6;
             // 
+            // buildToolStripButton
+            // 
+            this.buildToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buildToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_BuildCombine;
+            this.buildToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buildToolStripButton.Name = "buildToolStripButton";
+            this.buildToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.buildToolStripButton.Text = "toolStripButton1";
+            this.buildToolStripButton.Click += new System.EventHandler(this.buildToolStripButton_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -535,6 +547,7 @@
         private System.Windows.Forms.ToolStripButton runToolStripButton;
         private System.Windows.Forms.ToolStripButton optionsToolStripButton;
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
+        private System.Windows.Forms.ToolStripButton buildToolStripButton;
     }
 }
 

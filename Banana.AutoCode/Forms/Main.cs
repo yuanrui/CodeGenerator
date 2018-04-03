@@ -7,12 +7,12 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
 using Banana.AutoCode.Forms;
 using Microsoft.VisualStudio.TextTemplating;
 using WeifenLuo.WinFormsUI.Docking;
-using System.Threading.Tasks;
 
 namespace Banana.AutoCode
 {
@@ -289,26 +289,14 @@ namespace Banana.AutoCode
 
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
             
-            Task.Factory.StartNew(() => 
-            {
-                BuildThriftCode(outputBasePath);
-            });
-
+            BuildThriftCodeAsync(outputBasePath);
+            
             Process.Start(outputBasePath);
         }
 
-        private void DoGenerateCode(string codePath)
+        private void DoCommand(string thriftPath, string cmdText, string codePath)
         {
-            var thriftPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thrift");
-            var thriftExe = Path.Combine(thriftPath, "thrift.exe");
-            if (!File.Exists(thriftExe))
-            {
-                return;
-            }
-
-            var cmdText = "--gen csharp \"" + codePath + "\"";
-
-            Process process = Process.Start(new ProcessStartInfo(thriftExe, cmdText)
+            Process process = Process.Start(new ProcessStartInfo(thriftPath, cmdText)
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,
@@ -338,7 +326,26 @@ namespace Banana.AutoCode
             };
         }
 
-        private void BuildThriftCode(string basePath)
+        private void DoGenerateCode(string codePath)
+        {
+            var thriftPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thrift");
+            var thriftExe = Path.Combine(thriftPath, "thrift.exe");
+            if (!File.Exists(thriftExe))
+            {
+                return;
+            }
+
+            var languages = new string[] { "java", "csharp", "js", "js:ts", "js:node", "py", "cpp" };
+
+            foreach (var lang in languages)
+            {
+                var cmdText = "--gen " + lang + " \"" + codePath + "\"";
+
+                DoCommand(thriftExe, cmdText, codePath);
+            }            
+        }
+
+        private void BuildThriftCodeAsync(string basePath)
         {
             var files = Directory.EnumerateFiles(basePath, "*.thrift", SearchOption.AllDirectories);
 
@@ -346,11 +353,29 @@ namespace Banana.AutoCode
             {
                 return;
             }
+            
+            Trace.WriteLine("Begin generate Thrift");
 
-            foreach (var path in files)
+            var task = Task.Factory.StartNew(() =>
             {
-                DoGenerateCode(path);
-            }
+                foreach (var path in files)
+                {
+                    Trace.Write(path);
+                    try
+                    {
+                        DoGenerateCode(path);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(string.Format("Generate Thrift({0}) Exception:{1}", path, ex));
+                    }                   
+                }
+            });
+
+            task.ContinueWith(t => 
+            {
+                Trace.WriteLine("Finish generate Thrift");
+            });
         }
 
         private void optionsToolStripButton_Click(object sender, EventArgs e)
@@ -363,6 +388,12 @@ namespace Banana.AutoCode
         {
             About about = new About();
             about.ShowDialog(this);
+        }
+
+        private void buildToolStripButton_Click(object sender, EventArgs e)
+        {
+            var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, OUTPUT_DIR);
+            BuildThriftCodeAsync(outputBasePath);
         }
     }
 }
