@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Banana.AutoCode.DbSchema
 {
-    public static class DBTypeMapper
+    public static class DbTypeMapper
     {
         /// <summary>
         /// 将数据库类型映射为.Net类型

@@ -33,6 +33,9 @@
             this.txtClazz = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
             this.dgvColumns = new System.Windows.Forms.DataGridView();
+            this.lblComment = new System.Windows.Forms.Label();
+            this.lblClazz = new System.Windows.Forms.Label();
+            this.txtTable = new System.Windows.Forms.TextBox();
             this.ColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RawType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,9 +45,6 @@
             this.IsForeignKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsUnique = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsNullAble = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lblComment = new System.Windows.Forms.Label();
-            this.lblClazz = new System.Windows.Forms.Label();
-            this.txtTable = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).BeginInit();
             this.SuspendLayout();
@@ -134,6 +134,37 @@
             this.dgvColumns.Size = new System.Drawing.Size(936, 455);
             this.dgvColumns.TabIndex = 3;
             // 
+            // lblComment
+            // 
+            this.lblComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblComment.AutoSize = true;
+            this.lblComment.Location = new System.Drawing.Point(44, 38);
+            this.lblComment.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
+            this.lblComment.Name = "lblComment";
+            this.lblComment.Size = new System.Drawing.Size(53, 12);
+            this.lblComment.TabIndex = 5;
+            this.lblComment.Text = "Comment:";
+            // 
+            // lblClazz
+            // 
+            this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblClazz.AutoSize = true;
+            this.lblClazz.Location = new System.Drawing.Point(485, 8);
+            this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
+            this.lblClazz.Name = "lblClazz";
+            this.lblClazz.Size = new System.Drawing.Size(83, 12);
+            this.lblClazz.TabIndex = 7;
+            this.lblClazz.Text = "Display Name:";
+            // 
+            // txtTable
+            // 
+            this.txtTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtTable.Location = new System.Drawing.Point(103, 3);
+            this.txtTable.Name = "txtTable";
+            this.txtTable.ReadOnly = true;
+            this.txtTable.Size = new System.Drawing.Size(365, 21);
+            this.txtTable.TabIndex = 8;
+            // 
             // ColumnName
             // 
             this.ColumnName.DataPropertyName = "Name";
@@ -177,7 +208,7 @@
             // 
             this.Comment.DataPropertyName = "Comment";
             this.Comment.FillWeight = 17.7665F;
-            this.Comment.HeaderText = "列说明";
+            this.Comment.HeaderText = "Comment";
             this.Comment.MinimumWidth = 180;
             this.Comment.Name = "Comment";
             this.Comment.ReadOnly = true;
@@ -186,8 +217,8 @@
             // 
             this.IsPrimaryKey.DataPropertyName = "IsPrimaryKey";
             this.IsPrimaryKey.FillWeight = 17.7665F;
-            this.IsPrimaryKey.HeaderText = "是否主键";
-            this.IsPrimaryKey.MinimumWidth = 80;
+            this.IsPrimaryKey.HeaderText = "Primary Key";
+            this.IsPrimaryKey.MinimumWidth = 100;
             this.IsPrimaryKey.Name = "IsPrimaryKey";
             this.IsPrimaryKey.ReadOnly = true;
             this.IsPrimaryKey.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -196,8 +227,8 @@
             // 
             this.IsForeignKey.DataPropertyName = "IsForeignKey";
             this.IsForeignKey.FillWeight = 17.7665F;
-            this.IsForeignKey.HeaderText = "是否外键";
-            this.IsForeignKey.MinimumWidth = 80;
+            this.IsForeignKey.HeaderText = "Foreign Key";
+            this.IsForeignKey.MinimumWidth = 100;
             this.IsForeignKey.Name = "IsForeignKey";
             this.IsForeignKey.ReadOnly = true;
             this.IsForeignKey.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -205,7 +236,7 @@
             // IsUnique
             // 
             this.IsUnique.DataPropertyName = "IsUnique";
-            this.IsUnique.HeaderText = "是否唯一";
+            this.IsUnique.HeaderText = "Unique";
             this.IsUnique.MinimumWidth = 80;
             this.IsUnique.Name = "IsUnique";
             this.IsUnique.ReadOnly = true;
@@ -215,42 +246,11 @@
             // 
             this.IsNullAble.DataPropertyName = "IsNullAble";
             this.IsNullAble.FillWeight = 17.7665F;
-            this.IsNullAble.HeaderText = "是否可为空";
+            this.IsNullAble.HeaderText = "NullAble";
             this.IsNullAble.MinimumWidth = 80;
             this.IsNullAble.Name = "IsNullAble";
             this.IsNullAble.ReadOnly = true;
             this.IsNullAble.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // lblComment
-            // 
-            this.lblComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblComment.AutoSize = true;
-            this.lblComment.Location = new System.Drawing.Point(44, 38);
-            this.lblComment.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(53, 12);
-            this.lblComment.TabIndex = 5;
-            this.lblComment.Text = "Comment:";
-            // 
-            // lblClazz
-            // 
-            this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblClazz.AutoSize = true;
-            this.lblClazz.Location = new System.Drawing.Point(485, 8);
-            this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblClazz.Name = "lblClazz";
-            this.lblClazz.Size = new System.Drawing.Size(83, 12);
-            this.lblClazz.TabIndex = 7;
-            this.lblClazz.Text = "Display Name:";
-            // 
-            // txtTable
-            // 
-            this.txtTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTable.Location = new System.Drawing.Point(103, 3);
-            this.txtTable.Name = "txtTable";
-            this.txtTable.ReadOnly = true;
-            this.txtTable.Size = new System.Drawing.Size(365, 21);
-            this.txtTable.TabIndex = 8;
             // 
             // TablePanel
             // 
