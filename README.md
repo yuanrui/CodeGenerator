@@ -1,9 +1,6 @@
 CodeGenerator
 =============
 
-Use Code Generator create C# code file.
+Use Code Generator create C# code file. Include generate Thrift IDL template file.
 
-20170527 update:
-unavailable, developing...
-
-you can find my old project https://github.com/yuanrui/Examples/tree/master/Study.CodeGenerator
+you also can find my old project https://github.com/yuanrui/Examples/tree/master/Study.CodeGenerator
