@@ -1,6 +1,7 @@
 <#@ template language="C#" hostSpecific="true" debug="false" #>
 <#@ output encoding="utf-8" extension=".thrift" #>
 <#@ include file="../TemplateFileManager.ttinclude" #>
+<#@ include file="../ThriftTypeConverter.ttinclude" #>
 <# 
 	CustomHost host = (CustomHost)(Host);
 	Table table = host.Table;
@@ -13,7 +14,7 @@ struct <#= table.DisplayName #>Entity {
 	{
 #>
 	/** <#= column.Comment #> */
-    <#= column.Index + 1 #>: <#= column.IsNullable ? "optional" : "required" #> <#= column.GetThriftType() #> <#= column.Name #>
+    <#= column.Index + 1 #>: <#= column.IsNullable ? "optional" : "required" #> <#= ThriftTypeConverter.AsThriftType(column.Type) #> <#= column.Name #>
 
 <#
 	}

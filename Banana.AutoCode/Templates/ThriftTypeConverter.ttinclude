@@ -1,0 +1,55 @@
+<#@ assembly name="System.Core"
+#><#@ assembly name="System.Data.Linq"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#+
+public class ThriftTypeConverter
+{
+    public static String AsThriftType(Type type)
+    {
+        const String BOOL = "bool";
+        const String BYTE = "byte";
+        const String I16 = "i16";
+        const String I32 = "i32";
+        const String I64 = "i64";
+        const String DOUBLE = "double";
+        const String STRING = "string";
+        const String BINARY = "binary";
+           
+        switch (type.Name)
+        {
+            case "String":
+                return STRING;
+            case "Byte[]":
+            case "SByte[]":
+                return BINARY;
+            case "Boolean":
+                return BOOL;
+            case "Byte":
+            case "SByte":
+                return BYTE;
+            case "Decimal":
+            case "Double":
+            case "Single":
+                return DOUBLE;
+            case "Int16":
+            case "UInt16":
+                return I16;
+            case "Int32":
+            case "UInt32":
+                return I32;
+            case "Int64":
+            case "UInt64":
+                return I64;
+            default:
+                break;
+        }
+
+        return STRING;
+    }
+}
+#>

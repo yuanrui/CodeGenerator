@@ -169,7 +169,7 @@
             // 
             this.ColumnName.DataPropertyName = "Name";
             this.ColumnName.FillWeight = 17.7665F;
-            this.ColumnName.HeaderText = "列名";
+            this.ColumnName.HeaderText = "Name";
             this.ColumnName.MinimumWidth = 100;
             this.ColumnName.Name = "ColumnName";
             this.ColumnName.ReadOnly = true;

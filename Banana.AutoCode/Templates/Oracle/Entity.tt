@@ -1,3 +1,4 @@
+<#
 //------------------------------------------------------------------------------
 // <copyright file="Entity.tt">
 //    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
@@ -5,6 +6,7 @@
 // <author>Yuan Rui</author>
 // <date>2018-04-25 18:00:00</date>
 //------------------------------------------------------------------------------
+#>
 <#@ template language="C#" hostSpecific="true" debug="false" #>
 <#@ output encoding="utf-8" extension=".cs" #>
 <#@ include file="../TemplateFileManager.ttinclude" #>

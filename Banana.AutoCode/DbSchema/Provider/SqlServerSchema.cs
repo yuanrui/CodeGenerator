@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using Banana.AutoCode.Core;
-using System.Data;
 
 namespace Banana.AutoCode.DbSchema.Provider
 {

@@ -94,8 +94,11 @@ namespace Banana.AutoCode.Core
                     //fully qualified path and name of the System assembly.  
                     //---------------------------------------------------------  
                     typeof(System.Uri).Assembly.Location,
+                    typeof(System.Collections.Generic.IEnumerable<string>).Assembly.Location,
                     typeof(System.Data.DbType).Assembly.Location,
                     typeof(System.Linq.Enumerable).Assembly.Location,
+                    typeof(System.Data.SQLite.SQLiteConnection).Assembly.Location,
+                    typeof(Oracle.ManagedDataAccess.Client.OracleDbType).Assembly.Location,
                     typeof(CustomHost).Assembly.Location
                 };
             }
@@ -114,9 +117,12 @@ namespace Banana.AutoCode.Core
                     "System.Collections.Generic",
                     "System.Linq",
                     "System.Text",
+                    "System.Data",
+                    "System.Data.SQLite",
+                    "Oracle.ManagedDataAccess.Client",
                     "Banana.AutoCode",
                     "Banana.AutoCode.DbSchema",
-                    "Banana.AutoCode.Core"
+                    "Banana.AutoCode.Core"                    
                 };
             }
         }

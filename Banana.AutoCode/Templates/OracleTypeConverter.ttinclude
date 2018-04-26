@@ -1,0 +1,373 @@
+<#@ assembly name="System.Core"
+#><#@ assembly name="System.Data.Linq"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#+
+public class OracleTypeConverter
+{
+    /// <summary>
+    /// convert Oracle number type
+    /// </summary>
+    /// <remarks>
+    /// http://docs.oracle.com/cd/E51173_01/win.122/e17732/entityDataTypeMapping.htm
+    /// </remarks>
+    /// <param name="precision"></param>
+    /// <param name="scale"></param>
+    /// <returns></returns>
+    private static String ConvertNumberToTypeName(Int16 precision, Int16 scale)
+    {
+        if (scale == 0)
+        {
+            if (precision == 0)
+            {
+                return "Int64";
+            }
+
+            if (precision == 1)
+            {
+                return "Boolean";
+            }
+
+            if (precision <= 3)
+            {
+                return "Byte";
+            }
+
+            if (precision <= 4)
+            {
+                return "Int16";
+            }
+
+            if (precision <= 9)
+            {
+                return "Int32";
+            }
+
+            if (precision <= 18)
+            {
+                return "Int64";
+            }
+        }
+
+        return "Decimal";
+    }
+
+    private static Type ConvertNumberToType(Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        if (scale == 0)
+        {
+            if (precision == 0)
+            {
+                return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
+            }
+
+            if (precision == 1)
+            {
+                return isNullable ? typeof(Nullable<Boolean>) : typeof(Boolean);
+            }
+
+            if (precision <= 3)
+            {
+                return isNullable ? typeof(Nullable<Byte>) : typeof(Byte);
+            }
+
+            if (precision <= 4)
+            {
+                return isNullable ? typeof(Nullable<Int16>) : typeof(Int16);
+            }
+
+            if (precision <= 9)
+            {
+                return isNullable ? typeof(Nullable<Int32>) : typeof(Int32);
+            }
+
+            if (precision <= 18)
+            {
+                return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
+            }
+        }
+
+        return isNullable ? typeof(Nullable<Decimal>) : typeof(Decimal);
+    }
+
+    /// <summary>
+    /// Oracle column database type convert to csharp type name
+    /// </summary>
+    /// <remarks>
+    /// https://msdn.microsoft.com/en-us/library/yk72thhd%28v=vs.80%29.aspx
+    /// </remarks>
+    /// <param name="input">column type in Oracle</param>
+    /// <returns>String type name</returns>
+    public static String AsCsharpTypeName(String input, Int16 precision, Int16 scale)
+    {
+
+        if (String.IsNullOrEmpty(input))
+        {
+            throw new ArgumentException("The input is null or empty.", "input");
+        }
+
+        String csharpType = "Object";
+        switch (input.ToUpper())
+        {
+            case "BFILE": csharpType = "Byte[]"; break;
+            case "BLOB": csharpType = "Byte[]"; break;
+            case "CHAR": csharpType = "String"; break;
+            case "CLOB": csharpType = "String"; break;
+            case "DATE": csharpType = "DateTime"; break;
+            case "FLOAT": csharpType = "Decimal"; break;
+            case "INTEGER": csharpType = "Int64"; break;
+            case "INTERVAL YEAR TO MONTH": csharpType = "Int32"; break;
+            case "INTERVAL DAY TO SECOND": csharpType = "TimeSpan"; break;
+            case "LONG": csharpType = "String"; break;
+            case "LONG RAW": csharpType = "Byte[]"; break;
+            case "NCHAR": csharpType = "String"; break;
+            case "NCLOB": csharpType = "String"; break;
+            case "NUMBER": csharpType = ConvertNumberToTypeName(precision, scale); break;
+            case "NVARCHAR2": csharpType = "String"; break;
+            case "RAW": csharpType = "Byte[]"; break;
+            case "ROWID": csharpType = "String"; break;
+            case "TIMESTAMP": csharpType = "DateTime"; break;
+            case "TIMESTAMP WITH LOCAL TIME ZONE": csharpType = "DateTime"; break;
+            case "TIMESTAMP WITH TIME ZONE": csharpType = "DateTime"; break;
+            case "UNSIGNED INTEGER": csharpType = "Decimal"; break;
+            case "VARCHAR2": csharpType = "String"; break;
+            default: csharpType = "Object"; break;
+        }
+
+
+        return csharpType;
+    }
+
+    public static String AsCsharpTypeName(String input, Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        var csharpType = AsCsharpTypeName(input, precision, scale);
+
+        if (isNullable)
+        {
+            if (csharpType != "Object" && csharpType != "String" && csharpType.All(m => m != '['))
+            {
+                csharpType = csharpType + "?";
+            }
+        }
+
+        return csharpType;
+    }
+
+    public static Type AsCsharpType(String input, Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        if (String.IsNullOrEmpty(input))
+        {
+            throw new ArgumentException("The input is null or empty.", "input");
+        }
+
+        var csharpType = typeof(Object);
+
+        switch (input.ToUpper())
+        {
+            case "BFILE": csharpType = typeof(Byte[]); break;
+            case "BLOB": csharpType = typeof(Byte[]); break;
+            case "CHAR": csharpType = typeof(String); break;
+            case "CLOB": csharpType = typeof(String); break;
+            case "DATE": csharpType = isNullable ? typeof(Nullable<DateTime>) : typeof(DateTime); break;
+            case "FLOAT": csharpType = isNullable ? typeof(Nullable<Decimal>) : typeof(Decimal); break;
+            case "INTEGER": csharpType = isNullable ? typeof(Nullable<Int64>) : typeof(Int64); break;
+            case "INTERVAL YEAR TO MONTH": csharpType = isNullable ? typeof(Nullable<Int32>) : typeof(Int32); break;
+            case "INTERVAL DAY TO SECOND": csharpType = isNullable ? typeof(Nullable<TimeSpan>) : typeof(TimeSpan); break;
+            case "LONG": csharpType = typeof(String); break;
+            case "LONG RAW": csharpType = typeof(Byte[]); break;
+            case "NCHAR": csharpType = typeof(String); break;
+            case "NCLOB": csharpType = typeof(String); break;
+            case "NUMBER": csharpType = ConvertNumberToType(precision, scale, isNullable); break;
+            case "NVARCHAR2": csharpType = typeof(String); break;
+            case "RAW": csharpType = typeof(Byte[]); break;
+            case "ROWID": csharpType = typeof(String); break;
+            case "TIMESTAMP": csharpType = isNullable ? typeof(Nullable<DateTime>) : typeof(DateTime); break;
+            case "TIMESTAMP WITH LOCAL TIME ZONE": csharpType = isNullable ? typeof(Nullable<DateTime>) : typeof(DateTime); break;
+            case "TIMESTAMP WITH TIME ZONE": csharpType = isNullable ? typeof(Nullable<DateTime>) : typeof(DateTime); break;
+            case "UNSIGNED INTEGER": csharpType = isNullable ? typeof(Nullable<Decimal>) : typeof(Decimal); break;
+            case "VARCHAR2": csharpType = typeof(String); break;
+            default: csharpType = typeof(Object); break;
+        }
+
+        return csharpType;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// http://docs.oracle.com/html/B14164_01/featOraCommand.htm
+    /// https://msdn.microsoft.com/en-us/library/yk72thhd%28v=vs.80%29.aspx
+    /// </remarks>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static DbType AsCsharpDbType(String input)
+    {
+        var csharpDbType = DbType.Object;
+        switch (input.ToUpper())
+        {
+            case "BFILE": csharpDbType = DbType.Object; break;
+            case "BLOB": csharpDbType = DbType.Object; break;
+            case "CHAR": csharpDbType = DbType.AnsiStringFixedLength; break;
+            case "CLOB": csharpDbType = DbType.Object; break;
+            case "DATE": csharpDbType = DbType.DateTime; break;
+            case "FLOAT": csharpDbType = DbType.Decimal; break;
+            case "INTEGER": csharpDbType = DbType.Int64; break;
+            case "INTERVAL YEAR TO MONTH": csharpDbType = DbType.Int32; break;
+            case "INTERVAL DAY TO SECOND": csharpDbType = DbType.Object; break;
+            case "LONG": csharpDbType = DbType.AnsiString; break;
+            case "LONG RAW": csharpDbType = DbType.Binary; break;
+            case "NCHAR": csharpDbType = DbType.StringFixedLength; break;
+            case "NCLOB": csharpDbType = DbType.Object; break;
+            case "NUMBER": csharpDbType = DbType.Decimal; break;
+            case "NVARCHAR2": csharpDbType = DbType.String; break;
+            case "RAW": csharpDbType = DbType.Binary; break;
+            case "ROWID": csharpDbType = DbType.AnsiString; break;
+            case "TIMESTAMP": csharpDbType = DbType.DateTime; break;
+            case "TIMESTAMP WITH LOCAL TIME ZONE": csharpDbType = DbType.DateTime; break;
+            case "TIMESTAMP WITH TIME ZONE": csharpDbType = DbType.DateTime; break;
+            case "UNSIGNED INTEGER": csharpDbType = DbType.Decimal; break;
+            case "VARCHAR2": csharpDbType = DbType.AnsiString; break;
+            default: csharpDbType = DbType.Object; break;
+        }
+
+        return csharpDbType;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// http://docs.oracle.com/html/B14164_01/featOraCommand.htm
+    /// https://msdn.microsoft.com/en-us/library/yk72thhd%28v=vs.80%29.aspx
+    /// </remarks>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static OracleDbType AsOracleDbType(String input)
+    {
+        var oracleDbType = OracleDbType.NVarchar2;
+        switch (input.ToUpper())
+        {
+            case "BFILE": oracleDbType = OracleDbType.BFile; break;
+            case "BLOB": oracleDbType = OracleDbType.Blob; break;
+            case "CHAR": oracleDbType = OracleDbType.Char; break;
+            case "CLOB": oracleDbType = OracleDbType.Clob; break;
+            case "DATE": oracleDbType = OracleDbType.Date; break;
+            case "FLOAT": oracleDbType = OracleDbType.Decimal; break;//may be out of memory
+            case "INTEGER": oracleDbType = OracleDbType.Int64; break;
+            case "INTERVAL YEAR TO MONTH": oracleDbType = OracleDbType.IntervalYM; break;
+            case "INTERVAL DAY TO SECOND": oracleDbType = OracleDbType.IntervalDS; break;
+            case "LONG": oracleDbType = OracleDbType.Long; break;
+            case "LONG RAW": oracleDbType = OracleDbType.LongRaw; break;
+            case "NCHAR": oracleDbType = OracleDbType.NChar; break;
+            case "NCLOB": oracleDbType = OracleDbType.NClob; break;
+            case "NUMBER": oracleDbType = OracleDbType.Decimal; break;
+            case "NVARCHAR2": oracleDbType = OracleDbType.NVarchar2; break;
+            case "RAW": oracleDbType = OracleDbType.Raw; break;
+            case "REF CURSOR": oracleDbType = OracleDbType.RefCursor; break;
+            case "ROWID": oracleDbType = OracleDbType.NVarchar2; break;
+            case "TIMESTAMP": oracleDbType = OracleDbType.TimeStamp; break;
+            case "TIMESTAMP WITH LOCAL TIME ZONE": oracleDbType = OracleDbType.TimeStampLTZ; break;
+            case "TIMESTAMP WITH TIME ZONE": oracleDbType = OracleDbType.TimeStampTZ; break;
+            case "UNSIGNED INTEGER": oracleDbType = OracleDbType.Decimal; break;
+            case "VARCHAR2": oracleDbType = OracleDbType.Varchar2; break;
+
+            default: oracleDbType = OracleDbType.NVarchar2; break;
+        }
+
+        return oracleDbType;
+    }
+
+    public static String GetReaderMethod(Column column, String index, String containerName)
+    {
+        var methodResult = String.Empty;
+        var dbTypeString = column.Type.ToString();
+        var typeName = column.TypeName;
+        var isNullable = column.IsNullable;
+        var defaultType = isNullable ? 
+            (dbTypeString.Contains("System.Nullable`1") ? dbTypeString.Replace("System.Nullable`1", String.Empty)
+                .Replace("System.", String.Empty).Replace("[", String.Empty).Replace("]", String.Empty)
+                : column.Type.Name)
+            : column.Type.Name;
+
+        switch (defaultType)
+        {                
+            case "Byte":
+            case "Int16":
+            case "Int32":
+            case "Int64":
+            case "DateTime":
+            case "Double":
+            case "Decimal":
+            case "Char":
+            case "Guid":
+                methodResult = String.Format("{3}{2}.Get{0}({1})", defaultType, index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            case "String":
+                methodResult = String.Format("{1}.GetString({0})", index, containerName);
+                break;
+            case "Single":
+                methodResult = String.Format("{2}{1}.GetFloat({0})", index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            case "Byte[]":
+                methodResult = String.Format("(Byte[]){1}.GetValue({0})", index, containerName);
+                break;
+            case "Boolean":
+                methodResult = String.Format("{2}Convert.ToBoolean({1}.GetByte({0}))", index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            default:
+                methodResult = String.Format("{1}.GetValue({0})", index, containerName);
+                break;
+        }
+            
+        return methodResult;
+    }
+
+    public static String GetReaderMethodByName(Column column, String index, String containerName)
+    {
+        return GetReaderMethod(column, containerName + ".GetOrdinal(\"" + column.Name + "\")", containerName);
+    }
+
+    public static String GetReaderIndex(Column column, Int32 index, String indexPrefix)
+    {
+        return indexPrefix + index.ToString();
+    }
+
+    public static String GetReaderIndexByName(Column column, Int32 index, String indexPrefix)
+    {
+        return "\"" + column.Name + "\"";
+    }
+
+    public static String GetFillExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix, Func<Column, Int32, String, String> indexMethod, Func<Column, String, String, String> readerMethod)
+    {
+        var expResult = String.Empty;
+		var name = column.Name;
+        if (column.IsNullable || column.Type == typeof(String))
+        {
+            expResult = String.Format("{0}.{1} = {2}[{3}] == DBNull.Value ? null : {4};", 
+                objectName, name, containerName, indexMethod(column, index, indexPrefix), readerMethod(column, indexPrefix + index, containerName));
+        }
+        else
+        {
+            expResult = String.Format("{0}.{1} = {2};", 
+                objectName, name, readerMethod(column, indexPrefix + index, containerName));
+        }
+
+        return expResult;
+    }
+        
+    public static String GetFillIndexExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix)
+    {
+        return GetFillExpression(column, objectName, index, containerName, indexPrefix, GetReaderIndex, GetReaderMethod);
+    }
+        
+    public static String GetFillNameExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix)
+    {
+        return GetFillExpression(column, objectName, index, containerName, indexPrefix, GetReaderIndexByName, GetReaderMethodByName);
+    }
+}
+#>

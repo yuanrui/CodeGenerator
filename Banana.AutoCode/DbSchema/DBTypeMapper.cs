@@ -13,7 +13,7 @@ namespace Banana.AutoCode.DbSchema
         /// </summary>
         /// <param name="dbType">数据库类型名</param>
         /// <returns>.Net类型</returns>
-        public static Type DBTypeToCodeType(String dbType)
+        public static Type DbTypeToCodeType(String dbType)
         {
             switch (dbType.ToLowerInvariant())
             {
@@ -72,7 +72,7 @@ namespace Banana.AutoCode.DbSchema
         /// </summary>
         /// <param name="dbType">数据库类型名</param>
         /// <returns>.Net类型名</returns>
-        public static String DBTypeToCodeTypeName(String dbType)
+        public static String DbTypeToCodeTypeName(String dbType)
         {
             switch (dbType.ToLowerInvariant())
             {

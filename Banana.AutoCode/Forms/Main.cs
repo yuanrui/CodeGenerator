@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -53,6 +54,7 @@ namespace Banana.AutoCode
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
 
             CheckDirectoryPath();
+
         }
 
         private void CheckDirectoryPath()
@@ -233,11 +235,11 @@ namespace Banana.AutoCode
                 return;
             }
 
-            Engine engine = new Engine();
+            var engine = new Engine();
             var host = new CustomHost();
             var files = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(TEMPLATES_DIR, "*.ttinclude", SearchOption.AllDirectories));
-
+            
             if (! files.Any())
             {
                 Trace.WriteLine("No template file. run stop.");
@@ -289,9 +291,7 @@ namespace Banana.AutoCode
 
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
             
-            BuildThriftCodeAsync(outputBasePath);
-            
-            Process.Start(outputBasePath);
+            BuildThriftCodeAsync(outputBasePath);            
         }
 
         private void DoCommand(string thriftPath, string cmdText, string codePath)

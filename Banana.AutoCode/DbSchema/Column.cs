@@ -11,8 +11,6 @@ namespace Banana.AutoCode.DbSchema
     {
         private String _comment;
 
-        private String _thriftType;
-
         public String Id { get; set; }
         
         public String Name { get; set; }
@@ -51,16 +49,6 @@ namespace Banana.AutoCode.DbSchema
         public Int32 Index { get; set; }
 
         [NonSerialized]
-        public Table Table;
-        
-        public string GetThriftType()
-        {
-            return _thriftType;
-        }
-
-        public void SetThriftType(string thriftType)
-        {
-            _thriftType = thriftType;
-        }
+        public Table Table;        
     }
 }

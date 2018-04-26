@@ -1,3 +1,4 @@
+<#
 //------------------------------------------------------------------------------
 // <copyright file="DataProvider.tt">
 //    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
@@ -5,13 +6,19 @@
 // <author>Yuan Rui</author>
 // <date>2018-04-25 18:00:00</date>
 //------------------------------------------------------------------------------
+#>
 <#@ template language="C#" hostSpecific="true" debug="false" #>
 <#@ output encoding="utf-8" extension=".cs" #>
 <#@ include file="../TemplateFileManager.ttinclude" #>
+<#@ include file="../OracleTypeConverter.ttinclude" #>
 <# 
 	CustomHost host = (CustomHost)(Host);
 	Table table = host.Table;
     var seqName = "SEQ_" + (table.Name.StartsWith("T_", StringComparison.OrdinalIgnoreCase) ? table.Name.Remove(0, 2) : table.Name);
+    var entClassName = table.DisplayName + "Entity";
+    var pkCol = table.PrimaryKeyColumns.First();
+    var pkTypeName = pkCol.TypeName;
+    
     var manager = Manager.Create(host, GenerationEnvironment);
 	manager.StartNewFile(table.DisplayName + "SqlProviderBase.generated.cs", host.GetValue("OutputPath").ToString());
 #>
@@ -43,7 +50,7 @@ namespace Banana.DataAccess.Base
     /// <summary>
 	/// <#= string.Format("Data access base class for {0}Entity", table.DisplayName) #>
     /// </summary>
-	public partial class <#= table.DisplayName #>SqlProviderBase
+	public abstract partial class <#= table.DisplayName #>SqlProviderBase : DataProviderBase<<#= entClassName #>>
     {
         #region SQL
 
@@ -57,10 +64,10 @@ NOCYCLE";
         protected const string Exists_<#= table.DisplayName #>_Sql = @"SELECT COUNT(1) AS RecordCount FROM <#= table.Name #> 
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
-        protected const string GetSingle_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> 
+        protected const string Get_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> 
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
-        protected const string FindList_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> WHERE 1=1 ";
+        protected const string Find_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> WHERE 1=1 ";
         
         protected const string Insert_<#= table.DisplayName #>_With_SEQ_Sql = @"
 BEGIN
@@ -101,13 +108,225 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
 
         #region Constructor
 
+        public <#= table.DisplayName #>SqlProviderBase() : base()
+        {
+        }
+
+        public <#= table.DisplayName #>SqlProviderBase(String connectionName) : base(connectionName)
+        {
+        }
+
         #endregion
 
         #region CRUD
 
+        public virtual Boolean Exists(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
+        {
+            var cmd = DatabaseObject.GetSqlStringCommand(Exists_<#= table.DisplayName #>_Sql);
+
+<#
+            foreach(var col in table.PrimaryKeyColumns)
+            {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, <#= col.Name #>, ParameterDirection.Input));
+<#
+            }
+#>
+            var result = DataContextObject.ExecuteScalar(cmd);
+            
+            return Convert.ToInt32(result) > 0;
+        }
+
+        public virtual <#= entClassName #> Get(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
+        {
+            <#= entClassName #> result = null;
+            var cmd = DatabaseObject.GetSqlStringCommand(Get_<#= table.DisplayName #>_Sql);
+
+<#
+            foreach(var col in table.PrimaryKeyColumns)
+            {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, <#= col.Name #>, ParameterDirection.Input));
+<#
+            }
+#>
+            using(var reader = DataContextObject.ExecuteReader(cmd))
+            {
+                if(reader.Read())
+                {
+                    result = Fill(reader);
+                }
+            }
+            
+            return result;
+        }
+
+        public virtual List<<#= entClassName #>> FindAll(String whereClause)
+        {
+            var result = new List<<#= entClassName #>>();
+            var sql = Find_<#= table.DisplayName #>_Sql + whereClause;
+            var cmd = DatabaseObject.GetSqlStringCommand(sql);
+
+            using(var reader = DataContextObject.ExecuteReader(cmd))
+            {
+                while(reader.Read())
+                {
+                    var ent = Fill(reader);
+                    result.Add(ent);
+                }
+            }
+
+            return result;
+        }
+
+        public virtual Boolean Add(<#= entClassName #> entity)
+        {
+<#
+            if(table.PrimaryKeyIsNumber)
+            {
+#>
+            var isAutoGetNewId = entity.<#= pkCol.Name #> == default(<#= pkTypeName #>);
+            var cmd = DatabaseObject.GetSqlStringCommand(isAutoGetNewId ? Insert_<#= table.DisplayName #>_With_SEQ_Sql : Insert_<#= table.DisplayName #>_Sql);
+            
+            var pkParam = new OracleParameter("<#= pkCol.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(pkCol.RawType).ToString() #>, entity.<#= pkCol.Name #>, ParameterDirection.InputOutput);
+            cmd.Parameters.Add(pkParam);
+<#
+                foreach(var col in table.NonPrimaryKeyColumns)
+                {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
+<#
+                }
+#>
+
+            var execResult = DataContextObject.ExecuteNonQuery(cmd);
+            if(isAutoGetNewId && pkParam.Value is OracleDecimal)
+            {
+                var pkValue = (OracleDecimal) pkParam.Value;
+                entity.<#= pkCol.Name #> = pkValue.<#= pkTypeName == "Decimal" ? "Value" : "To" + pkTypeName + "()" #>;
+                return entity.<#= pkCol.Name #> > 0;
+            }
+
+            return execResult > 0;
+<#
+            }
+            else
+            {
+#>
+            var cmd = DatabaseObject.GetSqlStringCommand(Insert_<#= entClassName #>);
+
+<#
+                foreach(var col in table.Columns)
+                {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
+<#
+                }
+#>
+
+            return DataContextObject.ExecuteNonQuery(cmd) > 0;
+<#
+            }
+#>
+        }
+
+        public virtual Boolean Update(<#= entClassName #> entity)
+        {
+            var cmd = DatabaseObject.GetSqlStringCommand(Update_<#= table.DisplayName #>_Sql);
+            
+<#
+            foreach(var col in table.Columns)
+            {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
+<#
+            }
+#>
+
+            return DataContextObject.ExecuteNonQuery(cmd) > 0;
+        }
+
+        public virtual Boolean Save(<#= entClassName #> entity)
+        {
+<#
+            if(table.PrimaryKeyIsNumber)
+            {
+#>
+            if(entity.<#= pkCol.Name #> == default(<#= pkCol.TypeName #>))
+            {
+                return Add(entity);
+            }
+<#            
+            }
+#>
+            var cmd = DatabaseObject.GetSqlStringCommand(Save_<#= table.DisplayName #>_Sql);
+            
+<#
+            foreach(var col in table.Columns)
+            {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
+<#
+            }
+#>
+
+            return DataContextObject.ExecuteNonQuery(cmd) > 0;
+        }
+
+        public virtual Boolean Delete(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
+        {
+            var cmd = DatabaseObject.GetSqlStringCommand(Delete_<#= table.DisplayName #>_Sql);
+
+<#
+            foreach(var col in table.PrimaryKeyColumns)
+            {
+#>
+            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, <#= col.Name #>, ParameterDirection.Input));
+<#
+            }
+#>
+
+            return DataContextObject.ExecuteNonQuery(cmd) > 0;
+        }
+
         #endregion
 
         #region Fill Data
+
+        public static <#= entClassName #> Fill(IDataReader reader)
+        {
+            var ent = new <#= entClassName #>();
+
+<#
+            for(var i = 0; i < table.Columns.Count; i ++)
+            {
+                var col = table.Columns[i];
+#>
+            <#= OracleTypeConverter.GetFillNameExpression(col, "ent", i, "reader", String.Empty) #>
+<#
+            }
+#>
+
+            return ent;
+        }
+        
+        public static <#= entClassName #> Fill(IDataReader reader, Int32 start,out Int32 length)
+        {
+            var ent = new <#= entClassName #>();
+
+            length = <#= table.Columns.Count #>;
+<#
+            for(var i = 0; i < table.Columns.Count; i ++)
+            {
+                var col = table.Columns[i];
+#>
+            <#= OracleTypeConverter.GetFillIndexExpression(col, "ent", i, "reader", "start + ") #>
+<#
+            }
+#>
+
+            return ent;
+        }
 
         #endregion
 	}
