@@ -333,5 +333,48 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
 }
 <# 
 	manager.EndBlock(); 
+
+    manager.StartNewFile(table.DisplayName + "SqlProvider.cs", host.GetValue("OutputPath").ToString());
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>SqlProvider.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using Banana.DataAccess.Base;
+using Banana.Entity;
+using Oracle.ManagedDataAccess.Client;
+
+namespace Banana.DataAccess
+{
+    /// <summary>
+    /// Data access for <#= entClassName #>
+    /// <see cref="<#= entClassName #>"/>
+    /// </summary>
+    public partial class <#= table.DisplayName #>SqlProvider : <#= table.DisplayName #>SqlProviderBase
+    {
+        #region Constructor
+
+        public <#= table.DisplayName #>SqlProvider() : base()
+        {
+        }
+
+        public <#= table.DisplayName #>SqlProvider(String connectionName) : base(connectionName)
+        {
+        }
+
+        #endregion
+    }
+}
+<#
+    manager.EndBlock(); 
 	manager.Process(true);
 #>
