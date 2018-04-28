@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Banana.AutoCode</RootNamespace>
-    <AssemblyName>Banana.AutoCode</AssemblyName>
+    <AssemblyName>AutoCode</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -234,6 +234,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Templates\Samples\SimpleEntity.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SimpleEntity.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Oracle\Entity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Entity.cs</LastGenOutput>
@@ -242,11 +247,6 @@
     <Content Include="Templates\Oracle\DataProvider.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataProvider.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\Test\Test2.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Test2.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Thrift\Entity.tt">
@@ -271,7 +271,7 @@
     </None>
     <EmbeddedResource Include="costura32\SQLite.Interop.dll" />
     <EmbeddedResource Include="costura64\SQLite.Interop.dll" />
-    <Content Include="Templates\BusinessLogic\SimpleBusinessManager.tt">
+    <Content Include="Templates\Samples\SimpleBusinessManager.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>SimpleBusinessManager.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -297,11 +297,6 @@
     <None Include="Resources\Icons.16x16.Component.png" />
     <None Include="Resources\Icons.16x16.Module.png" />
     <None Include="Resources\Icons.16x16.Table.png" />
-    <Content Include="Templates\Entity\Entity.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <LastGenOutput>Entity.cs</LastGenOutput>
-    </Content>
     <Content Include="Templates\Test\Test.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

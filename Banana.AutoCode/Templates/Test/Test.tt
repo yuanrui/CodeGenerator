@@ -5,7 +5,7 @@
 	CustomHost host = (CustomHost)(Host); 
 	var table = host.Table;
 	var manager = Manager.Create(host, GenerationEnvironment);
-	manager.StartNewFile(table.DisplayName + ".txt", host.GetValue("OutputPath").ToString());
+	manager.StartNewFile(table.DisplayName + ".txt", host.GetValue("OutputPath").ToString() + "\\Test");
 #>
 
 <# 

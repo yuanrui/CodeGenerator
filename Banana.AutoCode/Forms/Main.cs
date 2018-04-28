@@ -211,10 +211,9 @@ namespace Banana.AutoCode
             DbPanel.Refresh();
         }
 
-        private string GetOutputPath(Banana.AutoCode.DbSchema.Table table, string templateFile, string basePath)
+        private string GetOutputPath(Banana.AutoCode.DbSchema.Table table, string basePath)
         {
-            var targetDir = Path.Combine(basePath, table.Owner
-                , Path.GetDirectoryName(templateFile).Replace(TEMPLATES_DIR, string.Empty).Trim('\\'));
+            var targetDir = Path.Combine(basePath, table.Owner);
 
             if (!Directory.Exists(targetDir))
             {
@@ -223,7 +222,7 @@ namespace Banana.AutoCode
 
             return targetDir;
         }
-
+        
         private void runToolStripButton_Click(object sender, EventArgs e)
         {
             const string FILE_NAME_KEY = "FILE_NAME";
@@ -258,8 +257,8 @@ namespace Banana.AutoCode
                 {
                     host.TemplateFile = path;
                     host.Table = table;
-                    
-                    var outputPath = GetOutputPath(table, path, basePath);
+
+                    var outputPath = GetOutputPath(table, basePath);
                     host.SetValue("OutputPath", outputPath);
 
                     Trace.WriteLine("Generate table:" + host.Table.Name + " TemplateName:" + templateName + " OutputPath:" + outputPath);

@@ -6,7 +6,7 @@
 	CustomHost host = (CustomHost)(Host);
 	Table table = host.Table;
     var manager = Manager.Create(host, GenerationEnvironment);
-	manager.StartNewFile(table.DisplayName + "Entity.generated.thrift", host.GetValue("OutputPath").ToString());
+	manager.StartNewFile(table.DisplayName + "Entity.generated.thrift", host.GetValue("OutputPath").ToString() + "\\Thrift");
 #>
 struct <#= table.DisplayName #>Entity {
 <# 
