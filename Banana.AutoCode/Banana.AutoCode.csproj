@@ -234,6 +234,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Templates\Oracle\BusinessManager.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BusinessManager.txt</LastGenOutput>
+    </Content>
     <Content Include="Templates\Samples\SimpleEntity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SimpleEntity.cs</LastGenOutput>
