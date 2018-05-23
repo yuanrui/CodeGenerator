@@ -234,9 +234,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Templates\Oracle\BusinessManager.tt">
+    <Content Include="Templates\Oracle\BusinessService.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BusinessManager.txt</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LastGenOutput>BusinessService.txt</LastGenOutput>
     </Content>
     <Content Include="Templates\Samples\SimpleEntity.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
