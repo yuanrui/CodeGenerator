@@ -60,7 +60,7 @@ namespace Banana.Services.Base
 
         public virtual Boolean Exists(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
             {
                 var result = Provider.Exists(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
             
@@ -70,7 +70,7 @@ namespace Banana.Services.Base
         
         public virtual <#= entClassName #> Get(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
             {
                 var result = Provider.Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
             
@@ -80,7 +80,7 @@ namespace Banana.Services.Base
         
         public virtual Pager<<#= entClassName #>> GetPager(Int32 pageIndex, Int32 pageSize)
         {
-            using (var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
+            using (var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
             {
                 var result = Provider.GetPager(<#= table.DisplayName #>SqlProvider.Fill, pageIndex, pageSize, Provider.TableName, "<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>", "<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>", "*", String.Empty);
                 return result;
@@ -89,10 +89,10 @@ namespace Banana.Services.Base
         
         public virtual Boolean Add(<#= entClassName #> entity)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin(true))
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin(true))
             {
                 var result = Provider.Add(entity);
-                ctx.Commit();                
+                scope.Commit();                
                 
                 return result;
             }
@@ -100,10 +100,10 @@ namespace Banana.Services.Base
 
         public virtual Boolean Update(<#= entClassName #> entity)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin(true))
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin(true))
             {
                 var result = Provider.Update(entity);
-                ctx.Commit();
+                scope.Commit();
                 
                 return result;
             }
@@ -111,10 +111,10 @@ namespace Banana.Services.Base
         
         public virtual Boolean Save(<#= entClassName #> entity)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin(true))
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin(true))
             {
                 var result = Provider.Save(entity);
-                ctx.Commit();
+                scope.Commit();
                 
                 return result;
             }
@@ -122,12 +122,64 @@ namespace Banana.Services.Base
         
         public virtual Boolean Delete(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
-            using(var ctx = DataContextScope.GetCurrent(ConnectionName).Begin(true))
+            using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin(true))
             {
                 var result = Provider.Delete(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
-                ctx.Commit();
+                scope.Commit();
             
                 return result;
+            }
+        }
+    }
+}
+<# 
+	manager.EndBlock(); 
+    manager.StartNewFile(table.DisplayName + "Service.cs", host.GetValue("OutputPath").ToString() + "\\Services");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Service.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using Banana.DataAccess;
+using Banana.Entity;
+using Banana.Services.Base;
+
+namespace Banana.Services
+{
+    /// <summary>
+    /// Service for <#= entClassName #>
+    /// <see cref="<#= entClassName #>"/>
+    /// </summary>
+    public partial class <#= table.DisplayName #>Service : <#= table.DisplayName #>ServiceBase
+    {
+        public const string connname = "DefaultConnectionString";
+
+        #region Constructor
+
+        public <#= table.DisplayName #>Service() : this(connname)
+        {
+        }
+
+        public <#= table.DisplayName #>Service(String connectionName) : base(connectionName)
+        {
+        }
+
+        #endregion
+
+        public virtual List<<#= entClassName #>> FindAll()
+        {
+            using (var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
+            {
+                return Provider.FindAll(string.Empty);
             }
         }
     }
