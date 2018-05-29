@@ -58,6 +58,14 @@ namespace Banana.Services.Base
             Provider = new <#= table.DisplayName #>SqlProvider(connectionName);
         }
 
+        public virtual Int64 GetNewId()
+        {
+            const String sql = "SELECT <#= seqName #>.NEXTVAL FROM DUAL";
+            var result = DbUtils.ExecuteScalar<Int64>(sql);
+            
+            return result;
+        }
+
         public virtual Boolean Exists(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
             using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
@@ -161,7 +169,7 @@ namespace Banana.Services
     /// </summary>
     public partial class <#= table.DisplayName #>Service : <#= table.DisplayName #>ServiceBase
     {
-        public const string connname = "DefaultConnectionString";
+        public const String connname = "DefaultConnectionString";
 
         #region Constructor
 
@@ -179,7 +187,7 @@ namespace Banana.Services
         {
             using (var scope = DataContextScope.GetCurrent(ConnectionName).Begin())
             {
-                return Provider.FindAll(string.Empty);
+                return Provider.FindAll(String.Empty);
             }
         }
     }

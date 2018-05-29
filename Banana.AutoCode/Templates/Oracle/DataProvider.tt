@@ -49,28 +49,28 @@ namespace Banana.DataAccess.Base
     using Oracle.ManagedDataAccess.Types;
 
     /// <summary>
-	/// <#= string.Format("Data access base class for {0}Entity", table.DisplayName) #>
+	/// <#= String.Format("Data access base class for {0}Entity", table.DisplayName) #>
     /// </summary>
 	public abstract partial class <#= table.DisplayName #>SqlProviderBase : DataProviderBase<<#= entClassName #>>
     {
         #region SQL
 
-        protected const string SEQ_<#= table.DisplayName #>_Sql = @"
+        protected const String SEQ_<#= table.DisplayName #>_Sql = @"
 CREATE SEQUENCE <#= seqName #>
 INCREMENT BY 1
 START WITH 1
 MAXVALUE 9223372036854775807
 NOCYCLE";
         
-        protected const string Exists_<#= table.DisplayName #>_Sql = @"SELECT COUNT(1) AS RecordCount FROM <#= table.Name #> 
+        protected const String Exists_<#= table.DisplayName #>_Sql = @"SELECT COUNT(1) AS RecordCount FROM <#= table.Name #> 
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
-        protected const string Get_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> 
+        protected const String Get_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> 
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
-        protected const string Find_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> WHERE 1=1 ";
+        protected const String Find_<#= table.DisplayName #>_Sql = @"SELECT * FROM <#= table.Name #> WHERE 1=1 ";
         
-        protected const string Insert_<#= table.DisplayName #>_With_SEQ_Sql = @"
+        protected const String Insert_<#= table.DisplayName #>_With_SEQ_Sql = @"
 BEGIN
 SELECT <#= seqName #>.NEXTVAL INTO :<#= table.PrimaryKeyColumns.First().Name #> FROM DUAL;
 INSERT INTO <#= table.Name #>
@@ -79,18 +79,18 @@ VALUES
 (<#= table.Columns.Select(m => ":" + m.Name).Aggregate((a, b) => a + ", " + b) #>);
 END;";
 
-        protected const string Insert_<#= table.DisplayName #>_Sql = @"
+        protected const String Insert_<#= table.DisplayName #>_Sql = @"
 INSERT INTO <#= table.Name #>
 (<#= table.Columns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>)
 VALUES
 (<#= table.Columns.Select(m => ":" + m.Name).Aggregate((a, b) => a + ", " + b) #>)";
 
-        protected const string Update_<#= table.DisplayName #>_Sql = @"
+        protected const String Update_<#= table.DisplayName #>_Sql = @"
 UPDATE <#= table.Name #>
 SET <#= table.Columns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + ", " + b) #>
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
-        protected const string Save_<#= table.DisplayName #>_Sql = @"
+        protected const String Save_<#= table.DisplayName #>_Sql = @"
 MERGE INTO <#= table.Name #> A
 USING (SELECT <#= table.Columns.Select(m => String.Format(":{0} AS {0}", m.Name)).Aggregate((a, b) => a + ", " + b) #> FROM DUAL) B
 ON (<#= table.PrimaryKeyColumns.Select(m => String.Format("A.{0}=B.{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>)
@@ -101,7 +101,7 @@ WHEN NOT MATCHED THEN
 VALUES
 (<#= table.Columns.Select(m => ":" + m.Name).Aggregate((a, b) => a + ", " + b) #>)";
     
-        protected const string Delete_<#= table.DisplayName #>_Sql = @"
+        protected const String Delete_<#= table.DisplayName #>_Sql = @"
 DELETE FROM <#= table.Name #>
 WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
