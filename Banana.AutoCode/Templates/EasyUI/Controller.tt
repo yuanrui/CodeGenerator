@@ -1,0 +1,130 @@
+﻿<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".txt" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var serviceClazzName = table.DisplayName + "Service";
+    var entClazzName = table.DisplayName + "Entity";
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Controller.cs", host.GetValue("OutputPath").ToString() + "\\EasyUI\\Controllers");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Controller.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+using Banana.Entity;
+using Banana.Services;
+
+namespace Banana.WebUI.Controllers
+{
+    public partial class <#= table.DisplayName #>Controller : BaseController
+    {
+        protected const string EntryView = "Entry";
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Index(Int32 page, Int32 rows)
+        {
+            var pager = new <#= serviceClazzName #>().GetPager(page, rows).AsDataGrid();
+            return Json(pager, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult Entry()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View(EntryView);
+        }
+
+        [HttpPost]
+        public ActionResult Create(<#= entClazzName #> ent)
+        {
+            AjaxMessage msg = null;
+            
+            var result = new <#= serviceClazzName #>().Add(ent);
+            msg = result ? AjaxMessage<<#= entClazzName #>>.Success("创建提示", "创建成功", ent) : AjaxMessage<<#= entClazzName #>>.Info("创建提示", "数据可能未保存", ent);
+            
+            return Json(msg);
+        }
+        
+        [HttpGet]
+        public ActionResult Edit(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                return View(EntryView);
+            }
+            
+            var ent = new <#= serviceClazzName #>().Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
+            return View(ent);
+        }
+
+        [HttpPost]
+        public ActionResult Create(<#= entClazzName #> ent)
+        {
+            AjaxMessage msg = null;
+            
+            var service = new <#= serviceClazzName #>();
+            var oldEnt = service.Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
+<#
+            foreach(var col in table.NonPrimaryKeyColumns)
+            {
+#>
+            oldEnt.<#= col.Name #> = ent.<#= col.Name #>;
+<#
+            }
+#>
+
+            var result = service.Update(oldEnt);
+            msg = result ? AjaxMessage.Success("更新提示", "更新成功") : AjaxMessage.Info("更新提示", "数据可能未保存");
+            
+            return Json(msg);
+        }
+
+        [HttpPost]
+        public JsonResult Delete(IList<<#= entClazzName #>> list)
+        {
+            AjaxMessage msg = null;
+            
+            var service = new <#= serviceClazzName #>();
+            if(list != null)
+            {
+                foreach (var ent in list)
+                {
+                    service.Delete(<#= table.PrimaryKeyColumns.Select(m => "ent." + m.Name).Aggregate((a, b) => a + ", " + b) #>);
+                }
+                msg = AjaxMessage.Success("删除提示", "删除操作处理成功");
+            }
+            else
+            {
+                msg = AjaxMessage.Warning("删除提示", "未执行删除操作");
+            }
+
+            return Json(msg);
+        }
+    }
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

@@ -1,0 +1,108 @@
+﻿<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".txt" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var moduleName = table.DisplayName;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile("Entry.cshtml", host.GetValue("OutputPath").ToString() + "\\EasyUI\\Views\\" + table.DisplayName);
+#>
+@{
+    Layout = null;
+    //<#= moduleName #> Entry
+}
+
+<form id="fm" method="post" class="ebos-form">
+    <table class="ebos-table" style="width: 100%">
+        <tbody>
+<#
+        var step = table.NonPrimaryKeyColumns.Count() < 8 ? 1 : 2;
+        if(step < 1)
+        {
+            throw new ArgumentException("Config.MvcViewTableColumnCount的值不能小于1");
+        }
+        var keyMaxCount = table.PrimaryKeyColumns.Count();
+        var keyOutLoopCount = Math.Ceiling(((decimal)keyMaxCount / (decimal)step));
+        var index = 0;
+
+        for(var i = 0; i < keyOutLoopCount; i++)
+        {
+#>
+            <tr class="hidden">
+<#
+            for(var j = 0; j < step; j++)
+            {
+                index = i * step + j;
+                if (index >= keyMaxCount) 
+                {
+#>
+                <td colspan="<#= (step - j) * 2 #>"></td>
+<#
+                    break;
+                }
+                var col = table.PrimaryKeyColumns[index];
+                var isDateTime= col.TypeName.Contains("DateTime");
+                var cssName = isDateTime ? "easyui-datetimebox" : "easyui-textbox";
+#>
+                <th><#= col.Comment.Replace("\n", "") #></th>
+                <td>
+                    <input id="<#= col.Name #>" name="<#= col.Name #>" class="<#= cssName #>" type="hidden" data-options="" />
+                </td>
+<#
+            }
+#>
+            </tr>
+<#
+        }
+        var noKeyMaxCount = table.NonPrimaryKeyColumns.Count();
+        var noKeyOutLoopCount = Math.Ceiling(((decimal)noKeyMaxCount / (decimal)step));
+        index = 0;
+        
+        for(var i = 0; i < noKeyOutLoopCount; i++)
+        {        
+#>
+            <tr>
+<#
+            for(var j = 0; j < step; j++)
+            {
+                index = i * step + j;
+                if (index >= noKeyMaxCount) 
+                {
+#>
+                <td colspan="<#= (step - j) * 2 #>"></td>
+<#
+                    break;
+                }
+                var col = table.NonPrimaryKeyColumns[index];
+                var isDateTime= col.TypeName.Contains("DateTime");
+                var dataOptList = new List<string>();
+
+                if(!col.IsNullable)
+                {
+                    dataOptList.Add("required:true");
+                }
+
+                if(col.TypeName.Contains("String"))
+                {
+                    dataOptList.Add("validType:['maxLength[" + col.Length + "]']");
+                }
+                var cssName = isDateTime ? "easyui-datetimebox" : "easyui-textbox";
+                var dataOptAttr = string.Join(",", dataOptList);
+#>
+                <th><#= col.Comment.Replace("\n", "") #></th>
+                <td><input id="<#= col.Name #>" name="<#= col.Name #>" class="<#= cssName #>" type="text" data-options="<#= dataOptAttr #>" style="width: 100%" /></td>
+<#
+            }
+#>
+            </tr>
+<#
+        }        
+#>
+        </tbody>
+    </table>
+</form>
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>
