@@ -6,6 +6,7 @@
 	Table table = host.Table;
     var moduleName = table.DisplayName;
     var manager = Manager.Create(host, GenerationEnvironment);
+    var editParam = table.PrimaryKeyColumns.Select(m => String.Format("\"{0}=\"+row[\"{0}\"]", m.Name)).Aggregate((a, b) => a + "+\"&\"+" + b);
 	manager.StartNewFile("Index.cshtml", host.GetValue("OutputPath").ToString() + "\\EasyUI\\Views\\" + table.DisplayName);
 #>
 @{
@@ -108,7 +109,7 @@
                 height: 300,
                 closed: false,
                 cache: false,
-                href: crudOption.EditUrl,//TODO:参数构造
+                href: crudOption.EditUrl + "?" + <#= editParam #>,
                 modal: true,
                 onLoad: function() {
                     $('#fm').form('load', row);
