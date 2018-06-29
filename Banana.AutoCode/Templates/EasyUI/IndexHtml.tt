@@ -15,7 +15,7 @@
 }
 
 <table id="dg" class="easyui-datagrid" title="" style="width:100%;height:600px"
-			data-options="fit:true,rownumbers:true,singleSelect:true,checkOnSelect:false,selectOnCheck:false,
+			data-options="fit:true,border:false,rownumbers:true,singleSelect:true,checkOnSelect:false,selectOnCheck:false,
                 url:crudOption.PagerUrl,method:'post',toolbar:'#toolbar',
                 pagination:true,pageSize:15,pageList: [15, 30, 60, 100]">
 	<thead>
