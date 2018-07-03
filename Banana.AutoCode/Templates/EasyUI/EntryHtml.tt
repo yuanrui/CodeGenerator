@@ -1,5 +1,14 @@
-﻿<#@ template language="C#" hostSpecific="true" debug="false" #>
-<#@ output encoding="utf-8" extension=".txt" #>
+﻿<#
+//------------------------------------------------------------------------------
+// <copyright file="EntryHtml.tt">
+//    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2018-06-16 12:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
 <#@ include file="../TemplateFileManager.ttinclude" #>
 <# 
 	CustomHost host = (CustomHost)(Host);
@@ -14,7 +23,7 @@
 }
 
 <form id="fm" method="post" class="ebos-form">
-    <table class="ebos-table" style="width: 100%">
+    <table class="banana-table" style="width: 100%">
         <tbody>
 <#
         var step = table.NonPrimaryKeyColumns.Count() < 8 ? 1 : 2;

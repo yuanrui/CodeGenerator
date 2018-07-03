@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 #>
 <#@ template debug="false" hostspecific="true" language="C#" #>
-<#@ output encoding="utf-8" extension=".txt" #>
+<#@ output encoding="utf-8" extension=".cs" #>
 <#@ include file="../TemplateFileManager.ttinclude" #>
 <#@ include file="../OracleTypeConverter.ttinclude" #>
 <# 
