@@ -46,15 +46,16 @@ namespace Banana.Entity
 	<# 
 		foreach(var column in table.Columns)
 		{
-	#>
+    #>
+
         /// <summary>
         /// get or set <#= column.Comment #>
         /// </summary>
         public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
-
 	<#
 		}
 	#>
+
         public virtual <#= table.DisplayName #>Entity CloneFrom(<#= table.DisplayName #>Entity thatObj)
         {
             if (thatObj == null)
