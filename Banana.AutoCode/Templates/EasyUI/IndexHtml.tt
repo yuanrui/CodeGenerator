@@ -49,6 +49,7 @@
 <div id="dlg-content" class="easyui-dialog" closed="true"></div>
 
 @section footer{
+    <script src="@Url.Content("~/Scripts/banana.easyui.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Scripts/banana.utils.js")" type="text/javascript"></script>
     <script type="text/javascript">
         var crudOption = {
@@ -62,10 +63,10 @@
             }
         };
         
-        function doValidate() {
-            var isValidated = $(this).form("validate");
+        function doValidate(dom) {
+            var isValidated = $(dom).form("validate");
             if (! isValidated) {
-                $.messager.alert("验证提示", "输入验证未通过, 请输入相应项后继续.", "warning");    
+                $.messager.notify("验证提示", "输入验证未通过, 请输入相应项后继续.", "warning");    
                 return false;
             }
 
@@ -74,6 +75,7 @@
 
         function doCreate() {
             crudOption.init();
+            var saveUrl = crudOption.CreateUrl;
             var $dlgContent = $('#dlg-content');
             $dlgContent.dialog({
                 title: '添加',
@@ -90,14 +92,30 @@
                         doReload();
                     }
                 },
-                toolbar:[{
+                buttons:[{
 				    text:'保存',
 				    iconCls:'icon-ok',
+                    width: 70,
 				    handler:function(){
-                        doSave(crudOption.CreateUrl);
-                    },{
+                        doSave(saveUrl, function (rspData) {
+                            if (!rspData.IsSuccess || rspData.Data == null) {
+                                return;
+                            }
+
+                            saveUrl = crudOption.EditUrl;
+<#
+                            foreach(var column in table.PrimaryKeyColumns)
+                            {
+#>
+                            $("#fm #<#= column.Name #>").textbox("setValue", rspData.Data.<#= column.Name #>);
+<#
+                            }
+#>
+                        });
+                    }},{
 				    text:'取消',
 				    iconCls:'icon-cancel',
+                    width: 70,
 				    handler:function(){
                         $dlgContent.dialog('close');
                     }
@@ -108,9 +126,10 @@
         function doEdit() {
             var row = $("#dg").datagrid("getSelected");
             if (typeof row == "undefined" || row == null) {
-                $.messager.alert("操作提示", "未选中行, 无法进行编辑", "info");
+                $.messager.notify("操作提示", "未选中行, 无法进行编辑", "info");
                 return;
             }
+            crudOption.init();
             var $dlgContent = $('#dlg-content');
             $dlgContent.dialog({
                 title: '编辑',
@@ -128,14 +147,16 @@
                         doReload();
                     }
                 },
-                toolbar:[{
+                buttons:[{
 				    text:'保存',
 				    iconCls:'icon-ok',
+                    width: 70,
 				    handler:function(){
                         doSave(crudOption.EditUrl);
-                    },{
+                    }},{
 				    text:'取消',
 				    iconCls:'icon-cancel',
+                    width: 70,
 				    handler:function(){
                         $dlgContent.dialog('close');
                     }
@@ -146,7 +167,7 @@
         function doRemove() {
             var rows = $("#dg").datagrid("getChecked");
             if (typeof rows == "undefined" || rows == null || rows.length == 0) {
-                $.messager.alert("操作提示", "没有勾选需要删除的行", "info");
+                $.messager.notify("操作提示", "没有勾选需要删除的行", "info");
                 return false;
             }
 
@@ -163,7 +184,7 @@
                                 return;
                             }
                             var resultData = typeof jsonResult == "string" ? $.parseJSON(jsonResult) : jsonResult;
-                            $.messager.alert(resultData.Title, resultData.Content, resultData.ShowType);
+                            $.messager.notify(resultData.Title, resultData.Content, resultData.ShowType);
                             if (resultData.ShowType == "success") {
                                 doReload();
                             }
@@ -178,12 +199,12 @@
             return true;
         }
 
-        function doSave(url, successFunc) {
-            $('#fm').form('submit', {
+        function doSave(url, afterFunc) {
+            $("#fm").form('submit', {
                 url: url,
                 queryParams: { "X-Requested-With": "XMLHttpRequest" },
                 onSubmit: function() {
-                    var isValidated = doValidate();
+                    var isValidated = doValidate("#fm");
                     
                     return isValidated;
                 },
@@ -192,12 +213,12 @@
                         return;
                     }
                     var data = typeof jsonResult == "string" ? $.parseJSON(jsonResult) : jsonResult;
-                    $.messager.alert(data.Title, data.Content, data.ShowType);
+                    $.messager.notify(data.Title, data.Content, data.ShowType);
                     
                     crudOption.IsSaved = true;
 
-                    if(typeof successFunc == "function" && successFunc != null) {
-                        successFunc(data);
+                    if(typeof afterFunc == "function" && afterFunc != null) {
+                        afterFunc(data);
                     }
                 }
             });
