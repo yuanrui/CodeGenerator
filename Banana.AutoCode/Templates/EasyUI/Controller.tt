@@ -79,17 +79,12 @@ namespace Banana.WebUI.Controllers
         [HttpGet]
         public ActionResult Edit(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
-            if (Request.IsAjaxRequest())
-            {
-                return View(EntryView);
-            }
-            
-            var ent = new <#= serviceClazzName #>().Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
-            return View(ent);
+            //var ent = new <#= serviceClazzName #>().Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
+            return View(EntryView);
         }
 
         [HttpPost]
-        public ActionResult Create(<#= entClazzName #> ent)
+        public ActionResult Edit(<#= entClazzName #> ent)
         {
             AjaxMessage msg = null;
             
@@ -116,19 +111,9 @@ namespace Banana.WebUI.Controllers
             AjaxMessage msg = null;
             
             var service = new <#= serviceClazzName #>();
-            if(list != null)
-            {
-                foreach (var ent in list)
-                {
-                    service.Delete(<#= table.PrimaryKeyColumns.Select(m => "ent." + m.Name).Aggregate((a, b) => a + ", " + b) #>);
-                }
-                msg = AjaxMessage.Success("删除提示", "删除操作处理成功");
-            }
-            else
-            {
-                msg = AjaxMessage.Warning("删除提示", "未执行删除操作");
-            }
-
+            service.Delete(list);
+            msg = AjaxMessage.Success("删除提示", "删除操作处理成功");
+            
             return Json(msg);
         }
     }
