@@ -262,7 +262,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>DataProvider.txt</LastGenOutput>
     </Content>
-    <Content Include="Templates\Thrift\Entity.tt">
+    <Content Include="Templates\Thrift\RPC.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>Entity.thrift</LastGenOutput>
     </Content>

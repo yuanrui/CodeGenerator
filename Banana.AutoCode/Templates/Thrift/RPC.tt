@@ -1,0 +1,43 @@
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".thrift" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<#@ include file="../ThriftTypeConverter.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + ".RPC.thrift", host.GetValue("OutputPath").ToString() + "\\Thrift");
+#>
+namespace csharp Banana.RPC
+
+struct <#= table.DisplayName #>DTO {
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+	/** <#= column.Comment #> */
+    <#= column.Index + 1 #>: <#= column.IsNullable ? "optional" : "required" #> <#= ThriftTypeConverter.AsThriftType(column.Type) #> <#= column.Name #>
+
+<#
+	}
+#>
+}
+
+service <#= table.DisplayName #>Rpc {
+    i64 GetNewId();
+    bool Exists(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0}:{1} {2}", (m.Index + 1), ThriftTypeConverter.AsThriftType(m.Type), m.Name)).Aggregate((a, b) => a + ", " + b) #>);
+    <#= table.DisplayName #>DTO Get(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0}:{1} {2}", (m.Index + 1), ThriftTypeConverter.AsThriftType(m.Type), m.Name)).Aggregate((a, b) => a + ", " + b) #>);
+    bool Add(1:<#= table.DisplayName #>DTO dto);
+    bool AddMulti(1:list<<#= table.DisplayName #>DTO> dtoList);
+    bool Update(1:<#= table.DisplayName #>DTO dto);
+    bool UpdateMulti(1:list<<#= table.DisplayName #>DTO> dtoList);
+    bool Save(1:<#= table.DisplayName #>DTO dto);
+    bool SaveMulti(1:list<<#= table.DisplayName #>DTO> dtoList);
+    bool Delete(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0}:{1} {2}", (m.Index + 1), ThriftTypeConverter.AsThriftType(m.Type), m.Name)).Aggregate((a, b) => a + ", " + b) #>);
+    bool DeleteMulti(1:list<<#= table.DisplayName #>DTO> dtoList);
+}
+
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>
