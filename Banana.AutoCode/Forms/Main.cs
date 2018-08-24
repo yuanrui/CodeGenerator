@@ -328,6 +328,7 @@ namespace Banana.AutoCode
         private void DoGenerateCode(string codePath)
         {
             var thriftPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thrift");
+            var includePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "Thrift");
             var thriftExe = Path.Combine(thriftPath, "thrift.exe");
             if (!File.Exists(thriftExe))
             {
@@ -338,7 +339,7 @@ namespace Banana.AutoCode
 
             foreach (var lang in languages)
             {
-                var cmdText = "--gen " + lang + " \"" + codePath + "\"";
+                var cmdText = "-r -I \"" + includePath + "\" --gen " + lang + " \"" + codePath + "\"";
 
                 DoCommand(thriftExe, cmdText, codePath);
             }            

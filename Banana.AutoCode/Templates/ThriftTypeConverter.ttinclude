@@ -45,6 +45,8 @@ public class ThriftTypeConverter
             case "Int64":
             case "UInt64":
                 return I64;
+            case "DateTime":
+                return "DateTime2";
             default:
                 break;
         }

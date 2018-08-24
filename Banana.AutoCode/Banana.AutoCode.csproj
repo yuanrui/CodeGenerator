@@ -272,6 +272,13 @@
     <Content Include="Templates\ThriftTypeConverter.ttinclude">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Thrift\RPC.Impl.tt">
+      <LastGenOutput>Entity.thrift</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Templates\Thrift\Common.thrift">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Thrift\thrift.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

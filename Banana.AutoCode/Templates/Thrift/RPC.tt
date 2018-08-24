@@ -8,7 +8,12 @@
     var manager = Manager.Create(host, GenerationEnvironment);
 	manager.StartNewFile(table.DisplayName + ".RPC.thrift", host.GetValue("OutputPath").ToString() + "\\Thrift");
 #>
+include "Common.thrift"
+
 namespace csharp Banana.RPC
+#namespace java banana.rpc
+
+typedef Common.DateTime2 DateTime2
 
 struct <#= table.DisplayName #>DTO {
 <# 
