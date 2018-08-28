@@ -3,6 +3,7 @@
 }
 
 /*
+//copy this code in your project.
 using System;
 
 public partial class DateTime2
