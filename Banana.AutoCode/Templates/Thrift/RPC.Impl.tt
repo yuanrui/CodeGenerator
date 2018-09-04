@@ -222,6 +222,24 @@ namespace Banana.RPC.Hosting
     }
 }
 <# 
-	manager.EndBlock();    
+	manager.EndBlock(); 
+    manager.StartNewFile("thrift.hosts." + table.DisplayName + ".config", host.GetValue("OutputPath").ToString() + "\\Thrift\\gen-csharp");
+#>
+<?xml version="1.0" encoding="utf-8" ?>
+<thrift.hosts defaultHost="localhost">
+    <host name="localhost" port="20188" minThreadPoolSize="10" maxThreadPoolSize="100" clientTimeout="0" useBufferedSockets="false">
+        <service contract="Banana.RPC.<#= table.DisplayName #>Rpc,Banana.RPC" handler="Banana.RPC.Hosting.<#= table.DisplayName #>RpcImpl,Banana.RPC.Hosting" />
+    </host>
+</thrift.hosts>
+<#
+	manager.EndBlock(); 
+    manager.StartNewFile("thrift.clients." + table.DisplayName + ".config", host.GetValue("OutputPath").ToString() + "\\Thrift\\gen-csharp");
+#>
+<?xml version="1.0" encoding="utf-8" ?>
+<thrift.clients host="localhost" port="20188">
+    <client service="Banana.RPC.<#= table.DisplayName #>Rpc" />
+</thrift.clients>
+<#
+	manager.EndBlock();
 	manager.Process(true);
 #>
