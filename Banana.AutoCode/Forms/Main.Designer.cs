@@ -70,11 +70,11 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.runToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.buildToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -442,6 +442,16 @@
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
             // 
+            // buildToolStripButton
+            // 
+            this.buildToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buildToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_BuildCombine;
+            this.buildToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buildToolStripButton.Name = "buildToolStripButton";
+            this.buildToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.buildToolStripButton.Text = "Build";
+            this.buildToolStripButton.Click += new System.EventHandler(this.buildToolStripButton_Click);
+            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -455,8 +465,8 @@
             // toolStripStatusLabel
             // 
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(32, 17);
-            this.toolStripStatusLabel.Text = "状态";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(12, 17);
+            this.toolStripStatusLabel.Text = " ";
             // 
             // dockPanel
             // 
@@ -465,16 +475,6 @@
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(761, 389);
             this.dockPanel.TabIndex = 6;
-            // 
-            // buildToolStripButton
-            // 
-            this.buildToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.buildToolStripButton.Image = global::Banana.AutoCode.Properties.Resources.Icons_16x16_BuildCombine;
-            this.buildToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.buildToolStripButton.Name = "buildToolStripButton";
-            this.buildToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.buildToolStripButton.Text = "toolStripButton1";
-            this.buildToolStripButton.Click += new System.EventHandler(this.buildToolStripButton_Click);
             // 
             // Main
             // 
