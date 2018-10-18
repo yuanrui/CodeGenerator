@@ -1,7 +1,7 @@
 CodeGenerator
 =============
 
-Use Code Generator create C# code file. Include generate Thrift IDL template file.
+Use Code Generator create C# code file. Include generate Thrift IDL template file.  
 Some of code in this project https://github.com/yuanrui/Examples
 
 In template file, you can use meta list as follows.
@@ -27,9 +27,9 @@ Column Info:
 | 15 | Index | Int32 |
 | 16 | Table | Table |
 
-TODO list:
-1.I18N.
-2.Select part of template file to generate.
-3.Complete documentation.
-4.Support MySql.
-5.Add template:LayUI, Vue etc.
+TODO list:  
+1. I18N.  
+2. Select part of template file to generate.  
+3. Complete documentation.  
+4. Support MySql.  
+5. Add template:LayUI, Vue etc.  
