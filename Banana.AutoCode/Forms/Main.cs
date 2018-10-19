@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
@@ -54,7 +56,7 @@ namespace Banana.AutoCode
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
 
             CheckDirectoryPath();
-
+            //this.SetLanguage("en-US");
         }
 
         private void CheckDirectoryPath()
@@ -395,5 +397,6 @@ namespace Banana.AutoCode
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, OUTPUT_DIR);
             BuildThriftCodeAsync(outputBasePath);
         }
+
     }
 }

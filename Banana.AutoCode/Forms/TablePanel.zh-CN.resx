@@ -117,24 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tableLayoutPanel1.ColumnCount" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="txtComment.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="txtComment.Location" type="System.Drawing.Point, System.Drawing">
-    <value>103, 33</value>
-  </data>
-  <data name="txtComment.Size" type="System.Drawing.Size, System.Drawing">
-    <value>836, 21</value>
-  </data>
-  <data name="txtComment.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
   <data name="&gt;&gt;txtComment.Name" xml:space="preserve">
     <value>txtComment</value>
   </data>
@@ -146,18 +128,6 @@
   </data>
   <data name="&gt;&gt;txtComment.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="txtClazz.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="txtClazz.Location" type="System.Drawing.Point, System.Drawing">
-    <value>574, 3</value>
-  </data>
-  <data name="txtClazz.Size" type="System.Drawing.Size, System.Drawing">
-    <value>365, 21</value>
-  </data>
-  <data name="txtClazz.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
   </data>
   <data name="&gt;&gt;txtClazz.Name" xml:space="preserve">
     <value>txtClazz</value>
@@ -171,26 +141,8 @@
   <data name="&gt;&gt;txtClazz.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblTable.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="lblTable.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblTable.Location" type="System.Drawing.Point, System.Drawing">
-    <value>26, 8</value>
-  </data>
-  <data name="lblTable.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 8, 3, 0</value>
-  </data>
-  <data name="lblTable.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 12</value>
-  </data>
-  <data name="lblTable.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
   <data name="lblTable.Text" xml:space="preserve">
-    <value>Table Name:</value>
+    <value>表名:</value>
   </data>
   <data name="&gt;&gt;lblTable.Name" xml:space="preserve">
     <value>lblTable</value>
@@ -204,98 +156,32 @@
   <data name="&gt;&gt;lblTable.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <metadata name="ColumnName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="ColumnName.HeaderText" xml:space="preserve">
-    <value>Name</value>
+    <value>列名</value>
   </data>
-  <data name="ColumnName.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="RawType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="RawType.HeaderText" xml:space="preserve">
-    <value>Sql Type</value>
+    <value>字段类型</value>
   </data>
-  <data name="RawType.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="DbType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="DbType.HeaderText" xml:space="preserve">
-    <value>Db Type</value>
+    <value>DbType</value>
   </data>
-  <data name="DbType.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="Type.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="Type.HeaderText" xml:space="preserve">
-    <value>Csharp Type</value>
+    <value>C#类型</value>
   </data>
-  <data name="Type.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="Comment.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="Comment.HeaderText" xml:space="preserve">
-    <value>Comment</value>
+    <value>注释</value>
   </data>
-  <data name="Comment.MinimumWidth" type="System.Int32, mscorlib">
-    <value>180</value>
-  </data>
-  <metadata name="IsPrimaryKey.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="IsPrimaryKey.HeaderText" xml:space="preserve">
-    <value>Primary Key</value>
+    <value>是否主键</value>
   </data>
-  <data name="IsPrimaryKey.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="IsForeignKey.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="IsForeignKey.HeaderText" xml:space="preserve">
-    <value>Foreign Key</value>
+    <value>是否外键</value>
   </data>
-  <data name="IsForeignKey.MinimumWidth" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <metadata name="IsUnique.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="IsUnique.HeaderText" xml:space="preserve">
-    <value>Unique</value>
+    <value>是否唯一</value>
   </data>
-  <data name="IsUnique.MinimumWidth" type="System.Int32, mscorlib">
-    <value>80</value>
-  </data>
-  <metadata name="IsNullAble.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <data name="IsNullAble.HeaderText" xml:space="preserve">
-    <value>NullAble</value>
-  </data>
-  <data name="IsNullAble.MinimumWidth" type="System.Int32, mscorlib">
-    <value>80</value>
-  </data>
-  <data name="dgvColumns.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="dgvColumns.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 63</value>
-  </data>
-  <data name="dgvColumns.Size" type="System.Drawing.Size, System.Drawing">
-    <value>936, 455</value>
-  </data>
-  <data name="dgvColumns.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>是否可空</value>
   </data>
   <data name="&gt;&gt;dgvColumns.Name" xml:space="preserve">
     <value>dgvColumns</value>
@@ -309,26 +195,8 @@
   <data name="&gt;&gt;dgvColumns.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="lblComment.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="lblComment.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblComment.Location" type="System.Drawing.Point, System.Drawing">
-    <value>44, 38</value>
-  </data>
-  <data name="lblComment.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 8, 3, 0</value>
-  </data>
-  <data name="lblComment.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 12</value>
-  </data>
-  <data name="lblComment.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
   <data name="lblComment.Text" xml:space="preserve">
-    <value>Comment:</value>
+    <value>注释:</value>
   </data>
   <data name="&gt;&gt;lblComment.Name" xml:space="preserve">
     <value>lblComment</value>
@@ -342,26 +210,8 @@
   <data name="&gt;&gt;lblComment.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="lblClazz.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="lblClazz.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="lblClazz.Location" type="System.Drawing.Point, System.Drawing">
-    <value>485, 8</value>
-  </data>
-  <data name="lblClazz.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 8, 3, 0</value>
-  </data>
-  <data name="lblClazz.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 12</value>
-  </data>
-  <data name="lblClazz.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
   <data name="lblClazz.Text" xml:space="preserve">
-    <value>Display Name:</value>
+    <value>显示名:</value>
   </data>
   <data name="&gt;&gt;lblClazz.Name" xml:space="preserve">
     <value>lblClazz</value>
@@ -375,18 +225,6 @@
   <data name="&gt;&gt;lblClazz.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="txtTable.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="txtTable.Location" type="System.Drawing.Point, System.Drawing">
-    <value>103, 3</value>
-  </data>
-  <data name="txtTable.Size" type="System.Drawing.Size, System.Drawing">
-    <value>365, 21</value>
-  </data>
-  <data name="txtTable.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
   <data name="&gt;&gt;txtTable.Name" xml:space="preserve">
     <value>txtTable</value>
   </data>
@@ -398,21 +236,6 @@
   </data>
   <data name="&gt;&gt;txtTable.ZOrder" xml:space="preserve">
     <value>6</value>
-  </data>
-  <data name="tableLayoutPanel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="tableLayoutPanel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="tableLayoutPanel1.RowCount" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>942, 521</value>
-  </data>
-  <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel1.Name" xml:space="preserve">
     <value>tableLayoutPanel1</value>
@@ -426,20 +249,8 @@
   <data name="&gt;&gt;tableLayoutPanel1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="tableLayoutPanel1.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="txtComment" Row="1" RowSpan="1" Column="1" ColumnSpan="3" /&gt;&lt;Control Name="txtClazz" Row="0" RowSpan="1" Column="3" ColumnSpan="1" /&gt;&lt;Control Name="lblTable" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="dgvColumns" Row="2" RowSpan="1" Column="0" ColumnSpan="4" /&gt;&lt;Control Name="lblComment" Row="1" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="lblClazz" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="txtTable" Row="0" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Absolute,100,Percent,50,Absolute,100,Percent,50" /&gt;&lt;Rows Styles="Absolute,30,Absolute,30,Percent,100" /&gt;&lt;/TableLayoutSettings&gt;</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>942, 521</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>TablePanel</value>
+    <value>数据表</value>
   </data>
   <data name="&gt;&gt;ColumnName.Name" xml:space="preserve">
     <value>ColumnName</value>

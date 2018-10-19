@@ -24,12 +24,12 @@ namespace Banana.AutoCode
         {
             InitializeComponent();
             var currentYear = DateTime.Now.Year.ToString();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", VersionNumber);
-            this.labelCopyright.Text = AssemblyCopyright.Contains(currentYear) ? AssemblyCopyright : AssemblyCopyright + " - " + currentYear;
-            this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription;
+            this.Text += AssemblyTitle;
+            this.labelProductName.Text += AssemblyProduct;
+            this.labelVersion.Text += VersionNumber;
+            this.labelCopyright.Text += AssemblyCopyright.Contains(currentYear) ? AssemblyCopyright : AssemblyCopyright + " - " + currentYear;
+            this.labelCompanyName.Text += AssemblyCompany;
+            this.textBoxDescription.Text += Environment.NewLine + AssemblyDescription;
         }
 
         #region 程序集特性访问器

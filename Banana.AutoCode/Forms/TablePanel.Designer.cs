@@ -28,14 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TablePanel));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtComment = new System.Windows.Forms.TextBox();
             this.txtClazz = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
             this.dgvColumns = new System.Windows.Forms.DataGridView();
-            this.lblComment = new System.Windows.Forms.Label();
-            this.lblClazz = new System.Windows.Forms.Label();
-            this.txtTable = new System.Windows.Forms.TextBox();
             this.ColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RawType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,17 +43,16 @@
             this.IsForeignKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsUnique = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.IsNullAble = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblComment = new System.Windows.Forms.Label();
+            this.lblClazz = new System.Windows.Forms.Label();
+            this.txtTable = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
             this.tableLayoutPanel1.Controls.Add(this.txtComment, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtClazz, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblTable, 0, 0);
@@ -63,46 +60,26 @@
             this.tableLayoutPanel1.Controls.Add(this.lblComment, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lblClazz, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtTable, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(942, 521);
-            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // txtComment
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.txtComment, 3);
-            this.txtComment.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtComment.Location = new System.Drawing.Point(103, 33);
+            resources.ApplyResources(this.txtComment, "txtComment");
             this.txtComment.Name = "txtComment";
             this.txtComment.ReadOnly = true;
-            this.txtComment.Size = new System.Drawing.Size(836, 21);
-            this.txtComment.TabIndex = 10;
             // 
             // txtClazz
             // 
-            this.txtClazz.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtClazz.Location = new System.Drawing.Point(574, 3);
+            resources.ApplyResources(this.txtClazz, "txtClazz");
             this.txtClazz.Name = "txtClazz";
             this.txtClazz.ReadOnly = true;
             this.txtClazz.ShortcutsEnabled = false;
-            this.txtClazz.Size = new System.Drawing.Size(365, 21);
-            this.txtClazz.TabIndex = 9;
             // 
             // lblTable
             // 
-            this.lblTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTable.AutoSize = true;
-            this.lblTable.Location = new System.Drawing.Point(26, 8);
-            this.lblTable.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
+            resources.ApplyResources(this.lblTable, "lblTable");
             this.lblTable.Name = "lblTable";
-            this.lblTable.Size = new System.Drawing.Size(71, 12);
-            this.lblTable.TabIndex = 6;
-            this.lblTable.Text = "Table Name:";
             // 
             // dgvColumns
             // 
@@ -123,54 +100,19 @@
             this.IsUnique,
             this.IsNullAble});
             this.tableLayoutPanel1.SetColumnSpan(this.dgvColumns, 4);
-            this.dgvColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvColumns.Location = new System.Drawing.Point(3, 63);
+            resources.ApplyResources(this.dgvColumns, "dgvColumns");
             this.dgvColumns.MultiSelect = false;
             this.dgvColumns.Name = "dgvColumns";
             this.dgvColumns.ReadOnly = true;
             this.dgvColumns.RowHeadersVisible = false;
             this.dgvColumns.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
             this.dgvColumns.RowTemplate.Height = 23;
-            this.dgvColumns.Size = new System.Drawing.Size(936, 455);
-            this.dgvColumns.TabIndex = 3;
-            // 
-            // lblComment
-            // 
-            this.lblComment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblComment.AutoSize = true;
-            this.lblComment.Location = new System.Drawing.Point(44, 38);
-            this.lblComment.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(53, 12);
-            this.lblComment.TabIndex = 5;
-            this.lblComment.Text = "Comment:";
-            // 
-            // lblClazz
-            // 
-            this.lblClazz.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblClazz.AutoSize = true;
-            this.lblClazz.Location = new System.Drawing.Point(485, 8);
-            this.lblClazz.Margin = new System.Windows.Forms.Padding(3, 8, 3, 0);
-            this.lblClazz.Name = "lblClazz";
-            this.lblClazz.Size = new System.Drawing.Size(83, 12);
-            this.lblClazz.TabIndex = 7;
-            this.lblClazz.Text = "Display Name:";
-            // 
-            // txtTable
-            // 
-            this.txtTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtTable.Location = new System.Drawing.Point(103, 3);
-            this.txtTable.Name = "txtTable";
-            this.txtTable.ReadOnly = true;
-            this.txtTable.Size = new System.Drawing.Size(365, 21);
-            this.txtTable.TabIndex = 8;
             // 
             // ColumnName
             // 
             this.ColumnName.DataPropertyName = "Name";
             this.ColumnName.FillWeight = 17.7665F;
-            this.ColumnName.HeaderText = "Name";
-            this.ColumnName.MinimumWidth = 100;
+            resources.ApplyResources(this.ColumnName, "ColumnName");
             this.ColumnName.Name = "ColumnName";
             this.ColumnName.ReadOnly = true;
             this.ColumnName.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -179,8 +121,7 @@
             // 
             this.RawType.DataPropertyName = "RawType";
             this.RawType.FillWeight = 17.7665F;
-            this.RawType.HeaderText = "Sql Type";
-            this.RawType.MinimumWidth = 100;
+            resources.ApplyResources(this.RawType, "RawType");
             this.RawType.Name = "RawType";
             this.RawType.ReadOnly = true;
             this.RawType.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -188,8 +129,7 @@
             // DbType
             // 
             this.DbType.DataPropertyName = "DataType";
-            this.DbType.HeaderText = "Db Type";
-            this.DbType.MinimumWidth = 100;
+            resources.ApplyResources(this.DbType, "DbType");
             this.DbType.Name = "DbType";
             this.DbType.ReadOnly = true;
             this.DbType.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -198,8 +138,7 @@
             // 
             this.Type.DataPropertyName = "TypeName";
             this.Type.FillWeight = 593.401F;
-            this.Type.HeaderText = "Csharp Type";
-            this.Type.MinimumWidth = 100;
+            resources.ApplyResources(this.Type, "Type");
             this.Type.Name = "Type";
             this.Type.ReadOnly = true;
             this.Type.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -208,8 +147,7 @@
             // 
             this.Comment.DataPropertyName = "Comment";
             this.Comment.FillWeight = 17.7665F;
-            this.Comment.HeaderText = "Comment";
-            this.Comment.MinimumWidth = 180;
+            resources.ApplyResources(this.Comment, "Comment");
             this.Comment.Name = "Comment";
             this.Comment.ReadOnly = true;
             // 
@@ -217,8 +155,7 @@
             // 
             this.IsPrimaryKey.DataPropertyName = "IsPrimaryKey";
             this.IsPrimaryKey.FillWeight = 17.7665F;
-            this.IsPrimaryKey.HeaderText = "Primary Key";
-            this.IsPrimaryKey.MinimumWidth = 100;
+            resources.ApplyResources(this.IsPrimaryKey, "IsPrimaryKey");
             this.IsPrimaryKey.Name = "IsPrimaryKey";
             this.IsPrimaryKey.ReadOnly = true;
             this.IsPrimaryKey.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -227,8 +164,7 @@
             // 
             this.IsForeignKey.DataPropertyName = "IsForeignKey";
             this.IsForeignKey.FillWeight = 17.7665F;
-            this.IsForeignKey.HeaderText = "Foreign Key";
-            this.IsForeignKey.MinimumWidth = 100;
+            resources.ApplyResources(this.IsForeignKey, "IsForeignKey");
             this.IsForeignKey.Name = "IsForeignKey";
             this.IsForeignKey.ReadOnly = true;
             this.IsForeignKey.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -236,8 +172,7 @@
             // IsUnique
             // 
             this.IsUnique.DataPropertyName = "IsUnique";
-            this.IsUnique.HeaderText = "Unique";
-            this.IsUnique.MinimumWidth = 80;
+            resources.ApplyResources(this.IsUnique, "IsUnique");
             this.IsUnique.Name = "IsUnique";
             this.IsUnique.ReadOnly = true;
             this.IsUnique.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -246,21 +181,34 @@
             // 
             this.IsNullAble.DataPropertyName = "IsNullAble";
             this.IsNullAble.FillWeight = 17.7665F;
-            this.IsNullAble.HeaderText = "NullAble";
-            this.IsNullAble.MinimumWidth = 80;
+            resources.ApplyResources(this.IsNullAble, "IsNullAble");
             this.IsNullAble.Name = "IsNullAble";
             this.IsNullAble.ReadOnly = true;
             this.IsNullAble.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
+            // lblComment
+            // 
+            resources.ApplyResources(this.lblComment, "lblComment");
+            this.lblComment.Name = "lblComment";
+            // 
+            // lblClazz
+            // 
+            resources.ApplyResources(this.lblClazz, "lblClazz");
+            this.lblClazz.Name = "lblClazz";
+            // 
+            // txtTable
+            // 
+            resources.ApplyResources(this.txtTable, "txtTable");
+            this.txtTable.Name = "txtTable";
+            this.txtTable.ReadOnly = true;
+            // 
             // TablePanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(942, 521);
             this.Controls.Add(this.tableLayoutPanel1);
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
             this.Name = "TablePanel";
-            this.Text = "TablePanel";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).EndInit();

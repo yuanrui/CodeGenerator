@@ -21,6 +21,7 @@ namespace Banana.AutoCode
         [STAThread]
         static void Main()
         {
+            CultureHelper.SetCulture();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutputPanel));
             this.richTextBox = new System.Windows.Forms.RichTextBox();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiCopy = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,63 +41,52 @@
             // 
             // richTextBox
             // 
+            resources.ApplyResources(this.richTextBox, "richTextBox");
             this.richTextBox.ContextMenuStrip = this.contextMenuStrip;
-            this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox.Location = new System.Drawing.Point(0, 0);
             this.richTextBox.Name = "richTextBox";
-            this.richTextBox.Size = new System.Drawing.Size(284, 262);
-            this.richTextBox.TabIndex = 0;
-            this.richTextBox.Text = "";
             // 
             // contextMenuStrip
             // 
+            resources.ApplyResources(this.contextMenuStrip, "contextMenuStrip");
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiCopy,
             this.tsmiSelectAll,
             this.toolStripSeparator1,
             this.tsmiClearAll});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(162, 76);
             // 
             // tsmiCopy
             // 
+            resources.ApplyResources(this.tsmiCopy, "tsmiCopy");
             this.tsmiCopy.Name = "tsmiCopy";
-            this.tsmiCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.tsmiCopy.Size = new System.Drawing.Size(161, 22);
-            this.tsmiCopy.Text = "复制(&C)";
             this.tsmiCopy.Click += new System.EventHandler(this.tsmiCopy_Click);
             // 
             // tsmiSelectAll
             // 
+            resources.ApplyResources(this.tsmiSelectAll, "tsmiSelectAll");
             this.tsmiSelectAll.Name = "tsmiSelectAll";
-            this.tsmiSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.tsmiSelectAll.Size = new System.Drawing.Size(161, 22);
-            this.tsmiSelectAll.Text = "全选(&A)";
             this.tsmiSelectAll.Click += new System.EventHandler(this.tsmiSelectAll_Click);
             // 
             // toolStripSeparator1
             // 
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(158, 6);
             // 
             // tsmiClearAll
             // 
+            resources.ApplyResources(this.tsmiClearAll, "tsmiClearAll");
             this.tsmiClearAll.Name = "tsmiClearAll";
-            this.tsmiClearAll.Size = new System.Drawing.Size(161, 22);
-            this.tsmiClearAll.Text = "全部清除";
             this.tsmiClearAll.Click += new System.EventHandler(this.tsmiClearAll_Click);
             // 
             // OutputPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
             this.CloseButtonVisible = false;
             this.Controls.Add(this.richTextBox);
             this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom) 
             | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
             this.Name = "OutputPanel";
-            this.Text = "Output";
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -28,26 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TemplatePanel));
             this.tvTemplates = new System.Windows.Forms.TreeView();
             this.SuspendLayout();
             // 
             // tvTemplates
             // 
-            this.tvTemplates.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvTemplates.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.tvTemplates, "tvTemplates");
             this.tvTemplates.Name = "tvTemplates";
-            this.tvTemplates.Size = new System.Drawing.Size(312, 603);
-            this.tvTemplates.TabIndex = 0;
             // 
             // TemplatePanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 603);
             this.Controls.Add(this.tvTemplates);
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight;
             this.Name = "TemplatePanel";
-            this.Text = "TemplatePanel";
             this.ResumeLayout(false);
 
         }

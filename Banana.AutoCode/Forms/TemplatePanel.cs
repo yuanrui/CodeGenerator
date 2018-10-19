@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,7 +11,6 @@ using System.Text;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
 using WeifenLuo.WinFormsUI.Docking;
-using System.Collections;
 
 namespace Banana.AutoCode.Forms
 {

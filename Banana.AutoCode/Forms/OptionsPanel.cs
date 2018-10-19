@@ -13,6 +13,12 @@ namespace Banana.AutoCode.Forms
 {
     public partial class OptionsPanel : Form
     {
+        List<KeyValuePair<String, String>> LangSources = new List<KeyValuePair<String, String>>() 
+        { 
+            new KeyValuePair<String, String>("中文", "zh-CN"),
+            new KeyValuePair<String, String>("English", "en-US")
+        };
+
         public OptionsPanel()
         {
             InitializeComponent();
@@ -23,6 +29,18 @@ namespace Banana.AutoCode.Forms
         {
             txtRemovePrefix.Text = ConfigurationManager.AppSettings["removePrefix"];
             txtRemoveSuffix.Text = ConfigurationManager.AppSettings["removeSuffix"];
+            var culture = ConfigurationManager.AppSettings["culture"];
+
+            cmbLanguage.DataSource = LangSources;
+            cmbLanguage.DisplayMember = "Key";
+            cmbLanguage.ValueMember = "Value";
+
+            if (!CultureHelper.CultureIsSupport(culture))
+            {
+                culture = String.Empty;
+            }
+
+            cmbLanguage.SelectedValue = culture;
         }
 
         public static void AddOrUpdateAppSettings(string key, string value)
@@ -42,7 +60,7 @@ namespace Banana.AutoCode.Forms
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
 
-                Trace.WriteLine("Save settings " + key + "=" + value + " success");                
+                Trace.WriteLine("Save settings " + key + "=" + value + " success");
             }
             catch (ConfigurationErrorsException)
             {
@@ -54,7 +72,7 @@ namespace Banana.AutoCode.Forms
         {
             AddOrUpdateAppSettings("removePrefix", txtRemovePrefix.Text);
             AddOrUpdateAppSettings("removeSuffix", txtRemoveSuffix.Text);
-            //MessageBox.Show("Save settings success");
+            AddOrUpdateAppSettings("culture", ((String)cmbLanguage.SelectedValue ?? String.Empty));
         }
     }
 }

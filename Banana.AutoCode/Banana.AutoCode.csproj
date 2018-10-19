@@ -145,12 +145,14 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ControlExtension.cs" />
+    <Compile Include="Forms\CultureHelper.cs" />
     <Compile Include="Forms\DbPanel.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DbPanel.Designer.cs">
       <DependentUpon>DbPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormExtension.cs" />
     <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -185,25 +187,67 @@
     <Compile Include="Forms\TreeViewExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\About.en-US.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\About.zh-CN.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbPanel.en-US.resx">
+      <DependentUpon>DbPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbPanel.resx">
       <DependentUpon>DbPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbPanel.zh-CN.resx">
+      <DependentUpon>DbPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.en-US.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.zh-CN.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionsPanel.en-US.resx">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OptionsPanel.resx">
       <DependentUpon>OptionsPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OptionsPanel.zh-CN.resx">
+      <DependentUpon>OptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OutputPanel.en-US.resx">
+      <DependentUpon>OutputPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\OutputPanel.resx">
       <DependentUpon>OutputPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OutputPanel.zh-CN.resx">
+      <DependentUpon>OutputPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TablePanel.en-US.resx">
+      <DependentUpon>TablePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TablePanel.resx">
       <DependentUpon>TablePanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TablePanel.zh-CN.resx">
+      <DependentUpon>TablePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TemplatePanel.en-US.resx">
+      <DependentUpon>TemplatePanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\TemplatePanel.resx">
+      <DependentUpon>TemplatePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TemplatePanel.zh-CN.resx">
       <DependentUpon>TemplatePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
