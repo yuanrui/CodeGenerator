@@ -8,66 +8,6 @@ namespace Banana.AutoCode.DbSchema.Provider
 {
     public class SQLiteSchema : DbSchemaBase
     {
-        #region SQLite schema structure
-
-        private class SQLiteColumnInfo 
-        {
-            public Int32 id { get; set; }
-
-            public String name { get; set; }
-
-            public String type { get; set; }
-
-            public Boolean notnull { get; set; }
-
-            public String dflt_value { get; set; }
-
-            public Boolean pk { get; set; }
-        }
-
-        private class SQLiteForeignKey
-        {
-            public Int32 id { get; set; }
-
-            public Int32 seq { get; set; }
-
-            public String table { get; set; }
-
-            public String from { get; set; }
-
-            public String to { get; set; }
-
-            public String on_update { get; set; }
-
-            public String on_delete { get; set; }
-
-            public String match { get; set; }
-        }
-
-        private class SQLiteIndex
-        {
-            public class Field 
-            {
-                public Int32 seqno { get; set; }
-
-                public Int32 cid { get; set; }
-                
-                public String name { get; set; }
-            }
-
-            public Int32 seq { get; set; }
-
-            public String name { get; set; }
-
-            public Boolean unique { get; set; }
-
-            public String origin { get; set; }
-
-            public Int32 partial { get; set; }
-        }
-
-        #endregion
-
         public override string MetaDataCollectionName_Databases
         {
             get
@@ -87,61 +27,11 @@ namespace Banana.AutoCode.DbSchema.Provider
             { 
                 new Database() 
                 { 
-                    Name = "main" 
+                    Name = "Main" 
                 }
             };
         }
-
-        public override List<Column> GetColumns(Table table)
-        {
-            var columns = Context.Query<SQLiteColumnInfo>("PRAGMA table_info(" + table.Name + ")") ?? new List<SQLiteColumnInfo>();
-            var fks = Context.Query<SQLiteForeignKey>("PRAGMA foreign_key_list(" + table.Name + ")") ?? new List<SQLiteForeignKey>();
-            var indexs = Context.Query<SQLiteIndex>("PRAGMA index_list(" + table.Name + ")") ?? new List<SQLiteIndex>();
-            var result = base.GetColumns(table);
-
-            foreach (var item in columns)
-            {
-                var col = result.FirstOrDefault(m => m.Name == item.name);
-                if (col == null)
-                {
-                    continue;
-                }
-
-                col.IsPrimaryKey = item.pk;
-                col.IsNullable = !item.notnull;
-                col.RawType = item.type;
-            }
-
-            foreach (var fk in fks)
-            {
-                var col = result.FirstOrDefault(m => m.Name == fk.from);
-                col.IsForeignKey = col != null;
-            }
-
-            foreach (var index in indexs)
-            {
-                if (! index.unique)
-                {
-                    continue;
-                }
-
-                var fields = Context.Query<SQLiteIndex.Field>("PRAGMA index_info(" + index.name + ")");
-
-                if (fields == null || fields.Count != 1)
-                {
-                    continue;
-                }
-
-                foreach (var item in fields)
-                {
-                    var col = result.FirstOrDefault(m => m.Name == item.name);
-                    col.IsUnique = col != null;
-                }
-            }
-
-            return result;
-        }
-
+        
         public override Type GetType(string rawType, short precision, short scale, bool isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
