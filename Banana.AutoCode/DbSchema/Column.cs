@@ -49,6 +49,6 @@ namespace Banana.AutoCode.DbSchema
         public Int32 Index { get; set; }
 
         [NonSerialized]
-        public Table Table;        
+        public Table Table;
     }
 }
