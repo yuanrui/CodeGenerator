@@ -27,9 +27,4 @@ Column Info:
 | 15 | Index | Int32 |
 | 16 | Table | Table |
 
-TODO list:  
-1. I18N.  
-2. Select part of template file to generate.  
-3. Complete documentation.  
-4. Support MySql.  
-5. Add template:LayUI, Vue etc.  
+[TODO List](https://github.com/yuanrui/CodeGenerator/issues/1)
