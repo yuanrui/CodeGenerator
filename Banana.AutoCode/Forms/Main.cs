@@ -164,7 +164,7 @@ namespace Banana.AutoCode
             {
                 DbPanel = new DbPanel();
                 DbPanel.Show(this.dockPanel);
-                tsbtnDatabase.Checked = !tsbtnDatabase.Checked;
+                tsbtnDatabase.Checked = true;
                 return;
             }
 
@@ -176,6 +176,7 @@ namespace Banana.AutoCode
             {
                 DbPanel.Show(this.dockPanel);
             }
+
             tsbtnDatabase.Checked = ! tsbtnDatabase.Checked;
         }
 
@@ -186,9 +187,12 @@ namespace Banana.AutoCode
 
         private void templateToolStripButton_Click(object sender, EventArgs e)
         {
-            if (TemplatePanel == null)
+            if (TemplatePanel == null || TemplatePanel.IsDisposed)
             {
                 TemplatePanel = new TemplatePanel();
+                TemplatePanel.Show(this.dockPanel);
+                templateToolStripButton.Checked = true;
+                return;
             }
             
             if (templateToolStripButton.Checked)
