@@ -27,9 +27,12 @@ public partial class DateTime2
 
     public static implicit operator DateTime(DateTime2 time)
     {
-        if (time == null)
+        const Int64 MIN_VALUE = 0L;
+        const Int64 MAX_VALUE = 315537897599999L;
+
+        if (time == null || time.Value < MIN_VALUE || time.Value > MAX_VALUE)
         {
-            return default(DateTime);
+            return _startTime;
         }
 
         return _startTime.AddMilliseconds(time.Value);
