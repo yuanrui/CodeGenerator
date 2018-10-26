@@ -37,7 +37,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Banana.AutoCode.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -50,6 +50,10 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1591;1573</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -66,6 +70,8 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>1591;1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\Icons.128x128.Logo.ico</ApplicationIcon>
@@ -75,32 +81,17 @@
       <HintPath>..\packages\Costura.Fody.1.6.2\lib\portable-net+sl+win+wpa+wp\Costura.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Libs\Microsoft.VisualStudio.TextTemplating.10.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.10.0.Resources, Version=10.0.0.0, Culture=zh-Hans, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Libs\Microsoft.VisualStudio.TextTemplating.10.0.Resources.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.TextTemplating.Interfaces.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Libs\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <HintPath>..\packages\Oracle.ManagedDataAccess.18.3.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net40\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -127,6 +118,25 @@
     <Compile Include="Core\DbUtils.cs" />
     <Compile Include="Core\GlobalSetting.cs" />
     <Compile Include="Core\IconUtils.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\DirectiveProcessor.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\DirectiveProcessorException.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\EncodingHelper.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\Engine.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\Interfaces.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\ParameterDirectiveProcessor.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\RequiresProvidesDirectiveProcessor.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\TextTemplatingSession.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\TextTransformation.cs" />
+    <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\ToStringHelper.cs" />
+    <Compile Include="Core\Mono.TextTemplating\CompiledTemplate.cs" />
+    <Compile Include="Core\Mono.TextTemplating\CrossAppDomainAssemblyResolver.cs" />
+    <Compile Include="Core\Mono.TextTemplating\FileUtil.cs" />
+    <Compile Include="Core\Mono.TextTemplating\ParsedTemplate.cs" />
+    <Compile Include="Core\Mono.TextTemplating\RecyclableAppDomain.cs" />
+    <Compile Include="Core\Mono.TextTemplating\TemplateGenerator.cs" />
+    <Compile Include="Core\Mono.TextTemplating\TemplateSettings.cs" />
+    <Compile Include="Core\Mono.TextTemplating\TemplatingEngine.cs" />
+    <Compile Include="Core\Mono.TextTemplating\Tokeniser.cs" />
     <Compile Include="Core\SqlMapper.cs" />
     <Compile Include="DbSchema\Column.cs" />
     <Compile Include="DbSchema\Database.cs" />
@@ -347,9 +357,6 @@
     <Content Include="Templates\TemplateFileManager.ttinclude">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.dll" />
-    <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.10.0.Resources.dll" />
-    <None Include="_Libs\Microsoft.VisualStudio.TextTemplating.Interfaces.10.0.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Icons.16x16.BrowserWindow.png" />
