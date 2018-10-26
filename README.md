@@ -1,7 +1,7 @@
 CodeGenerator
 =============
 
-Use Code Generator create C# code file. Include generate Thrift IDL template file.  
+Use Code Generator create C# code file. Include generate Thrift IDL template file. The engine base on [mono t4](https://github.com/mono/t4).  
 Some of code in this project https://github.com/yuanrui/Examples
 
 In template file, you can use meta list as follows.
