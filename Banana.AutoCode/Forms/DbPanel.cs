@@ -82,6 +82,11 @@ namespace Banana.AutoCode.Forms
             ConfigurationManager.RefreshSection("connectionStrings");
             foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
             {
+                if (String.IsNullOrWhiteSpace(css.ConnectionString) || String.IsNullOrWhiteSpace(css.ProviderName))
+                {
+                    continue;
+                }
+
                 cbConnStrings.Items.Add(css.Name);
             }
         }

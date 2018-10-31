@@ -56,7 +56,6 @@ namespace Banana.AutoCode
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
 
             CheckDirectoryPath();
-            //this.SetLanguage("en-US");
         }
 
         private void CheckDirectoryPath()
