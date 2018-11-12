@@ -19,6 +19,8 @@ namespace Banana.AutoCode.DbSchema
                     return new SQLiteSchema(connSetting.Name);
                 case "Oracle.ManagedDataAccess.Client":
                     return new OracleSchema(connSetting.Name);
+                case "MySql.Data.MySqlClient":
+                    return new MySqlSchema(connSetting.Name);
                 default:
                     return new SqlServerSchema(connSetting.Name);
             }
