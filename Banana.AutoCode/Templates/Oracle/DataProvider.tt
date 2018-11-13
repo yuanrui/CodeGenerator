@@ -20,7 +20,7 @@
     var pkTypeName = pkCol.TypeName;
     
     var manager = Manager.Create(host, GenerationEnvironment);
-	manager.StartNewFile(table.DisplayName + "SqlProviderBase.generated.cs", host.GetValue("OutputPath").ToString() + "\\Providers");
+	manager.StartNewFile(table.DisplayName + "SqlProviderBase.generated.cs", host.GetValue("OutputPath").ToString() + "\\Providers\\Oracle");
 #>
 //------------------------------------------------------------------------------
 // <copyright file="<#= table.DisplayName #>SqlProviderBase.generated.cs">
