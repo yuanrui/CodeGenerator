@@ -230,7 +230,6 @@ namespace Banana.AutoCode
         
         private void runToolStripButton_Click(object sender, EventArgs e)
         {
-            const string FILE_NAME_KEY = "FILE_NAME";
             var tables = DbPanel.GetTables();
             
             if (tables == null || ! tables.Any())
@@ -239,8 +238,6 @@ namespace Banana.AutoCode
                 return;
             }
 
-            var engine = new Engine();
-            var host = new CustomHost();
             var files = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(TEMPLATES_DIR, "*.ttinclude", SearchOption.AllDirectories));
             
@@ -249,6 +246,24 @@ namespace Banana.AutoCode
                 Trace.WriteLine("No template file. run stop.");
                 return;
             }
+
+            Task.Factory.StartNew(() => {
+                try
+                {
+                    DoRun(tables, files);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.ToString());
+                }
+            });
+        }
+
+        private void DoRun(IEnumerable<DbSchema.Table> tables, IEnumerable<string> files)
+        {
+            const string FILE_NAME_KEY = "FILE_NAME";
+            var engine = new Engine();
+            var host = new CustomHost();
 
             var basePath = OUTPUT_DIR;
 
@@ -268,7 +283,7 @@ namespace Banana.AutoCode
 
                     Trace.WriteLine("Generate table:" + host.Table.Name + " TemplateName:" + templateName + " OutputPath:" + outputPath);
                     var result = engine.ProcessTemplate(content, host);
-                    
+
                     if (string.IsNullOrWhiteSpace(result))
                     {
                         Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code, no result.");
@@ -294,8 +309,8 @@ namespace Banana.AutoCode
             }
 
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
-            
-            BuildThriftCodeAsync(outputBasePath);            
+
+            BuildThriftCodeAsync(outputBasePath);
         }
 
         private void DoCommand(string thriftPath, string cmdText, string codePath)
