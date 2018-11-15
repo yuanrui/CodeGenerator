@@ -89,7 +89,7 @@ namespace Banana.WebUI.Controllers
             AjaxMessage msg = null;
             
             var service = new <#= serviceClazzName #>();
-            var oldEnt = service.Get(<#= table.PrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>);
+            var oldEnt = service.Get(<#= table.PrimaryKeyColumns.Select(m => "ent." + m.Name).Aggregate((a, b) => a + ", " + b) #>);
 <#
             foreach(var col in table.NonPrimaryKeyColumns)
             {
