@@ -1,0 +1,222 @@
+﻿<#
+//------------------------------------------------------------------------------
+// <copyright file="IndexHtml.tt">
+//    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2018-06-16 12:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var moduleName = table.DisplayName;
+    var manager = Manager.Create(host, GenerationEnvironment);
+    var editParam = table.PrimaryKeyColumns.Select(m => String.Format("\"{0}=\"+data[\"{0}\"]", m.Name)).Aggregate((a, b) => a + "+\"&\"+" + b);
+	manager.StartNewFile("Index.cshtml", host.GetValue("OutputPath").ToString() + "\\Layui\\Views\\" + table.DisplayName);
+#>
+@{
+    ViewBag.Title = "<#= moduleName #> Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="layui-card-body">
+    <div class="table-toolbar">
+        <button class="layui-btn" data-type="add">添加</button>
+        <button class="layui-btn" data-type="batchdel">删除</button>        
+    </div>
+    <table class="layui-table" lay-data="{ height: 'full-95', url:crudOption.PagerUrl, page:true, id:'table-list'}" lay-filter="table-list">
+        <thead>
+            <tr>
+    <#
+            foreach(var col in table.Columns)
+            {
+    #>
+                <th lay-data="{field:'<#= col.Name #>',width:150}"><#= col.Comment.Replace("\n", "") #></th>
+    <#
+            }
+    #>
+                <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#optbar'}"></th>
+
+            </tr>
+        </thead>
+    </table>
+
+    <script type="text/html" id="optbar">
+      <a class="layui-btn layui-btn-primary layui-btn-xs hidden" lay-event="detail">查看</a>
+      <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+    </script>
+ 
+    <script type="text/html" id="toolbar">
+      <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button class="layui-btn layui-btn-sm" lay-event="batchdel">删除</button>
+      </div>
+    </script>
+</div>
+@section footer{
+<script type="text/javascript">
+    var crudOption = {
+        PagerUrl : "/<#= moduleName #>/Index",
+        CreateUrl : "/<#= moduleName #>/Create",
+        EditUrl : "/<#= moduleName #>/Edit",
+        RemoveUrl : "/<#= moduleName #>/Delete"
+    };
+
+    layui.use('table', function(){
+        var table = layui.table;
+        //监听表格复选框选择
+        table.on('checkbox(table-list)', function(row){
+            //console.log(row)
+        });
+
+        //监听工具条
+        table.on('tool(table-list)', function(row){
+            var data = row.data;
+            if(row.event === 'detail'){
+                //layer.msg('查看操作');
+            } else if(row.event === 'delete'){
+                layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
+                    doRemove([data], function (rsp) {
+                        layer.show(rsp.Content, rsp.ShowType);
+                        row.del();
+                        layer.close(index);
+                    });
+                });
+            } else if(row.event === 'edit'){
+                layer.open({
+                    type: 2,
+                    title: "编辑",
+                    content: crudOption.EditUrl + "?" + <#= editParam #>,
+                    area: ['550px', '550px'],
+                    btn: ["确定", "取消"],
+                    yes: function(index, layerObj) {
+                        var layerFrame = window["layui-layer-iframe" + index];
+                        var aTag = layerObj.find("iframe").contents().find("#admin-page-form-edit");
+
+                        layerFrame.layui.form.on("submit(admin-page-form-edit)", function (data) {
+                            var ent = data.field;
+                            doSave(ent, crudOption.EditUrl, function (rsp) {
+                                layer.show(rsp.Content, rsp.ShowType);
+                                row.update({
+<#
+        foreach(var col in table.Columns)
+        {
+#>
+                                <#= col.Name #> : ent.<#= col.Name #>,
+<#
+        }
+#>
+                                });
+                                layer.close(index);
+                            });
+                        });
+
+                        aTag.trigger("click");
+                    },
+                    success: function(t, e) {
+                        var n = t.find("iframe").contents().find("#fm").click();
+<#
+        foreach(var col in table.Columns)
+        {
+#>
+                        n.find('input[name="<#= col.Name #>"]').val(data.<#= col.Name #>);
+<#
+        }
+#>
+                    }
+                })
+            }
+        });
+  
+        var $ = layui.$, active = {
+            add: function(){
+                layer.open({
+                    type: 2,
+                    title: '添加',
+                    content:crudOption.CreateUrl,
+                    area: ['550px', '550px'],
+                    btn: ['确定', '取消'],
+                    yes: function(index, layero){
+                        //点击确认触发 iframe 内容中的按钮提交
+                        var submit = layero.find('iframe').contents().find("#admin-page-form-submit");
+                        submit.click();
+                    }
+                }); 
+            },
+            batchdel: function(){ 
+                var checkStatus = table.checkStatus('table-list')
+                    ,data = checkStatus.data;
+                //layer.msg('选中了：'+ data.length + ' 个');
+
+                if(data.length === 0){
+                    return layer.msg('请选择数据');
+                }
+      
+                layer.confirm('确定删除吗？', function(index) {
+                    //Ajax delete list
+                    table.reload('table-list');
+                    layer.msg('已删除');
+                });
+            }
+        };
+  
+        $('.table-toolbar .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+
+    function doSave(data, url, afterFunc) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function (jsonResult) {
+                if (jsonResult == null || jsonResult == "") {
+                    return;
+                }
+                var resultData = typeof jsonResult == "string" ? $.parseJSON(jsonResult) : jsonResult;
+
+                if (typeof afterFunc === "function") {
+                    afterFunc(resultData);
+                }
+            },
+            error: function (xmlHttpRequest, textStatus, errorThrown) {
+
+            }
+        });
+    }
+
+    function doRemove(rows, afterFunc) {
+        $.ajax({
+            url: crudOption.RemoveUrl,
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify({ list: rows }),
+            success: function (jsonResult) {
+                if (jsonResult == null || jsonResult == "") {
+                    return;
+                }
+                var resultData = typeof jsonResult == "string" ? $.parseJSON(jsonResult) : jsonResult;
+                
+                if (typeof afterFunc === "function") {
+                    afterFunc(resultData);
+                }
+            },
+            error: function (xmlHttpRequest, textStatus, errorThrown) {
+                
+            }
+        });
+    }
+</script>
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

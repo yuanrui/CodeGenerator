@@ -311,6 +311,22 @@
       <LastGenOutput>EntryHtml.txt</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\EntityFramework\AttributeModel.tt">
+      <LastGenOutput>SimpleEntity.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Layui\EfController.tt">
+      <LastGenOutput>Controller.txt</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Layui\EntryHtml.tt">
+      <LastGenOutput>EntryHtml.txt</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\Layui\IndexHtml.tt">
+      <LastGenOutput>IndexHtml.txt</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Oracle\BusinessService.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>BusinessService.txt</LastGenOutput>

@@ -1,0 +1,148 @@
+﻿<#
+//------------------------------------------------------------------------------
+// <copyright file="Controller.tt">
+//    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2018-06-16 12:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var serviceClazzName = table.DisplayName + "Service";
+    var entClazzName = table.DisplayName + "Entity";
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Controller.cs", host.GetValue("OutputPath").ToString() + "\\Layui\\Controllers");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Controller.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Text;
+using System.Web;
+using System.Web.Mvc;
+using Banana.Entity;
+using Z.EntityFramework.Plus;
+
+namespace Banana.WebUI.Controllers
+{
+    public partial class <#= table.DisplayName #>Controller : BaseController
+    {
+        protected const string EntryView = "Entry";
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult Index(Int32 page, Int32 limit)
+        {
+            var ctx = DbContextFactory.Create();
+            var query = ctx.Set<<#= entClazzName #>>();
+            var pager = query.AsPager(page, limit, m => m.<#= table.Columns.FirstOrDefault().Name #>, true);
+            //var pager = query.<#= table.PrimaryKeyColumns.Select(m => "OrderBy(m => m." + m.Name + ")").Aggregate((a, b) => a + "." + b) #>.AsPager(page, limit);
+
+            return Json(pager, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult Entry()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View(EntryView);
+        }
+
+        [HttpPost]
+        public ActionResult Create(<#= entClazzName #> ent)
+        {
+            AjaxMessage msg = null;
+            
+            var ctx = DbContextFactory.Create();
+            ctx.Entry(ent).State = EntityState.Added;
+            var result = ctx.SaveChanges() > 0;
+
+            msg = result ? AjaxMessage<<#= entClazzName #>>.Success("创建提示", "创建成功", ent) : AjaxMessage<<#= entClazzName #>>.Info("创建提示", "数据可能未保存", ent);
+            
+            return Json(msg);
+        }
+        
+        [HttpGet]
+        public ActionResult Edit(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
+        {
+            return View(EntryView);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(<#= entClazzName #> ent)
+        {
+            AjaxMessage msg = null;
+            var ctx = DbContextFactory.Create();
+            var query = ctx.Set<<#= entClazzName #>>();
+            var oldEnt = query.FirstOrDefault(m => <#= table.PrimaryKeyColumns.Select(m => "m." + m.Name + " == ent." + m.Name).Aggregate((a, b) => a + " && " + b) #>);
+
+            if(oldEnt == null)
+            {
+                return Json(AjaxMessage.Error("更新提示", "更新失败, 未找到实体。"));
+            }
+
+<#
+            foreach(var col in table.NonPrimaryKeyColumns)
+            {
+#>
+            oldEnt.<#= col.Name #> = ent.<#= col.Name #>;
+<#
+            }
+#>
+            ctx.Entry<<#= entClazzName #>>(oldEnt).State = EntityState.Modified;
+            var result = ctx.SaveChanges() > 0;
+            msg = result ? AjaxMessage.Success("更新提示", "更新成功") : AjaxMessage.Info("更新提示", "数据可能未保存");
+            
+            return Json(msg);
+        }
+
+        [HttpPost]
+        public JsonResult Delete(IList<<#= entClazzName #>> list)
+        {
+            AjaxMessage msg = null;
+            var ctx = DbContextFactory.Create();
+            var dbSet = ctx.Set<AppInfoEntity>();
+
+            if(list != null)
+            {
+                foreach (var ent in list)
+                {
+                    dbSet.Where(m => <#= table.PrimaryKeyColumns.Select(m => "m." + m.Name + " == ent." + m.Name).Aggregate((a, b) => a + " && " + b) #>).Delete();                    
+                }
+
+                var result = ctx.SaveChanges() > 0;
+            }
+            
+            msg = AjaxMessage.Success("删除提示", "删除操作处理成功");
+            
+            return Json(msg);
+        }
+    }
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

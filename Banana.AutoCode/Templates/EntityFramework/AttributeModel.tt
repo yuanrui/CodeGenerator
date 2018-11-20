@@ -1,0 +1,120 @@
+﻿<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.generated.cs", host.GetValue("OutputPath").ToString() + "\\EntityFramework");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Entity.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
+namespace Banana.Entity
+{
+    /// <summary>
+    /// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+    /// </summary>
+    [Table("<#= table.Name #>")]
+    public partial class <#= table.DisplayName #>Entity : ICloneable
+    {
+    <# 
+	    foreach(var column in table.Columns)
+	    {
+            var attrs = new List<string>();
+
+			if(column.IsPrimaryKey)
+			{
+				attrs.Add("Key");
+			}
+            
+			if(! column.IsNullable)
+			{
+				attrs.Add("Required");
+			}
+			var attrTag = string.Join(", ", attrs);
+            if(! String.IsNullOrEmpty(attrTag))
+            {
+                attrTag = Environment.NewLine + "        " + "[" + attrTag + "]";
+
+                if(column.IsForeignKey)
+			    {
+				    attrTag += "/*[ForeignKey(\"" + column.Name + "\")]*/";
+			    }
+            }
+#>
+
+        /// <summary>
+        /// get or set <#= column.Comment #>
+        /// </summary><#= attrTag #>
+        public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
+    <#
+	    }
+    #>
+
+	    public virtual <#= table.DisplayName #>Entity CloneFrom(<#= table.DisplayName #>Entity thatObj)
+	    {
+		    if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+	    foreach(var column in table.Columns)
+	    {
+    #>
+		    this.<#= column.Name #> = thatObj.<#= column.Name #>;
+    <#
+	    }
+    #>
+
+		    return this;
+	    }
+
+	    public virtual <#= table.DisplayName #>Entity CloneTo(<#= table.DisplayName #>Entity thatObj)
+	    {
+		    if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+	    foreach(var column in table.Columns)
+	    {
+    #>
+		    thatObj.<#= column.Name #> = this.<#= column.Name #>;
+    <#
+	    }
+    #>
+
+		    return thatObj;
+	    }
+
+	    public virtual <#= table.DisplayName #>Entity Clone()
+        {
+            var thatObj = new <#= table.DisplayName #>Entity();
+
+            return this.CloneTo(thatObj);
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+    }
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>

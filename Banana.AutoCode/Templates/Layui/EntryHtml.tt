@@ -1,0 +1,156 @@
+﻿<#
+//------------------------------------------------------------------------------
+// <copyright file="EntryHtml.tt">
+//    Copyright (c) 2018, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2018-06-16 12:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var moduleName = table.DisplayName;
+    String[] numberTypes = new[] { "Int", "Decimal", "Double", "Single"};
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile("Entry.cshtml", host.GetValue("OutputPath").ToString() + "\\Layui\\Views\\" + table.DisplayName);
+#>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //<#= moduleName #> Entry
+}
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form id="fm" method="post" class="layui-form">
+<# 
+	foreach(var column in table.Columns)
+	{
+        var verify = String.Empty;
+        var verifyList = new List<String>();
+        
+        if(!column.IsNullable)
+        {
+            verifyList.Add("required");
+        }
+
+        if(column.TypeName.Contains("String"))
+        {
+            verifyList.Add("Rule_" + column.Name);
+        }
+
+        foreach (var numType in numberTypes)
+	    {
+		    if(column.TypeName.Contains(numType))
+            {
+                verifyList.Add("number");
+            }
+	    }
+
+        if(column.TypeName.Contains("DateTime"))
+        {
+            verifyList.Add("date");
+        }
+
+        verify = String.Join("|", verifyList);
+#>
+            <div class="layui-form-item">
+                <label class="layui-form-label"><#= column.Comment.Replace("\n", "") #></label>
+                <div class="layui-input-block">
+                  <input type="text" id="<#= column.Name #>" name="<#= column.Name #>" lay-verify="<#= verify #>" placeholder="<#= column.Comment.Replace("\n", "") #>" autocomplete="off" class="layui-input" />
+                </div>
+            </div>
+<#
+    }
+#>
+            <div class="layui-form-item layui-hide">
+                <input type="button" lay-submit lay-filter="admin-page-form-submit" id="admin-page-form-submit" value="确认添加" />
+                <input type="button" lay-submit lay-filter="admin-page-form-edit" id="admin-page-form-edit" value="确认编辑" />
+            </div>
+        </form>
+    </div>
+</div>
+@section footer{
+<script type="text/javascript">
+    var pageOption = {
+        CreateUrl : "/<#= moduleName #>/Create",
+        EditUrl : "/<#= moduleName #>/Edit"
+    };
+
+    layui.use('form', function(){
+        var form = layui.form;
+
+        form.verify({
+<# 
+	foreach(var column in table.Columns)
+	{
+        if(! column.TypeName.Contains("String"))
+        {
+            continue;
+        }
+#>
+            Rule_<#= column.Name #> : function (value, item) {
+                if ($.layui.getStringLength(value) > <#= column.Length #>) {
+                    return '最多只能输入个<#= column.Length #>字符(汉字一个字符算两个)';
+                }
+            },
+<#
+    }
+#>
+            _None: function (value, item) {
+                
+            }
+        });
+        //监听提交
+        form.on('submit(admin-page-form-submit)', function(data){
+            var field = data.field; //获取提交的字段
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引  
+
+            doSave(field, pageOption.CreateUrl, function (rsp) {
+                layer.show(rsp.Content, rsp.ShowType);
+                parent.layui.table.reload('table-list'); //重载表格
+                parent.layer.close(index); //再执行关闭
+            });
+        });
+
+        form.on('submit(admin-page-form-submit)', function(data){
+            var field = data.field;
+            var index = parent.layer.getFrameIndex(window.name);
+
+            doSave(field, pageOption.EditUrl, function (rsp) {
+                layer.show(rsp.Content, rsp.ShowType);
+                parent.layui.table.reload('table-list');
+                parent.layer.close(index);
+            });
+        });
+    });
+
+    function doSave(data, url, afterFunc) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function (jsonResult) {
+                if (jsonResult == null || jsonResult == "") {
+                    return;
+                }
+                var resultData = typeof jsonResult == "string" ? $.parseJSON(jsonResult) : jsonResult;
+
+                if (typeof afterFunc === "function") {
+                    afterFunc(resultData);
+                }
+            },
+            error: function (xmlHttpRequest, textStatus, errorThrown) {
+
+            }
+        });
+    }
+</script>
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true);
+#>
