@@ -25,9 +25,9 @@
 <div class="layui-card-body">
     <div class="table-toolbar">
         <button class="layui-btn" data-type="add">添加</button>
-        <button class="layui-btn" data-type="batchdel">删除</button>        
+        <button class="layui-btn" data-type="batchdel">删除</button>
     </div>
-    <table class="layui-table" lay-data="{ height: 'full-95', url:crudOption.PagerUrl, page:true, id:'table-list'}" lay-filter="table-list">
+    <table class="layui-table" lay-data="{ height: 'full-95', url:crudOption.PagerUrl, method:'post', page:true, id:'table-list'}" lay-filter="table-list">
         <thead>
             <tr>
     <#
@@ -39,7 +39,6 @@
             }
     #>
                 <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#optbar'}"></th>
-
             </tr>
         </thead>
     </table>
