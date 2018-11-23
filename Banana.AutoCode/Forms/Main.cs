@@ -303,14 +303,14 @@ namespace Banana.AutoCode
 
                     var targetPath = Path.Combine(outputPath, fileName + host.FileExtension);
 
-                    File.WriteAllText(targetPath, result);
+                    File.WriteAllText(targetPath, result, new UTF8Encoding(true));
                     Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code.");
                 }
             }
 
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
-
-            BuildThriftCodeAsync(outputBasePath);
+            Trace.WriteLine("Finished");
+            //BuildThriftCodeAsync(outputBasePath);
         }
 
         private void DoCommand(string thriftPath, string cmdText, string codePath)
@@ -362,7 +362,7 @@ namespace Banana.AutoCode
                 var cmdText = "-r -I \"" + includePath + "\" --gen " + lang + " \"" + codePath + "\"";
 
                 DoCommand(thriftExe, cmdText, codePath);
-            }            
+            }
         }
 
         private void BuildThriftCodeAsync(string basePath)

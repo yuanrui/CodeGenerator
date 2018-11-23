@@ -92,7 +92,7 @@ class Manager {
 
     protected virtual void CreateFile(String fileName, String content) {
         if (IsFileContentDifferent(fileName, content))
-            File.WriteAllText(fileName, content);
+            System.IO.File.WriteAllText(fileName, content, new UTF8Encoding(true));
     }
 
     public virtual String GetCustomToolNamespace(String fileName) {
