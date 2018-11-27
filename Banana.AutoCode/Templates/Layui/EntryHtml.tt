@@ -59,7 +59,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label"><#= column.Comment.Replace("\n", "") #></label>
                 <div class="layui-input-block">
-                  <input type="text" id="<#= column.Name #>" name="<#= column.Name #>" lay-verify="<#= verify #>" placeholder="<#= column.Comment.Replace("\n", "") #>" autocomplete="off" class="layui-input" />
+                  <input type="text" id="<#= column.Name #>" name="<#= column.Name #>" lay-verify="<#= verify #>" placeholder="" autocomplete="off" class="layui-input" />
                 </div>
             </div>
 <#
@@ -115,7 +115,7 @@
             });
         });
 
-        form.on('submit(admin-page-form-submit)', function(data){
+        form.on('submit(admin-page-form-edit)', function(data){
             var field = data.field;
             var index = parent.layer.getFrameIndex(window.name);
 

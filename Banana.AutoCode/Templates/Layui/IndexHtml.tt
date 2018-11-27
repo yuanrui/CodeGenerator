@@ -27,18 +27,18 @@
         <button class="layui-btn" data-type="add">添加</button>
         <button class="layui-btn" data-type="batchdel">删除</button>
     </div>
-    <table class="layui-table" lay-data="{ height: 'full-95', url:crudOption.PagerUrl, method:'post', page:true, id:'table-list'}" lay-filter="table-list">
+    <table class="layui-table" lay-data="{ id:'table-list', height: 'full-95', url:crudOption.PagerUrl, method:'post', page:true, cellMinWidth: 150 }" lay-filter="table-list">
         <thead>
             <tr>
     <#
             foreach(var col in table.Columns)
             {
     #>
-                <th lay-data="{field:'<#= col.Name #>',width:150}"><#= col.Comment.Replace("\n", "") #></th>
+                <th lay-data="{field:'<#= col.Name #>'}"><#= col.Comment.Replace("\n", "") #></th>
     <#
             }
     #>
-                <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#optbar'}"></th>
+                <th lay-data="{fixed: 'right', align:'center', toolbar: '#optbar'}"></th>
             </tr>
         </thead>
     </table>
@@ -47,14 +47,7 @@
       <a class="layui-btn layui-btn-primary layui-btn-xs hidden" lay-event="detail">查看</a>
       <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
       <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
-    </script>
- 
-    <script type="text/html" id="toolbar">
-      <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
-        <button class="layui-btn layui-btn-sm" lay-event="batchdel">删除</button>
-      </div>
-    </script>
+    </script> 
 </div>
 @section footer{
 <script type="text/javascript">
@@ -92,9 +85,10 @@
                     content: crudOption.EditUrl + "?" + <#= editParam #>,
                     area: ['550px', '550px'],
                     btn: ["确定", "取消"],
-                    yes: function(index, layerObj) {
-                        var layerFrame = window["layui-layer-iframe" + index];
-                        var aTag = layerObj.find("iframe").contents().find("#admin-page-form-edit");
+                    yes: function(index, layero) {
+                        var layerIndex = index;
+                        var layerFrame = window["layui-layer-iframe" + layerIndex];
+                        var aTag = layero.find("iframe").contents().find("#admin-page-form-edit");
 
                         layerFrame.layui.form.on("submit(admin-page-form-edit)", function (data) {
                             var ent = data.field;
@@ -105,24 +99,25 @@
         foreach(var col in table.Columns)
         {
 #>
-                                <#= col.Name #> : ent.<#= col.Name #>,
+                                    <#= col.Name #> : ent.<#= col.Name #>,
 <#
         }
 #>
+                                    __None__ : 0
                                 });
-                                layer.close(index);
+                                layer.close(layerIndex);
                             });
                         });
 
                         aTag.trigger("click");
                     },
-                    success: function(t, e) {
-                        var n = t.find("iframe").contents().find("#fm").click();
+                    success: function(layero, index) {
+                        var $dom = layero.find("iframe").contents().find("#fm").click();
 <#
         foreach(var col in table.Columns)
         {
 #>
-                        n.find('input[name="<#= col.Name #>"]').val(data.<#= col.Name #>);
+                        $dom.find('input[name="<#= col.Name #>"]').val(data.<#= col.Name #>);
 <#
         }
 #>
