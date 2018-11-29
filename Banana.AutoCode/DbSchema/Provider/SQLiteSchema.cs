@@ -195,7 +195,7 @@ namespace Banana.AutoCode.DbSchema.Provider
                     return GetTypeOf<Int16>(isNullable);
                 case "int":
                 case "integer":
-                    return GetTypeOf<Int32>(isNullable);
+                    return GetTypeOf<Int64>(isNullable);
                 case "float":
                     return GetTypeOf<Single>(isNullable);
                 case "double":
@@ -239,7 +239,7 @@ namespace Banana.AutoCode.DbSchema.Provider
                     return DbType.Int16;
                 case "int":
                 case "integer":
-                    return DbType.Int32;
+                    return DbType.Int64;
                 case "float":
                     return DbType.Single;
                 case "double":
