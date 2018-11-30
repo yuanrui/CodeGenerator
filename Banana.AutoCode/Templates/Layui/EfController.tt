@@ -75,13 +75,14 @@ namespace Banana.WebUI.Controllers
         [HttpPost]
         public ActionResult Create(<#= entClazzName #> ent)
         {
+            const String TITLE = "创建提示";
             AjaxMessage msg = null;
             
             var ctx = DbContextFactory.Create();
             ctx.Entry(ent).State = EntityState.Added;
             var result = ctx.SaveChanges() > 0;
 
-            msg = result ? AjaxMessage<<#= entClazzName #>>.Success("创建提示", "创建成功", ent) : AjaxMessage<<#= entClazzName #>>.Info("创建提示", "数据可能未保存", ent);
+            msg = result ? AjaxMessage<<#= entClazzName #>>.Success(TITLE, "创建成功", ent) : AjaxMessage<<#= entClazzName #>>.Info(TITLE, "数据可能未保存", ent);
             
             return Json(msg);
         }
@@ -95,6 +96,7 @@ namespace Banana.WebUI.Controllers
         [HttpPost]
         public ActionResult Edit(<#= entClazzName #> ent)
         {
+            const String TITLE = "更新提示";
             AjaxMessage msg = null;
             var ctx = DbContextFactory.Create();
             var query = ctx.Set<<#= entClazzName #>>();
@@ -102,7 +104,7 @@ namespace Banana.WebUI.Controllers
 
             if(oldEnt == null)
             {
-                return Json(AjaxMessage.Error("更新提示", "更新失败, 未找到实体。"));
+                return Json(AjaxMessage.Error(TITLE, "更新失败, 未找到实体。"));
             }
 
 <#
@@ -115,7 +117,7 @@ namespace Banana.WebUI.Controllers
 #>
             ctx.Entry<<#= entClazzName #>>(oldEnt).State = EntityState.Modified;
             var result = ctx.SaveChanges() > 0;
-            msg = result ? AjaxMessage.Success("更新提示", "更新成功") : AjaxMessage.Info("更新提示", "数据可能未保存");
+            msg = result ? AjaxMessage.Success(TITLE, "更新成功") : AjaxMessage.Info(TITLE, "数据可能未保存");
             
             return Json(msg);
         }
@@ -123,6 +125,7 @@ namespace Banana.WebUI.Controllers
         [HttpPost]
         public JsonResult Delete(IList<<#= entClazzName #>> list)
         {
+            const String TITLE = "删除提示";
             AjaxMessage msg = null;
             var ctx = DbContextFactory.Create();
             var dbSet = ctx.Set<<#= entClazzName #>>();
@@ -137,7 +140,7 @@ namespace Banana.WebUI.Controllers
                 var result = ctx.SaveChanges() > 0;
             }
             
-            msg = AjaxMessage.Success("删除提示", "删除操作处理成功");
+            msg = AjaxMessage.Success(TITLE, "删除操作处理成功");
             
             return Json(msg);
         }
