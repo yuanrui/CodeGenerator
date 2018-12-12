@@ -22,32 +22,34 @@
     ViewBag.Title = "<#= moduleName #> Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="layui-card-body">
-    <div class="table-toolbar">
-        <button class="layui-btn" data-type="add">添加</button>
-        <button class="layui-btn" data-type="batchdel">删除</button>
-    </div>
-    <table class="layui-table" lay-data="{ id:'table-list', height: 'full-95', url:crudOption.PagerUrl, method:'post', page:true, cellMinWidth: 150 }" lay-filter="table-list">
-        <thead>
-            <tr>
-    <#
-            foreach(var col in table.Columns)
-            {
-    #>
-                <th lay-data="{field:'<#= col.Name #>'}"><#= col.Comment.Replace("\n", "") #></th>
-    <#
-            }
-    #>
-                <th lay-data="{fixed: 'right', align:'center', toolbar: '#optbar'}"></th>
-            </tr>
-        </thead>
-    </table>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="table-toolbar">
+            <button class="layui-btn" data-type="add">添加</button>
+            <button class="layui-btn" data-type="batchdel">删除</button>
+        </div>
+        <table class="layui-table" lay-data="{ id:'table-list', height: 'full-95', url:crudOption.PagerUrl, method:'post', page:true, cellMinWidth: 150 }" lay-filter="table-list">
+            <thead>
+                <tr>
+        <#
+                foreach(var col in table.Columns)
+                {
+        #>
+                    <th lay-data="{field:'<#= col.Name #>'}"><#= col.Comment.Replace("\n", "") #></th>
+        <#
+                }
+        #>
+                    <th lay-data="{fixed: 'right', align:'center', toolbar: '#optbar'}"></th>
+                </tr>
+            </thead>
+        </table>
 
-    <script type="text/html" id="optbar">
-      <a class="layui-btn layui-btn-primary layui-btn-xs hidden" lay-event="detail">查看</a>
-      <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-      <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
-    </script> 
+        <script type="text/html" id="optbar">
+          <a class="layui-btn layui-btn-primary layui-btn-xs hidden" lay-event="detail">查看</a>
+          <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+        </script> 
+    </div>
 </div>
 @section footer{
 <script type="text/javascript">
