@@ -280,6 +280,7 @@
     </None>
     <None Include="Config\db.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Config\setting.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

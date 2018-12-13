@@ -53,7 +53,7 @@ namespace Banana.WebUI.Controllers
         public JsonResult Index(Int32 page, Int32 limit)
         {
             var ctx = DbContextFactory.Create();
-            var query = ctx.Set<<#= entClazzName #>>();
+            IQueryable<<#= entClazzName #>> query = ctx.Set<<#= entClazzName #>>();
             var pager = query.AsPager(page, limit, m => m.<#= table.Columns.FirstOrDefault().Name #>, true);
             //var pager = query.<#= table.PrimaryKeyColumns.Select(m => "OrderBy(m => m." + m.Name + ")").Aggregate((a, b) => a + "." + b) #>.AsPager(page, limit);
 
