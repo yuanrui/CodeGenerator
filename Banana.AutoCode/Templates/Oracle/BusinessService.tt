@@ -256,7 +256,7 @@ namespace Banana.Services.Base
                 return false;
             }
 
-            var @paramList = Provider.BuildParametersWithKey(list);
+            var @paramList = Provider.BuildParametersForKey(list);
 
             using(var scope = DataContextScope.GetCurrent(ConnectionName).Begin(true))
             {
