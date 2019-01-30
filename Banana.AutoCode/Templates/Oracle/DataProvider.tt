@@ -18,7 +18,7 @@
     var entClassName = table.DisplayName + "Entity";
     var pkCol = table.PrimaryKeyColumns.First();
     var pkTypeName = pkCol.TypeName;
-    
+    var index = 0;
     var manager = Manager.Create(host, GenerationEnvironment);
 	manager.StartNewFile(table.DisplayName + "SqlProviderBase.generated.cs", host.GetValue("OutputPath").ToString() + "\\Providers\\Oracle");
 #>
@@ -232,18 +232,18 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
 #>
         }
 
-        public virtual Boolean Add(DbParameterCollection @parameters)
+        public virtual Boolean Add(DbParameter[] @parameters)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Insert_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
 
-        public virtual Boolean Add(DbParameterCollection @parameters, Int32 arrayBindCount)
+        public virtual Boolean Add(DbParameter[] @parameters, Int32 arrayBindCount)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Insert_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
             cmd.ArrayBindCount = arrayBindCount;
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
@@ -265,18 +265,18 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
         
-        public virtual Boolean Update(DbParameterCollection @parameters)
+        public virtual Boolean Update(DbParameter[] @parameters)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Update_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
 
-        public virtual Boolean Update(DbParameterCollection @parameters, Int32 arrayBindCount)
+        public virtual Boolean Update(DbParameter[] @parameters, Int32 arrayBindCount)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Update_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
             cmd.ArrayBindCount = arrayBindCount;
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
@@ -296,31 +296,24 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
             }
 #>
             var cmd = DatabaseObject.GetSqlStringCommand(Save_<#= table.DisplayName #>_Sql);
-            
-<#
-            foreach(var col in table.Columns)
-            {
-#>
-            cmd.Parameters.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
-<#
-            }
-#>
+            var @parameters = BuildParameters(entity);
+            cmd.Parameters.AddRange(@parameters);
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
         
-        public virtual Boolean Save(DbParameterCollection @parameters)
+        public virtual Boolean Save(DbParameter[] @parameters)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Save_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
 
-        public virtual Boolean Save(DbParameterCollection @parameters, Int32 arrayBindCount)
+        public virtual Boolean Save(DbParameter[] @parameters, Int32 arrayBindCount)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Save_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
             cmd.ArrayBindCount = arrayBindCount;
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
@@ -342,18 +335,18 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
         
-        public virtual Boolean Delete(DbParameterCollection @parameters)
+        public virtual Boolean Delete(DbParameter[] @parameters)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Delete_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
         }
                
-        public virtual Boolean Delete(DbParameterCollection @parameters, Int32 arrayBindCount)
+        public virtual Boolean Delete(DbParameter[] @parameters, Int32 arrayBindCount)
         {
             var cmd = DatabaseObject.GetSqlStringCommand(Delete_<#= table.DisplayName #>_Sql) as OracleCommand;
-            cmd.Parameters = @parameters as OracleParameterCollection;
+            cmd.Parameters.AddRange(@parameters);
             cmd.ArrayBindCount = arrayBindCount;
 
             return DataContextObject.ExecuteNonQuery(cmd) > 0;
@@ -361,56 +354,60 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name))
 
         #region Build Parameters
 
-        public virtual DbParameterCollection BuildParameters(<#= entClassName #> entity)
+        public virtual DbParameter[] BuildParameters(<#= entClassName #> entity)
         {
-            var @paramList = new OracleParameterCollection();
+            DbParameter[] @paramList = new OracleParameter[<#= table.Columns.Count #>];
 <#
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                var col = table.Columns[i];
+#>
+            @paramList[<#= i #>] = new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input);
+<#
+            }
+#>
+            return @paramList;
+        }
+
+        public virtual DbParameter[] BuildParametersForKey(<#= entClassName #> entity)
+        {
+            var @paramList = new DbParameter[<#= table.PrimaryKeyColumns.Count #>];
+<#
+            index = 0;
+            foreach(var col in table.PrimaryKeyColumns)
+            {                
+#>
+            @paramList[<#= index++ #>] = new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input);
+<#
+            }
+#>
+            return @paramList;
+        }
+
+        public virtual DbParameter[] BuildParameters(IEnumerable<<#= entClassName #>> list)
+        {
+            var @paramList = new DbParameter[<#= table.Columns.Count #>];
+<#
+            index = 0;
             foreach(var col in table.Columns)
             {
 #>
-            @paramList.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
+            @paramList[<#= index++ #>] = new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, list.Select(c => c.<#= col.Name #>).ToArray(), ParameterDirection.Input);
 <#
             }
 #>
             return @paramList;
         }
 
-        public virtual DbParameterCollection BuildParametersWithKey(<#= entClassName #> entity)
+        public virtual DbParameter[] BuildParametersForKey(IEnumerable<<#= entClassName #>> list)
         {
-            var @paramList = new OracleParameterCollection();
+            var @paramList = new DbParameter[<#= table.PrimaryKeyColumns.Count #>];
 <#
+            index = 0;
             foreach(var col in table.PrimaryKeyColumns)
             {
 #>
-            @paramList.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, entity.<#= col.Name #>, ParameterDirection.Input));
-<#
-            }
-#>
-            return @paramList;
-        }
-
-        public virtual DbParameterCollection BuildParameters(IEnumerable<<#= entClassName #>> list)
-        {
-            var @paramList = new OracleParameterCollection();
-<#
-            foreach(var col in table.Columns)
-            {
-#>
-            @paramList.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, list.Select(c => c.<#= col.Name #>).ToArray(), ParameterDirection.Input));
-<#
-            }
-#>
-            return @paramList;
-        }
-
-        public virtual DbParameterCollection BuildParametersWithKey(IEnumerable<<#= entClassName #>> list)
-        {
-            var @paramList = new OracleParameterCollection();
-<#
-            foreach(var col in table.PrimaryKeyColumns)
-            {
-#>
-            @paramList.Add(new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, list.Select(c => c.<#= col.Name #>).ToArray(), ParameterDirection.Input));
+            @paramList[<#= index++ #>] = new OracleParameter("<#= col.Name #>", OracleDbType.<#= OracleTypeConverter.AsOracleDbType(col.RawType).ToString() #>, list.Select(c => c.<#= col.Name #>).ToArray(), ParameterDirection.Input);
 <#
             }
 #>
