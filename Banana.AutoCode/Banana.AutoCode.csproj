@@ -202,6 +202,11 @@
     <Compile Include="Forms\TreeViewExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Localization.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Localization.resx</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\About.en-US.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
@@ -275,6 +280,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Resources\Localization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Localization.zh-Hans.resx" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

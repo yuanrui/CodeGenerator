@@ -95,6 +95,8 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsPanel";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.ResumeLayout(false);
             this.PerformLayout();
 

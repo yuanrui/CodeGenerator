@@ -44,6 +44,7 @@
             this.Controls.Add(this.tvTemplates);
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight;
             this.Name = "TemplatePanel";
+            this.ShowIcon = false;
             this.ResumeLayout(false);
 
         }

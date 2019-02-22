@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
 using WeifenLuo.WinFormsUI.Docking;
+using Banana.AutoCode.Resources;
 
 namespace Banana.AutoCode.Forms
 {
@@ -34,7 +35,7 @@ namespace Banana.AutoCode.Forms
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(basePath);
-                Trace.WriteLine("Template directory:" + basePath + " not exists, auto created");
+                Trace.WriteLine(string.Format(Localization.Templates_Not_Exists_Format_Auto, basePath));
             }
 
             InitImageList(iconList, basePath);
@@ -97,7 +98,7 @@ namespace Banana.AutoCode.Forms
 
             if (!Directory.Exists(basePath))
             {
-                Trace.WriteLine("Template directory:" + basePath + " not exists");
+                Trace.WriteLine(String.Format(Localization.Templates_Not_Exists_Format, basePath));
                 return;
             }
 

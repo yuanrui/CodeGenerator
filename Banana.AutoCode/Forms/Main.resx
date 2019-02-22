@@ -504,19 +504,19 @@
   <data name="tsbtnDatabase.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         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
-        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
+        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
 </value>
   </data>
   <data name="tsbtnDatabase.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Banana.AutoCode.Resources;
 
 namespace Banana.AutoCode.Forms
 {
@@ -60,11 +61,11 @@ namespace Banana.AutoCode.Forms
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
 
-                Trace.WriteLine("Save settings " + key + "=" + value + " success");
+                Trace.WriteLine(String.Format(Localization.Save_Setting_Success, key, value));
             }
             catch (ConfigurationErrorsException)
             {
-                Trace.WriteLine("Error writing app settings");
+                Trace.WriteLine(Localization.Save_Setting_Exception);
             }
         }
 

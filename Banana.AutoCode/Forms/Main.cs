@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Banana.AutoCode.Core;
 using Banana.AutoCode.Forms;
+using Banana.AutoCode.Resources;
 using Microsoft.VisualStudio.TextTemplating;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -62,14 +63,14 @@ namespace Banana.AutoCode
         {
             if (! Directory.Exists(TEMPLATES_DIR))
             {
-                Trace.WriteLine("Templates directory not exists, auto create.");
+                Trace.WriteLine(Localization.Templates_Not_Exists);
 
                 Directory.CreateDirectory(TEMPLATES_DIR);
             }
 
             if (! Directory.Exists(OUTPUT_DIR))
             {
-                Trace.WriteLine("Output directory not exists, auto create.");
+                Trace.WriteLine(Localization.Output_Not_Exists);
                 Directory.CreateDirectory(OUTPUT_DIR);
             }
         }
@@ -88,7 +89,7 @@ namespace Banana.AutoCode
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            saveFileDialog.Filter = "文本文件(*.txt)|*.txt|所有文件(*.*)|*.*";
+            saveFileDialog.Filter = Localization.SaveFileDialog_Filter;
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 string FileName = saveFileDialog.FileName;
@@ -234,7 +235,7 @@ namespace Banana.AutoCode
             
             if (tables == null || ! tables.Any())
             {
-                Trace.WriteLine("Unchecked tables can not generate code");
+                Trace.WriteLine(Localization.Unchecked_Tables);
                 return;
             }
 
@@ -243,7 +244,7 @@ namespace Banana.AutoCode
             
             if (! files.Any())
             {
-                Trace.WriteLine("No template file. run stop.");
+                Trace.WriteLine(Localization.No_Template_File);
                 return;
             }
 
@@ -271,7 +272,7 @@ namespace Banana.AutoCode
             {
                 var content = File.ReadAllText(path);
                 var templateName = Path.GetFileName(path);
-                Trace.WriteLine("Template:" + templateName);
+                Trace.WriteLine(Localization.Template + templateName);
 
                 foreach (var table in tables)
                 {
@@ -281,12 +282,12 @@ namespace Banana.AutoCode
                     var outputPath = GetOutputPath(table, basePath);
                     host.SetValue("OutputPath", outputPath);
 
-                    Trace.WriteLine("Generate table:" + host.Table.Name + " TemplateName:" + templateName + " OutputPath:" + outputPath);
+                    Trace.WriteLine(String.Format(Localization.Generate_Table, host.Table.Name, templateName, outputPath));
                     var result = engine.ProcessTemplate(content, host);
 
                     if (string.IsNullOrWhiteSpace(result))
                     {
-                        Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code, no result.");
+                        Trace.WriteLine(String.Format(Localization.Finish_Generate_Empty, host.Table.DisplayName));
                         continue;
                     }
 
@@ -304,12 +305,12 @@ namespace Banana.AutoCode
                     var targetPath = Path.Combine(outputPath, fileName + host.FileExtension);
 
                     File.WriteAllText(targetPath, result, new UTF8Encoding(true));
-                    Trace.WriteLine("Finish generate table " + host.Table.DisplayName + " code.");
+                    Trace.WriteLine(String.Format(Localization.Finish_Generate, host.Table.DisplayName));
                 }
             }
 
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
-            Trace.WriteLine("Finished");
+            Trace.WriteLine(Localization.Finished);
             //BuildThriftCodeAsync(outputBasePath);
         }
 
@@ -374,7 +375,7 @@ namespace Banana.AutoCode
                 return;
             }
             
-            Trace.WriteLine("Begin generate Thrift");
+            Trace.WriteLine(Localization.Generate_Thrift_Begin);
 
             var task = Task.Factory.StartNew(() =>
             {
@@ -387,14 +388,14 @@ namespace Banana.AutoCode
                     }
                     catch (Exception ex)
                     {
-                        Trace.WriteLine(string.Format("Generate Thrift({0}) Exception:{1}", path, ex));
+                        Trace.WriteLine(string.Format(Localization.Generate_Thrift_Exception, path, ex));
                     }                   
                 }
             });
 
             task.ContinueWith(t => 
             {
-                Trace.WriteLine("Finish generate Thrift");
+                Trace.WriteLine(Localization.Generate_Thrift_Finished);
             });
         }
 

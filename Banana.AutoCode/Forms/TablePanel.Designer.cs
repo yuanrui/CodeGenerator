@@ -209,6 +209,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
             this.Name = "TablePanel";
+            this.ShowIcon = false;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvColumns)).EndInit();

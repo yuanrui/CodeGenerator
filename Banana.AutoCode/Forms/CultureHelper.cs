@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Banana.AutoCode.Resources;
 
 namespace Banana.AutoCode
 {
@@ -32,6 +33,7 @@ namespace Banana.AutoCode
         {
             CultureInfo cultureInfo = new CultureInfo(cultureName);
             Thread.CurrentThread.CurrentUICulture = cultureInfo;
+            Localization.Culture = cultureInfo;
         }
 
         public static Boolean CultureIsSupport(String cultureName)
