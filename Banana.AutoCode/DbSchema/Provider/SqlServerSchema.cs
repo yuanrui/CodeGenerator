@@ -9,21 +9,21 @@ namespace Banana.AutoCode.DbSchema.Provider
 {
     public class SqlServerSchema : DbSchemaBase
     {
-        public SqlServerSchema(string connName) : base(connName)
+        public SqlServerSchema(String connName) : base(connName)
         { 
             
         }
 
         public override List<Database> GetDatabases()
         {
-            const string sql = "select name from sys.databases order by database_id desc";
+            const String sql = "select name from sys.databases order by database_id desc";
            
             return Context.Query<Database>(sql);
         }
 
         public override List<Table> GetTables(Database db)
         {
-            var sql = string.Format(@"USE [{0}];
+            var sql = String.Format(@"USE [{0}];
 select a.object_id as Id, a.name as Name, b.value as Comment from sys.tables a 
 left join sys.extended_properties b on a.object_id = b.major_id and minor_id =0;", db.Name);
             var result = Context.Query<Table>(sql);
@@ -33,7 +33,7 @@ left join sys.extended_properties b on a.object_id = b.major_id and minor_id =0;
 
         public override List<Column> GetColumns(Table table)
         {
-            var sql = string.Format(@"USE [{0}];
+            var sql = String.Format(@"USE [{0}];
 WITH colConsCTE(TABLE_NAME, COLUMN_NAME, CONSTRAINT_TYPE) AS (
      SELECT A.TABLE_NAME, A.COLUMN_NAME, B.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE A
      LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS B ON A.CONSTRAINT_NAME = B.CONSTRAINT_NAME AND A.TABLE_NAME = B.TABLE_NAME 
@@ -70,7 +70,7 @@ where a.name = @TableName ", table.Owner);
         }
 
 
-        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        public override Type GetType(String rawType, Int16 precision, Int16 scale, bool isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
             {
@@ -113,7 +113,7 @@ where a.name = @TableName ", table.Owner);
                 case "nvarchar":
                 case "text":
                 case "ntext":
-                    return typeof(string);
+                    return typeof(String);
                 case "blob":
                 case "binary":
                 case "image":
@@ -124,9 +124,9 @@ where a.name = @TableName ", table.Owner);
                 case "uniqueidentifier":
                     return GetTypeOf<Guid>(isNullable);
                 case "xml":
-                    return typeof(string);
+                    return typeof(String);
                 default:
-                    return rawType.Contains("int") ? GetTypeOf<Int32>(isNullable) : typeof(string);
+                    return rawType.Contains("int") ? GetTypeOf<Int32>(isNullable) : typeof(String);
             }
         }
 
@@ -137,7 +137,7 @@ where a.name = @TableName ", table.Owner);
         /// <param name="precision"></param>
         /// <param name="scale"></param>
         /// <returns></returns>
-        public override DbType GetDbType(string rawType, short precision, short scale)
+        public override DbType GetDbType(String rawType, Int16 precision, Int16 scale)
         {
             if (String.IsNullOrEmpty(rawType))
             {

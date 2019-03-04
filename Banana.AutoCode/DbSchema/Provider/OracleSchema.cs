@@ -8,21 +8,21 @@ namespace Banana.AutoCode.DbSchema.Provider
 {
     public class OracleSchema : DbSchemaBase
     {
-        public OracleSchema(string connName) : base(connName)
+        public OracleSchema(String connName) : base(connName)
         { 
             
         }
 
         public override List<Database> GetDatabases()
         {
-            const string sql = "select USERNAME as Name from all_users";
+            const String sql = "select USERNAME as Name from all_users";
 
             return Context.Query<Database>(sql);
         }
 
         public override List<Table> GetTables(Database db)
         {
-            const string sql = @"select 
+            const String sql = @"select 
 o.OBJECT_ID as Id, 
 t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
 from all_tables t 
@@ -37,7 +37,7 @@ where t.owner=:Owner";
 
         public override List<Column> GetColumns(Table table)
         {
-            const string sql = @"
+            const String sql = @"
 WITH colConsCTE AS (
     SELECT a.*, b.CONSTRAINT_TYPE FROM all_cons_columns a
     LEFT JOIN all_constraints b ON a.owner = b.owner AND a.constraint_name = b.constraint_name AND a.table_name = b.table_name 
@@ -122,12 +122,12 @@ ORDER BY tab.COLUMN_ID ASC ";
                     return GetTypeOf<Int16>(isNullable);
                 }
 
-                if (precision <= 9)
+                if (precision <= 10)
                 {
                     return GetTypeOf<Int32>(isNullable);
                 }
 
-                if (precision <= 18)
+                if (precision <= 19)
                 {
                     return GetTypeOf<Int64>(isNullable);
                 }
@@ -136,7 +136,7 @@ ORDER BY tab.COLUMN_ID ASC ";
             return GetTypeOf<Decimal>(isNullable);
         }
 
-        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        public override Type GetType(String rawType, Int16 precision, Int16 scale, Boolean isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
             {
@@ -188,7 +188,7 @@ ORDER BY tab.COLUMN_ID ASC ";
         /// <param name="precision"></param>
         /// <param name="scale"></param>
         /// <returns></returns>
-        public override DbType GetDbType(string rawType, short precision, short scale)
+        public override DbType GetDbType(String rawType, Int16 precision, Int16 scale)
         {
             var csharpDbType = DbType.Object;
             switch (rawType.ToUpper())

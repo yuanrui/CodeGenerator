@@ -68,7 +68,7 @@ namespace Banana.AutoCode.DbSchema.Provider
 
         #endregion
 
-        public override string MetaDataCollectionName_Databases
+        public override String MetaDataCollectionName_Databases
         {
             get
             {
@@ -76,7 +76,7 @@ namespace Banana.AutoCode.DbSchema.Provider
             }
         }
 
-        public SQLiteSchema(string connName) : base(connName)
+        public SQLiteSchema(String connName) : base(connName)
         { 
             
         }
@@ -166,12 +166,12 @@ namespace Banana.AutoCode.DbSchema.Provider
                     return GetTypeOf<Int16>(isNullable);
                 }
 
-                if (precision <= 9)
+                if (precision <= 10)
                 {
                     return GetTypeOf<Int32>(isNullable);
                 }
 
-                if (precision <= 18)
+                if (precision <= 19)
                 {
                     return GetTypeOf<Int64>(isNullable);
                 }
@@ -180,7 +180,7 @@ namespace Banana.AutoCode.DbSchema.Provider
             return GetTypeOf<Decimal>(isNullable);
         }
 
-        public override Type GetType(string rawType, short precision, short scale, bool isNullable)
+        public override Type GetType(String rawType, Int16 precision, Int16 scale, Boolean isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
             {
@@ -224,7 +224,7 @@ namespace Banana.AutoCode.DbSchema.Provider
             }
         }
 
-        public override DbType GetDbType(string rawType, short precision, short scale)
+        public override DbType GetDbType(String rawType, Int16 precision, Int16 scale)
         {
             if (String.IsNullOrEmpty(rawType))
             {
