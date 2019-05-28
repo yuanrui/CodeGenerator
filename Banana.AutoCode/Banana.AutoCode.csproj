@@ -284,7 +284,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Localization.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Localization.zh-Hans.resx" />
+    <EmbeddedResource Include="Resources\Localization.zh-CN.resx" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
