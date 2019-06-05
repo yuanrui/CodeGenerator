@@ -310,6 +310,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Resources\Icons.128x128.Logo.ico" />
     <Content Include="Templates\EasyUI\Controller.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>Controller.txt</LastGenOutput>
@@ -376,7 +377,6 @@
     </None>
     <None Include="Resources\Icons.16x16.Help.png" />
     <None Include="Resources\Icons.16x16.Tools.png" />
-    <None Include="Resources\Icons.128x128.Logo.ico" />
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>
