@@ -110,6 +110,10 @@
 
             doSave(field, pageOption.CreateUrl, function (rsp) {
                 layer.show(rsp.Content, rsp.ShowType);
+                if (!rsp.IsSuccess) {
+                    return;
+                }
+
                 parent.layui.table.reload('table-list'); //重载表格
                 parent.layer.close(index); //再执行关闭
             });
