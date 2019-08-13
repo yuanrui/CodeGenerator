@@ -96,6 +96,9 @@
                             var ent = data.field;
                             doSave(ent, crudOption.EditUrl, function (rsp) {
                                 layer.show(rsp.Content, rsp.ShowType);
+                                if (!rsp.IsSuccess) {
+                                    return;
+                                }
                                 row.update({
 <#
         foreach(var col in table.Columns)
