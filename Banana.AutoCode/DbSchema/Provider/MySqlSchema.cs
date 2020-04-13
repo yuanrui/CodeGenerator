@@ -29,7 +29,7 @@ namespace Banana.AutoCode.DbSchema.Provider
                 }
             }
 
-            return result;
+            return result.OrderBy(m => m.Name).ToList() ?? new List<Database>();
         }
 
         public override List<Table> GetTables(Database db)
@@ -42,7 +42,7 @@ order by table_name";
 
             var result = Context.Query<Table>(sql, new { TableSchema = db.Name });
 
-            return result;
+            return result ?? new List<Table>();
         }
 
         public override List<Column> GetColumns(Table table)
