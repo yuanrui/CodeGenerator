@@ -15,8 +15,8 @@ namespace Banana.AutoCode.DbSchema.Provider
 
         public override List<Database> GetDatabases()
         {
-            const String sql = "select USERNAME as Name from all_users";
-
+            const String sql = "select USERNAME as Name from all_users order by 1";
+            
             return Context.Query<Database>(sql);
         }
 
