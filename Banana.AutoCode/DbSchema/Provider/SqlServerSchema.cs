@@ -16,7 +16,7 @@ namespace Banana.AutoCode.DbSchema.Provider
 
         public override List<Database> GetDatabases()
         {
-            const String sql = "select name from sys.databases order by database_id desc";
+            const String sql = "select name from sys.databases order by name asc";
            
             return Context.Query<Database>(sql);
         }
