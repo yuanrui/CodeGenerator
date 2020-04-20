@@ -37,7 +37,8 @@ namespace Banana.AutoCode.DbSchema.Provider
             const string sql = @"
 select table_name as Id, table_name as Name, table_comment as Comment, table_schema as Owner
 from information_schema.tables
-where table_schema=@TableSchema";
+where table_schema=@TableSchema
+order by table_name";
 
             var result = Context.Query<Table>(sql, new { TableSchema = db.Name });
 
