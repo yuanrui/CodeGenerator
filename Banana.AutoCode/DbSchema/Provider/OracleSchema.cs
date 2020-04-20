@@ -28,7 +28,8 @@ t.TABLE_NAME as Name, c.COMMENTS as ""Comment"", t.OWNER as Owner
 from all_tables t 
 left join all_tab_comments c on t.owner = c.owner and t.TABLE_NAME = c.TABLE_NAME 
 left join ALL_OBJECTS o on t.OWNER = o.OWNER and t.TABLE_NAME = o.OBJECT_NAME 
-where t.owner=:Owner";
+where t.owner=:Owner
+order by t.TABLE_NAME";
 
             var result = Context.Query<Table>(sql, new { Owner = db.Name });
 
