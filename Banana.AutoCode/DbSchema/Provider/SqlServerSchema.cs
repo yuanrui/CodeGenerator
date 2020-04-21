@@ -25,7 +25,8 @@ namespace Banana.AutoCode.DbSchema.Provider
         {
             var sql = String.Format(@"USE [{0}];
 select a.object_id as Id, a.name as Name, b.value as Comment from sys.tables a 
-left join sys.extended_properties b on a.object_id = b.major_id and minor_id =0;", db.Name);
+left join sys.extended_properties b on a.object_id = b.major_id and minor_id =0
+order by a.name", db.Name);
             var result = Context.Query<Table>(sql);
             
             return result;
