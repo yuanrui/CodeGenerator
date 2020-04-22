@@ -54,7 +54,7 @@ namespace Banana.AutoCode.DbSchema
                 result.Add(table);
             }
 
-            return result;
+            return result.OrderBy(m => m.Name).ToList();
         }
 
         public virtual List<Column> GetColumns(Table table)
