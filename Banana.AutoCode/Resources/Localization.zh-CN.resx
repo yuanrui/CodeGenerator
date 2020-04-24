@@ -171,4 +171,10 @@
   <data name="Save" xml:space="preserve">
     <value>保存</value>
   </data>
+  <data name="Save_ConnectionString_Exception" xml:space="preserve">
+    <value>保存数据库连接字符串失败, 异常原因: </value>
+  </data>
+  <data name="Save_ConnectionString_Success" xml:space="preserve">
+    <value>保存数据库连接字符串 {0} 成功</value>
+  </data>
 </root>
