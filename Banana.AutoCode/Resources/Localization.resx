@@ -171,4 +171,10 @@
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="Save_ConnectionString_Exception" xml:space="preserve">
+    <value>Error writing db connection settings, Exception: </value>
+  </data>
+  <data name="Save_ConnectionString_Success" xml:space="preserve">
+    <value>Save db connection settings {0} success</value>
+  </data>
 </root>
