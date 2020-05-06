@@ -177,4 +177,10 @@
   <data name="Save_ConnectionString_Success" xml:space="preserve">
     <value>Save db connection settings {0} success</value>
   </data>
+  <data name="Remove_ConnectionString_Exception" xml:space="preserve">
+    <value>Error remove db connection settings, Exception: </value>
+  </data>
+  <data name="Remove_ConnectionString_Success" xml:space="preserve">
+    <value>Remove db connection settings {0} success</value>
+  </data>
 </root>

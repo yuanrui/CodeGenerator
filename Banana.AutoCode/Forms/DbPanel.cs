@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Banana.AutoCode.DbSchema;
+using Banana.AutoCode.Resources;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Banana.AutoCode.DbSchema;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode.Forms
@@ -50,13 +48,13 @@ namespace Banana.AutoCode.Forms
             IconList.Images.Add("database", Properties.Resources.Icons_16x16_DataActive);
             IconList.Images.Add("databaseOff", Properties.Resources.Icons_16x16_DataInactive);
             IconList.Images.Add("tables", Properties.Resources.Icons_16x16_Table);
-            
+
             tvDb.ImageList = IconList;
             tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
             tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
             tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
             tvDb.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseDoubleClick);
-            
+
             RefreshTreeView();
         }
 
@@ -64,7 +62,7 @@ namespace Banana.AutoCode.Forms
         {
             cbConnStrings.Items.Clear();
             tvDb.Nodes.Clear();
-            
+
             foreach (DictionaryEntry item in TableMap)
             {
                 var form = item.Value as TablePanel;
@@ -121,7 +119,7 @@ namespace Banana.AutoCode.Forms
             if (e.Node.Level == TABLE_NODE_LEVEL)
             {
                 ResetDbNodeIcon(e.Node.Parent);
-                
+
                 if (table == null)
                 {
                     return;
@@ -143,7 +141,7 @@ namespace Banana.AutoCode.Forms
                         tableForm = new TablePanel(table, CurrentConnSetting);
                         tableForm.Text = e.Node.Text;
                         tableForm.Show(((Main)this.ParentForm).MainDockPanel);
-                        
+
                         return;
                     }
 
@@ -166,7 +164,7 @@ namespace Banana.AutoCode.Forms
             {
                 return;
             }
-            
+
             DatabaseName = db.Name;
 
             if (db.Tables == null)
@@ -187,7 +185,7 @@ namespace Banana.AutoCode.Forms
 
             e.Node.Toggle();
         }
-        
+
         void tvDb_DrawNode(object sender, DrawTreeNodeEventArgs e)
         {
             if (e.Node.Level == ROOT_NODE_LEVEL || e.Node.Level == DB_NODE_LEVEL)
@@ -202,16 +200,22 @@ namespace Banana.AutoCode.Forms
         {
             tvDb.Nodes.Clear();
             CurrentConnSetting = ConfigurationManager.ConnectionStrings[cbConnStrings.SelectedItem.ToString()];
+            
+            Task.Factory.StartNew(() => {
+                DoChangeDataSource(CurrentConnSetting);
+            });
+        }
+
+        private void DoChangeDataSource(ConnectionStringSettings settings)
+        {
             var dbSchemaManager = GetManager();
 
             var dbs = dbSchemaManager.GetDatabases();
-            var root = new TreeNode(CurrentConnSetting.Name, 0, 0);
-            root.ToolTipText = CurrentConnSetting.ConnectionString;
+            var root = new TreeNode(settings.Name, 0, 0);
+            root.ToolTipText = settings.ConnectionString;
             root.ImageKey = ROOT_ON_ICON;
             root.SelectedImageKey = root.ImageKey;
-            tvDb.Nodes.Add(root);
-            tvDb.CheckBoxes = true;
-            
+
             foreach (var db in dbs)
             {
                 var dbNode = new TreeNode(db.Name, 1, 1);
@@ -219,14 +223,14 @@ namespace Banana.AutoCode.Forms
                 dbNode.ToolTipText = db.Name;
                 dbNode.ImageKey = DB_OFF_ICON;
                 dbNode.SelectedImageKey = dbNode.ImageKey;
-                
+
                 root.Nodes.Add(dbNode);
             }
-        }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            RefreshTreeView();
+            tvDb.InvokeIfRequired((tv) => {
+                tv.Nodes.Add(root);
+                tv.CheckBoxes = true;
+            });
         }
 
         private DbSchemaManager GetManager()
@@ -288,5 +292,49 @@ namespace Banana.AutoCode.Forms
             base.Refresh();
             RefreshTreeView();
         }
+
+        private void pboxDbAdd_Click(object sender, EventArgs e)
+        {
+            DbConnBuilderPanel options = new DbConnBuilderPanel();
+            options.ShowDialog(this);
+        }
+
+        private void pboxDbEdit_Click(object sender, EventArgs e)
+        {
+            DbConnBuilderPanel options = new DbConnBuilderPanel(CurrentConnSetting);
+            options.ShowDialog(this);
+        }
+
+        private void pboxDbDelete_Click(object sender, EventArgs e)
+        {
+            var name = cbConnStrings.Text;
+            RemoveConnectionStrings(name);
+            RefreshTreeView();
+        }
+
+        private void pboxDbRefresh_Click(object sender, EventArgs e)
+        {
+            RefreshTreeView();
+        }
+
+        public void RemoveConnectionStrings(string name)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var collection = configFile.ConnectionStrings.ConnectionStrings;
+                collection.Remove(name);
+                cbConnStrings.Items.Remove(name);
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.ConnectionStrings.SectionInformation.Name);
+
+                Trace.WriteLine(String.Format(Localization.Remove_ConnectionString_Success, name));
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                Trace.WriteLine(Localization.Remove_ConnectionString_Exception + ex);
+            }
+        }
+
     }
 }

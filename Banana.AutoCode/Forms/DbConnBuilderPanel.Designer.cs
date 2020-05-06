@@ -83,12 +83,12 @@
             this.txtServer.Location = new System.Drawing.Point(91, 66);
             this.txtServer.Name = "txtServer";
             this.txtServer.Size = new System.Drawing.Size(157, 21);
-            this.txtServer.TabIndex = 3;
+            this.txtServer.TabIndex = 2;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(50, 179);
+            this.label3.Location = new System.Drawing.Point(50, 177);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 12);
             this.label3.TabIndex = 4;
@@ -96,7 +96,7 @@
             // 
             // txtUser
             // 
-            this.txtUser.Location = new System.Drawing.Point(91, 176);
+            this.txtUser.Location = new System.Drawing.Point(91, 174);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(157, 21);
             this.txtUser.TabIndex = 5;
@@ -104,7 +104,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 212);
+            this.label4.Location = new System.Drawing.Point(26, 210);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 12);
             this.label4.TabIndex = 6;
@@ -112,10 +112,10 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(91, 209);
+            this.txtPassword.Location = new System.Drawing.Point(91, 207);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(157, 21);
-            this.txtPassword.TabIndex = 7;
+            this.txtPassword.TabIndex = 6;
             // 
             // label5
             // 
@@ -131,11 +131,11 @@
             this.txtPort.Location = new System.Drawing.Point(91, 102);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(50, 21);
-            this.txtPort.TabIndex = 9;
+            this.txtPort.TabIndex = 3;
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(40, 287);
+            this.btnTest.Location = new System.Drawing.Point(40, 285);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(75, 23);
             this.btnTest.TabIndex = 10;
@@ -145,7 +145,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(121, 287);
+            this.btnSave.Location = new System.Drawing.Point(121, 285);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 11;
@@ -155,7 +155,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(202, 287);
+            this.btnCancel.Location = new System.Drawing.Point(202, 285);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 12;
@@ -166,7 +166,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(50, 248);
+            this.label6.Location = new System.Drawing.Point(50, 246);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 12);
             this.label6.TabIndex = 13;
@@ -174,15 +174,15 @@
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(91, 245);
+            this.txtName.Location = new System.Drawing.Point(91, 243);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(157, 21);
-            this.txtName.TabIndex = 14;
+            this.txtName.TabIndex = 7;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(26, 143);
+            this.label7.Location = new System.Drawing.Point(26, 141);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 12);
             this.label7.TabIndex = 15;
@@ -190,16 +190,16 @@
             // 
             // txtInstance
             // 
-            this.txtInstance.Location = new System.Drawing.Point(91, 140);
+            this.txtInstance.Location = new System.Drawing.Point(91, 138);
             this.txtInstance.Name = "txtInstance";
             this.txtInstance.Size = new System.Drawing.Size(157, 21);
-            this.txtInstance.TabIndex = 16;
+            this.txtInstance.TabIndex = 4;
             // 
             // DbConnBuilderPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(310, 350);
+            this.ClientSize = new System.Drawing.Size(310, 337);
             this.Controls.Add(this.txtInstance);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtName);
@@ -217,8 +217,13 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cboDataProvider);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "DbConnBuilderPanel";
-            this.Text = "Create Connection String";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.Text = "Connection String";
             this.ResumeLayout(false);
             this.PerformLayout();
 

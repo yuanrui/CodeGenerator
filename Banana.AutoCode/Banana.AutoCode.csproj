@@ -140,6 +140,12 @@
     </Compile>
     <Compile Include="Forms\ControlExtension.cs" />
     <Compile Include="Forms\CultureHelper.cs" />
+    <Compile Include="Forms\DbConnBuilderPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DbConnBuilderPanel.Designer.cs">
+      <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\DbPanel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\About.zh-CN.resx">
       <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbConnBuilderPanel.resx">
+      <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbPanel.en-US.resx">
       <DependentUpon>DbPanel.cs</DependentUpon>
@@ -293,6 +302,10 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Resources\Icons.128x128.Logo.ico" />
+    <None Include="Resources\Icons.16x16.DatabaseEdit.png" />
+    <None Include="Resources\Icons.16x16.DatabaseAdd.png" />
+    <None Include="Resources\Icons.16x16.DatabaseDelete.png" />
+    <None Include="Resources\Icons.16x16.DatabaseRefresh.png" />
     <Content Include="Templates\EasyUI\Controller.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>Controller.txt</LastGenOutput>

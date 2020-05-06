@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Configuration;
+﻿using Banana.AutoCode.Resources;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Configuration;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Banana.AutoCode.Forms
 {
@@ -45,23 +42,132 @@ namespace Banana.AutoCode.Forms
             InitializeComponent();
         }
 
-        private DbConnectionStringBuilder GetDbConnectionStringBuilder(string provider)
+        public DbConnBuilderPanel(ConnectionStringSettings connSetting)
         {
-            switch (provider)
-            {
-                case "Sql Server":
-                    return new System.Data.SqlClient.SqlConnectionStringBuilder();
-                case "MySql":
-                    return new MySql.Data.MySqlClient.MySqlConnectionStringBuilder();
-                case "Oracle":
-                    return new Oracle.ManagedDataAccess.Client.OracleConnectionStringBuilder();
-                case "SQLite":
-                    return new System.Data.SQLite.SQLiteConnectionStringBuilder();
+            InitializeComponent();
 
-                default:
-                    break;
+            var model = SettingToModel(connSetting);
+            Init(model);
+        }
+
+        private void Init(ViewModel model)
+        {
+            if (model == null)
+            {
+                return;
             }
-            return null;
+
+            cboDataProvider.Text = model.Provider;
+            txtServer.Text = model.Server;
+            txtName.Text = model.Name;
+            txtInstance.Text = model.Instance;
+            txtServer.Text = model.Server;
+            txtUser.Text = model.User;
+            if (model.Port > 0)
+            {
+                txtPort.Text = model.Port.ToString();
+            }
+            txtPassword.Text = model.Password;
+        }
+
+        private ViewModel SqlServerToModel(ConnectionStringSettings connSetting)
+        {
+            var model = new ViewModel();
+            model.Name = connSetting.Name;
+            model.Provider = SqlServer;
+
+            var builder = new SqlConnectionStringBuilder(connSetting.ConnectionString);
+            model.Server = builder.DataSource;
+            model.User = builder.UserID;
+            model.Password = builder.Password;
+            model.Instance = builder.InitialCatalog;
+
+            return model;
+        }
+
+        private ViewModel MySqlToModel(ConnectionStringSettings connSetting)
+        {
+            var model = new ViewModel();
+            model.Name = connSetting.Name;
+            model.Provider = MySql;
+
+            var builder = new MySqlConnectionStringBuilder(connSetting.ConnectionString);
+            model.Server = builder.Server;
+            model.Port = (int)builder.Port;
+            model.User = builder.UserID;
+            model.Password = builder.Password;
+            model.Instance = builder.Database;
+
+            return model;
+        }
+
+        private ViewModel SQLiteToModel(ConnectionStringSettings connSetting)
+        {
+            var model = new ViewModel();
+            model.Name = connSetting.Name;
+            model.Provider = SQLite;
+
+            var builder = new SQLiteConnectionStringBuilder(connSetting.ConnectionString);
+            model.Password = builder.Password;
+            model.Instance = builder.DataSource;
+
+            return model;
+        }
+
+        private ViewModel OracleToModel(ConnectionStringSettings connSetting)
+        {
+            var model = new ViewModel();
+            model.Name = connSetting.Name;
+            model.Provider = Oracle;
+
+            var builder = new OracleConnectionStringBuilder(connSetting.ConnectionString);
+            var dataSource = builder.DataSource;
+
+            model.Server = GetMatchText(dataSource, @"\(HOST=?(.+?)\)");
+            var port = 1521;
+            var portText = GetMatchText(dataSource, @"\(PORT=?(.+?)\)");
+            if (! int.TryParse(portText, out port))
+            {
+                port = 1521;
+            }
+            model.Port = port;
+            model.Instance = GetMatchText(dataSource, @"\(SERVICE_NAME=?(.+?)\)");
+            model.User = builder.UserID;
+            model.Password = builder.Password;
+            return model;
+        }
+
+        private string GetMatchText(string input, string pattern)
+        {
+            var match = Regex.Match(input, pattern);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return string.Empty;
+        }
+
+        private ViewModel SettingToModel(ConnectionStringSettings connSetting)
+        {
+            if (connSetting == null)
+            {
+                return null;
+            }
+
+            switch (connSetting.ProviderName)
+            {
+                case "System.Data.SqlClient":
+                    return SqlServerToModel(connSetting);
+                case "System.Data.SQLite":
+                    return SQLiteToModel(connSetting);
+                case "Oracle.ManagedDataAccess.Client":
+                    return OracleToModel(connSetting);
+                case "MySql.Data.MySqlClient":
+                    return MySqlToModel(connSetting);
+                default:
+                    return null;
+            }
         }
 
         private string GetSqlServerConnectionString(ViewModel model)
@@ -142,7 +248,7 @@ namespace Banana.AutoCode.Forms
         private ViewModel GetModel()
         {
             var model = new ViewModel();
-            model.Provider = cboDataProvider.SelectedText;
+            model.Provider = cboDataProvider.Text;
             model.Server = txtServer.Text;
             model.User = txtUser.Text;
             model.Password = txtPassword.Text;
@@ -150,8 +256,40 @@ namespace Banana.AutoCode.Forms
             int.TryParse(txtPort.Text, out port);
             model.Port = port;
             model.Name = txtName.Text;
+            model.Instance = txtInstance.Text;
+
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                model.Name = model.Provider + ":" + model.Instance;
+            }
 
             return model;
+        }
+
+        public static void AddOrUpdateConnectionStrings(ConnectionStringSettings settings)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var collection = configFile.ConnectionStrings.ConnectionStrings;
+                if (collection[settings.Name] == null)
+                {
+                    collection.Add(settings);
+                }
+                else
+                {
+                    collection[settings.Name].ConnectionString = settings.ConnectionString;
+                    collection[settings.Name].ProviderName = settings.ProviderName;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.ConnectionStrings.SectionInformation.Name);
+
+                Trace.WriteLine(String.Format(Localization.Save_ConnectionString_Success, settings.Name));
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                Trace.WriteLine(Localization.Save_ConnectionString_Exception + ex);
+            }
         }
 
         private void btnTest_Click(object sender, EventArgs e)
@@ -182,7 +320,13 @@ namespace Banana.AutoCode.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            
+            var settings = BuildSettings();
+            if (settings == null)
+            {
+                return;
+            }
+
+            AddOrUpdateConnectionStrings(settings);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
