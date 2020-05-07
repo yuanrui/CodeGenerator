@@ -183,4 +183,10 @@
   <data name="Remove_ConnectionString_Success" xml:space="preserve">
     <value>移除数据库连接 {0} 成功</value>
   </data>
+  <data name="Test_Connection_Fail" xml:space="preserve">
+    <value>测试失败</value>
+  </data>
+  <data name="Test_Connection_Success" xml:space="preserve">
+    <value>测试成功</value>
+  </data>
 </root>

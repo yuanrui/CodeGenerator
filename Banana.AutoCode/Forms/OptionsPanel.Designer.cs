@@ -92,6 +92,7 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.txtRemoveSuffix);
             this.Controls.Add(this.txtRemovePrefix);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OptionsPanel";

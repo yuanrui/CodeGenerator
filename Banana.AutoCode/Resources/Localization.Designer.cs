@@ -250,6 +250,24 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Test Fail 的本地化字符串。
+        /// </summary>
+        internal static string Test_Connection_Fail {
+            get {
+                return ResourceManager.GetString("Test_Connection_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Test Success 的本地化字符串。
+        /// </summary>
+        internal static string Test_Connection_Success {
+            get {
+                return ResourceManager.GetString("Test_Connection_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Unchecked tables can not generate code. 的本地化字符串。
         /// </summary>
         internal static string Unchecked_Tables {

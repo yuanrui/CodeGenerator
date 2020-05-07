@@ -119,10 +119,10 @@
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="txtRemovePrefix.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 16</value>
+    <value>110, 16</value>
   </data>
   <data name="txtRemovePrefix.Size" type="System.Drawing.Size, System.Drawing">
-    <value>277, 21</value>
+    <value>268, 21</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="txtRemovePrefix.TabIndex" type="System.Int32, mscorlib">
@@ -141,13 +141,13 @@
     <value>6</value>
   </data>
   <data name="txtRemoveSuffix.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 53</value>
+    <value>110, 53</value>
   </data>
   <data name="txtRemoveSuffix.Size" type="System.Drawing.Size, System.Drawing">
-    <value>277, 21</value>
+    <value>268, 21</value>
   </data>
   <data name="txtRemoveSuffix.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="&gt;&gt;txtRemoveSuffix.Name" xml:space="preserve">
     <value>txtRemoveSuffix</value>
@@ -162,7 +162,7 @@
     <value>5</value>
   </data>
   <data name="btnSave.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 135</value>
+    <value>110, 134</value>
   </data>
   <data name="btnSave.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -192,13 +192,13 @@
     <value>English</value>
   </data>
   <data name="cmbLanguage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 89</value>
+    <value>110, 89</value>
   </data>
   <data name="cmbLanguage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>106, 20</value>
+    <value>97, 20</value>
   </data>
   <data name="cmbLanguage.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+    <value>3</value>
   </data>
   <data name="&gt;&gt;cmbLanguage.Name" xml:space="preserve">
     <value>cmbLanguage</value>
@@ -220,7 +220,7 @@
     <value>12, 19</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 12</value>
+    <value>92, 12</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -253,7 +253,7 @@
     <value>12, 56</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>83, 12</value>
+    <value>92, 12</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -286,7 +286,7 @@
     <value>14, 92</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>81, 17</value>
+    <value>90, 17</value>
   </data>
   <data name="label3.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>

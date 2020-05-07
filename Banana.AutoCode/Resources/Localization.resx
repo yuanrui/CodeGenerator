@@ -183,4 +183,10 @@
   <data name="Remove_ConnectionString_Success" xml:space="preserve">
     <value>Remove db connection settings {0} success</value>
   </data>
+  <data name="Test_Connection_Fail" xml:space="preserve">
+    <value>Test Fail</value>
+  </data>
+  <data name="Test_Connection_Success" xml:space="preserve">
+    <value>Test Success</value>
+  </data>
 </root>

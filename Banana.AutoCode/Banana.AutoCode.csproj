@@ -201,7 +201,13 @@
     <EmbeddedResource Include="Forms\About.zh-CN.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbConnBuilderPanel.en-US.resx">
+      <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbConnBuilderPanel.resx">
+      <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DbConnBuilderPanel.zh-CN.resx">
       <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbPanel.en-US.resx">

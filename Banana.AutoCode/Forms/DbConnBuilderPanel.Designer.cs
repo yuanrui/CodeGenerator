@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DbConnBuilderPanel));
             this.label1 = new System.Windows.Forms.Label();
             this.cboDataProvider = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -49,157 +50,105 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 32);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Provider:";
             // 
             // cboDataProvider
             // 
             this.cboDataProvider.FormattingEnabled = true;
             this.cboDataProvider.Items.AddRange(new object[] {
-            "Sql Server",
-            "MySql",
-            "Oracle",
-            "SQLite"});
-            this.cboDataProvider.Location = new System.Drawing.Point(91, 29);
+            resources.GetString("cboDataProvider.Items"),
+            resources.GetString("cboDataProvider.Items1"),
+            resources.GetString("cboDataProvider.Items2"),
+            resources.GetString("cboDataProvider.Items3")});
+            resources.ApplyResources(this.cboDataProvider, "cboDataProvider");
             this.cboDataProvider.Name = "cboDataProvider";
-            this.cboDataProvider.Size = new System.Drawing.Size(100, 20);
-            this.cboDataProvider.TabIndex = 1;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(38, 69);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 12);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Server:";
             // 
             // txtServer
             // 
-            this.txtServer.Location = new System.Drawing.Point(91, 66);
+            resources.ApplyResources(this.txtServer, "txtServer");
             this.txtServer.Name = "txtServer";
-            this.txtServer.Size = new System.Drawing.Size(157, 21);
-            this.txtServer.TabIndex = 2;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(50, 177);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "User:";
             // 
             // txtUser
             // 
-            this.txtUser.Location = new System.Drawing.Point(91, 174);
+            resources.ApplyResources(this.txtUser, "txtUser");
             this.txtUser.Name = "txtUser";
-            this.txtUser.Size = new System.Drawing.Size(157, 21);
-            this.txtUser.TabIndex = 5;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 210);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 12);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Password:";
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(91, 207);
+            resources.ApplyResources(this.txtPassword, "txtPassword");
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(157, 21);
-            this.txtPassword.TabIndex = 6;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(50, 105);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 12);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Port:";
             // 
             // txtPort
             // 
-            this.txtPort.Location = new System.Drawing.Point(91, 102);
+            resources.ApplyResources(this.txtPort, "txtPort");
             this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(50, 21);
-            this.txtPort.TabIndex = 3;
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(40, 285);
+            resources.ApplyResources(this.btnTest, "btnTest");
             this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 23);
-            this.btnTest.TabIndex = 10;
-            this.btnTest.Text = "Test";
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(121, 285);
+            resources.ApplyResources(this.btnSave, "btnSave");
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 11;
-            this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(202, 285);
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 12;
-            this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(50, 246);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 12);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Name:";
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(91, 243);
+            resources.ApplyResources(this.txtName, "txtName");
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(157, 21);
-            this.txtName.TabIndex = 7;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(26, 141);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 12);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "Instance:";
             // 
             // txtInstance
             // 
-            this.txtInstance.Location = new System.Drawing.Point(91, 138);
+            resources.ApplyResources(this.txtInstance, "txtInstance");
             this.txtInstance.Name = "txtInstance";
-            this.txtInstance.Size = new System.Drawing.Size(157, 21);
-            this.txtInstance.TabIndex = 4;
             // 
             // DbConnBuilderPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(310, 337);
             this.Controls.Add(this.txtInstance);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtName);
@@ -223,7 +172,6 @@
             this.Name = "DbConnBuilderPanel";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Connection String";
             this.ResumeLayout(false);
             this.PerformLayout();
 

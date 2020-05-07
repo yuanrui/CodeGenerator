@@ -121,15 +121,15 @@
     <value>设置</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
-    <value>移除前缀</value>
+    <value>移除前缀:</value>
   </data>
   <data name="btnSave.Text" xml:space="preserve">
     <value>保存</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
-    <value>环境语言</value>
+    <value>环境语言:</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>移除后缀</value>
+    <value>移除后缀:</value>
   </data>
 </root>

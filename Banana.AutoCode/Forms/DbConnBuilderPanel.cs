@@ -315,7 +315,7 @@ namespace Banana.AutoCode.Forms
                 Trace.WriteLine(ex);
             }
 
-            MessageBox.Show(success ? "Test Success" : "Test Fail");
+            MessageBox.Show(success ? Localization.Test_Connection_Success : Localization.Test_Connection_Fail);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
