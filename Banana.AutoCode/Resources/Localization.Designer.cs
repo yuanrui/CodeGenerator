@@ -61,6 +61,15 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Prompt 的本地化字符串。
+        /// </summary>
+        internal static string Caption_Prompt {
+            get {
+                return ResourceManager.GetString("Caption_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Finish generate table {0} code. 的本地化字符串。
         /// </summary>
         internal static string Finish_Generate {
@@ -138,6 +147,15 @@ namespace Banana.AutoCode.Resources {
         internal static string Output_Not_Exists {
             get {
                 return ResourceManager.GetString("Output_Not_Exists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Are you sure remove database connection &quot;{0}&quot;? 的本地化字符串。
+        /// </summary>
+        internal static string Remove_ConnectionString_Confirm {
+            get {
+                return ResourceManager.GetString("Remove_ConnectionString_Confirm", resourceCulture);
             }
         }
         

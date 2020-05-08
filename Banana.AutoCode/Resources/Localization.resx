@@ -189,4 +189,10 @@
   <data name="Test_Connection_Success" xml:space="preserve">
     <value>Test Success</value>
   </data>
+  <data name="Caption_Prompt" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="Remove_ConnectionString_Confirm" xml:space="preserve">
+    <value>Are you sure remove database connection "{0}"?</value>
+  </data>
 </root>

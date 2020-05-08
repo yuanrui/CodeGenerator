@@ -82,6 +82,18 @@ namespace Banana.AutoCode.Forms
             model.Password = builder.Password;
             model.Instance = builder.InitialCatalog;
 
+            var sources = builder.DataSource.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (sources != null && sources.Length == 2)
+            {
+                var port = 1433;
+                if (!int.TryParse(sources[1], out port))
+                {
+                    port = 1433;
+                }
+
+                model.Port = port;
+            }
+
             return model;
         }
 
@@ -177,12 +189,21 @@ namespace Banana.AutoCode.Forms
             builder.DataSource = model.Server;
             builder.UserID = model.User;
             builder.Password = model.Password;
-            
+
+            if (model.Port != 0 && model.Port != 1433)
+            {
+                builder.DataSource += "," + model.Port;
+            }
+
             return builder.ToString();
         }
 
         private string GetMySqlConnectionString(ViewModel model)
         {
+            if (model.Port == 0)
+            {
+                model.Port = 3306;
+            }
             var builder = new MySqlConnectionStringBuilder();
             builder.Server = model.Server;
             builder.Port = (uint)model.Port;
@@ -195,6 +216,11 @@ namespace Banana.AutoCode.Forms
 
         private string GetOracleConnectionString(ViewModel model)
         {
+            if (model.Port == 0)
+            {
+                model.Port = 1521;
+            }
+
             var builder = new OracleConnectionStringBuilder();
             builder.DataSource = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={model.Server})(PORT={model.Port}))(CONNECT_DATA=(SERVICE_NAME={model.Instance})))";
             builder.UserID = model.User;
@@ -332,6 +358,28 @@ namespace Banana.AutoCode.Forms
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void cboDataProvider_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var provider = cboDataProvider.Text;
+            switch (provider)
+            {
+                case SqlServer:
+                    txtPort.Text = "1433";
+                    break;
+                case MySql:
+                    txtPort.Text = "3306";
+                    break;
+                case Oracle:
+                    txtPort.Text = "1521";
+                    break;
+                case SQLite:
+                    txtPort.Text = string.Empty;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

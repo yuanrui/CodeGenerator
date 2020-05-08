@@ -308,6 +308,14 @@ namespace Banana.AutoCode.Forms
         private void pboxDbDelete_Click(object sender, EventArgs e)
         {
             var name = cbConnStrings.Text;
+            var msg = string.Format(Localization.Remove_ConnectionString_Confirm, name);
+            var dlgResult = MessageBox.Show(msg, Localization.Caption_Prompt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+            if (dlgResult != DialogResult.OK)
+            {
+                return;
+            }
+
             RemoveConnectionStrings(name);
             RefreshTreeView();
         }

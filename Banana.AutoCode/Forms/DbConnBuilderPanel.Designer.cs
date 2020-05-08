@@ -63,6 +63,7 @@
             resources.GetString("cboDataProvider.Items3")});
             resources.ApplyResources(this.cboDataProvider, "cboDataProvider");
             this.cboDataProvider.Name = "cboDataProvider";
+            this.cboDataProvider.SelectedIndexChanged += new System.EventHandler(this.cboDataProvider_SelectedIndexChanged);
             // 
             // label2
             // 
