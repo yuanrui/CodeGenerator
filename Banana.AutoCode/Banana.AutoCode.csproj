@@ -344,6 +344,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>BusinessService.txt</LastGenOutput>
     </Content>
+    <Content Include="Templates\Samples\OracleBusinessManager.tt">
+      <LastGenOutput>SimpleBusinessManager.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Samples\SimpleEntity.tt">
       <LastGenOutput>SimpleEntity.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

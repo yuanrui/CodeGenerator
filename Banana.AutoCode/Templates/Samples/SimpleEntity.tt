@@ -5,7 +5,7 @@
 	CustomHost host = (CustomHost)(Host);
 	Table table = host.Table;
     var manager = Manager.Create(host, GenerationEnvironment);
-	manager.StartNewFile(table.DisplayName + "Entity.generated.cs", host.GetValue("OutputPath").ToString() + "\\Samples");
+	manager.StartNewFile(table.DisplayName + "Entity.generated.cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Generated");
 #>
 //------------------------------------------------------------------------------
 // <copyright file="<#= table.DisplayName #>Entity.cs">
@@ -19,71 +19,100 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-/// <summary>
-/// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
-/// </summary>
-public partial class <#= table.DisplayName #>Entity : ICloneable
+namespace Banana.Data
 {
-<# 
-	foreach(var column in table.Columns)
-	{
-#>
-	/// <summary>
-    /// get or set <#= column.Comment #>
+    /// <summary>
+    /// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
     /// </summary>
-    public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
-
-<#
-	}
-#>
-	public virtual <#= table.DisplayName #>Entity CloneFrom(<#= table.DisplayName #>Entity thatObj)
-	{
-		if (thatObj == null)
-        {
-            throw new ArgumentNullException("thatObj");
-        }
-
-<# 
-	foreach(var column in table.Columns)
-	{
-#>
-		this.<#= column.Name #> = thatObj.<#= column.Name #>;
-<#
-	}
-#>
-
-		return this;
-	}
-
-	public virtual <#= table.DisplayName #>Entity CloneTo(<#= table.DisplayName #>Entity thatObj)
-	{
-		if (thatObj == null)
-        {
-            throw new ArgumentNullException("thatObj");
-        }
-
-<# 
-	foreach(var column in table.Columns)
-	{
-#>
-		thatObj.<#= column.Name #> = this.<#= column.Name #>;
-<#
-	}
-#>
-
-		return thatObj;
-	}
-
-	public virtual <#= table.DisplayName #>Entity Clone()
+    public partial class <#= table.DisplayName #>Entity : ICloneable
     {
-        var thatObj = new <#= table.DisplayName #>Entity();
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+        /// <summary>
+        /// get or set <#= column.Comment #>
+        /// </summary>
+        public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
 
-        return this.CloneTo(thatObj);
+    <#
+        }
+    #>
+        public virtual <#= table.DisplayName #>Entity CloneFrom(<#= table.DisplayName #>Entity thatObj)
+        {
+            if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+            this.<#= column.Name #> = thatObj.<#= column.Name #>;
+    <#
+        }
+    #>
+
+            return this;
+        }
+
+        public virtual <#= table.DisplayName #>Entity CloneTo(<#= table.DisplayName #>Entity thatObj)
+        {
+            if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+            thatObj.<#= column.Name #> = this.<#= column.Name #>;
+    <#
+        }
+    #>
+
+            return thatObj;
+        }
+
+        public virtual <#= table.DisplayName #>Entity Clone()
+        {
+            var thatObj = new <#= table.DisplayName #>Entity();
+
+            return this.CloneTo(thatObj);
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
     }
+}
+<# 
+	manager.EndBlock(); 
+	manager.StartNewFile(table.DisplayName + "Entity.cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Partial");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Entity.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
 
-    object ICloneable.Clone()
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Banana.Data
+{
+    /// <summary>
+    /// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+    /// </summary>
+    public partial class <#= table.DisplayName #>Entity
     {
-        return this.Clone();
+        
     }
 }
 <# 

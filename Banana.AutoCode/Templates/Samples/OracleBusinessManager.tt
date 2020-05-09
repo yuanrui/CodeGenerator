@@ -18,7 +18,7 @@
     string entName = table.DisplayName + "Entity";
     var manager = Manager.Create(host, GenerationEnvironment);
 
-    manager.StartNewFile(mgrName + ".generated.cs", host.GetValue("OutputPath").ToString() + "\\Samples");
+    manager.StartNewFile(mgrName + ".generated.cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Oracle");
 #>
 //------------------------------------------------------------------------------
 // <copyright file="<#= mgrName #>.cs">
@@ -45,7 +45,7 @@ namespace Banana.Data
         public virtual Boolean Exists(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
             const String sql = @"SELECT COUNT(1) AS RecordCount FROM <#= table.Name #> 
-WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
+WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
             
             var count = DbUtils.ExecuteScalar<int>(sql, new { <#= string.Join(", ", table.PrimaryKeyColumns.Select(m => m.Name + " = " + m.Name)) #> });
             return count > 0;
@@ -64,7 +64,7 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name))
         public virtual <#= entName #> Get(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", m.TypeName, m.Name)).Aggregate((a, b) => a + ", " + b) #>)
         {
             const String sql = @"SELECT * FROM <#= table.Name #> 
-WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
+WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=:{0}", m.Name)).Aggregate((a, b) => a + " AND " + b) #>";
 
             var result = DbUtils.Query<<#= entName #>>(sql, new { <#= string.Join(", ", table.PrimaryKeyColumns.Select(m => m.Name + " = " + m.Name)) #> });
             return result.FirstOrDefault();
@@ -83,7 +83,7 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name))
         {
             const string sql = @"INSERT INTO <#= table.Name #> 
             (<#= string.Join(", ", table.Columns.Select(m => m.Name)) #>) 
-            VALUES (<#= string.Join(", ", table.Columns.Select(m => "@" + m.Name)) #>)";
+            VALUES (<#= string.Join(", ", table.Columns.Select(m => ":" + m.Name)) #>)";
             
             return DbUtils.Execute(sql, entity) > 0;
         }
@@ -91,15 +91,15 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name))
         public virtual bool Update(<#= entName #> entity)
         {
             const string sql = @"UPDATE <#= table.Name #> 
-            SET <#= string.Join(", ", table.Columns.Select(m => m.Name + " = @" + m.Name)) #>
-            WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + "=@" + m.Name)) #>";
+            SET <#= string.Join(", ", table.Columns.Select(m => m.Name + " = :" + m.Name)) #>
+            WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + "=:" + m.Name)) #>";
             
             return DbUtils.Execute(sql, entity) > 0;
         }
         
         public virtual bool Delete(<#= entName #> entity)
         {
-            const string sql = @"DELETE FROM <#= table.Name #> WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + " = @" + m.Name)) #>";
+            const string sql = @"DELETE FROM <#= table.Name #> WHERE <#= string.Join(" AND ", table.PrimaryKeyColumns.Select(m => m.Name + " = :" + m.Name)) #>";
             
             return DbUtils.Execute(sql, new { <#= string.Join(", ", table.PrimaryKeyColumns.Select(m => m.Name + " = entity." + m.Name)) #> }) > 0;
         }
@@ -107,7 +107,7 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name))
 }
 <#
     manager.EndBlock(); 
-    manager.StartNewFile(mgrName + ".cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Partial");
+    manager.StartNewFile(mgrName + ".cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Oracle");
 #>
 //------------------------------------------------------------------------------
 // <copyright file="<#= mgrName #>.cs">
