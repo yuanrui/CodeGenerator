@@ -1,30 +1,172 @@
-# 代码生成器
+# AutoCode
+
+一个小而美的代码生成器，用于创建前后端代码，辅助项目开发，提高软件开发效率。代码生成器采用C#语言编写，采用 [mono t4模板引擎](https://github.com/mono/t4)，内置多个代码模板，可生成Asp.Net Mvc、EasyUI、LayUI、Entity Framework等代码。
 ![main ui](https://user-images.githubusercontent.com/3859838/87500061-367c6880-c68e-11ea-8506-4a9683413402.png)
 
-Use Code Generator create C# code file. Include generate Thrift IDL template file. The engine base on [mono t4](https://github.com/mono/t4).  
-Some of code in this project https://github.com/yuanrui/Examples
+## 用户指南
 
-In template file, you can use meta list as follows.
+### 系统要求
 
-Column Info:
+操作系统：Windows XP +,  Windows Server 2003 +
 
-| No | Name | Type | 
-|:-------------|:------------- |:------------- |
-| 1 | Id | String |
-| 2 | Name | String |
-| 3 | RawType | String |
-| 4 | DataType | DbType |
-| 5 | Type | Type |
-| 6 | TypeName | String |
-| 7 | Comment | String |
-| 8 | IsPrimaryKey | Boolean |
-| 9 | IsForeignKey | Boolean |
-| 10 | IsUnique | Boolean |
-| 11 | IsNullable | Boolean |
-| 12 | Length | Int32 |
-| 13 | Precision | Int16 |
-| 14 | Scale | Int16 |
-| 15 | Index | Int32 |
-| 16 | Table | Table |
+软件环境：.NET 4 +
+
+### 支持数据库
+
+- Sql Server
+
+- Oracle
+
+- MySql
+
+- SQLite
+
+### 使用说明
+
+1. 从[项目官网](https://github.com/yuanrui/CodeGenerator)下载[最新版本](https://github.com/yuanrui/CodeGenerator/releases)；
+2. 解压文件，运行AutoCode.exe；
+3. 设置数据源，勾选数据表；
+4. 运行生成代码；
+5. 拷贝Output文件夹中的源码到项目解决方案。
+
+文件夹用途说明：Config存放配置文件，Templates存放模板文件，Output存放生成的代码。
+
+生成的代码所引用的代码见：https://github.com/yuanrui/Examples
+
+### 模板配置
+
+Templates文件夹包含生成代码所需的T4模板文件，不同的模板使用文件夹进行归类。一个简单的模板配置如下所示。
+
+```c#
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="../TemplateFileManager.ttinclude" #>
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.generated.cs", host.GetValue("OutputPath").ToString() + "\\Samples\\Generated");
+#>
+//------------------------------------------------------------------------------
+// <copyright file="<#= table.DisplayName #>Entity.cs">
+//    Copyright (c) <#= DateTime.Now.ToString("yyyy") #>, All rights reserved.
+// </copyright>
+// <author><#= Environment.UserName #></author>
+// <date><#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #></date>
+//------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Banana.Data
+{
+    /// <summary>
+    /// <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+    /// </summary>
+    public partial class <#= table.DisplayName #>Entity : ICloneable
+    {
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+        /// <summary>
+        /// get or set <#= column.Comment #>
+        /// </summary>
+        public virtual <#= column.TypeName #> <#= column.Name #> { get; set; }
+
+    <#
+        }
+    #>
+        public virtual <#= table.DisplayName #>Entity CloneFrom(<#= table.DisplayName #>Entity thatObj)
+        {
+            if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+            this.<#= column.Name #> = thatObj.<#= column.Name #>;
+    <#
+        }
+    #>
+
+            return this;
+        }
+
+        public virtual <#= table.DisplayName #>Entity CloneTo(<#= table.DisplayName #>Entity thatObj)
+        {
+            if (thatObj == null)
+            {
+                throw new ArgumentNullException("thatObj");
+            }
+
+    <# 
+        foreach(var column in table.Columns)
+        {
+    #>
+            thatObj.<#= column.Name #> = this.<#= column.Name #>;
+    <#
+        }
+    #>
+
+            return thatObj;
+        }
+
+        public virtual <#= table.DisplayName #>Entity Clone()
+        {
+            var thatObj = new <#= table.DisplayName #>Entity();
+
+            return this.CloneTo(thatObj);
+        }
+
+        object ICloneable.Clone()
+        {
+            return this.Clone();
+        }
+    }
+}
+<# 
+	manager.EndBlock(); 
+#>
+```
+
+host.Table对象的类型为Table，包含属性字段如下:
+
+| 序号 | 名称                 | 类型          | 说明             |
+| :--- | :------------------- | :------------ | ---------------- |
+| 1    | Id                   | String        | 编号             |
+| 2    | Name                 | String        | 表名称           |
+| 3    | Comment              | String        | 表注释           |
+| 4    | DisplayName          | String        | 显示名称         |
+| 5    | Owner                | String        | 数据库           |
+| 6    | PrimaryKeyIsNumber   | Boolean       | 主键是否数字类型 |
+| 7    | Columns              | IList<Column> | 列集合           |
+| 8    | PrimaryKeyColumns    | IList<Column> | 主键列集合       |
+| 9    | NonPrimaryKeyColumns | IList<Column> | 非主键列集合     |
+
+Column类型包含属性字段如下：
+
+| 序号 | 名称         | 类型    | 说明         |
+| :--- | :----------- | :------ | ------------ |
+| 1    | Id           | String  | 编号         |
+| 2    | Name         | String  | 字段名称     |
+| 3    | RawType      | String  | 字段原始类型 |
+| 4    | DataType     | DbType  | .NET DbType  |
+| 5    | Type         | Type    | .NET Type    |
+| 6    | TypeName     | String  | 字段类型名称 |
+| 7    | Comment      | String  | 字段注释     |
+| 8    | IsPrimaryKey | Boolean | 是否主键     |
+| 9    | IsForeignKey | Boolean | 是否外键     |
+| 10   | IsUnique     | Boolean | 是否唯一     |
+| 11   | IsNullable   | Boolean | 是否可为空   |
+| 12   | Length       | Int32   | 长度         |
+| 13   | Precision    | Int16   | 精度         |
+| 14   | Scale        | Int16   | 精度范围     |
+| 15   | Index        | Int32   | 索引编号     |
+| 16   | Table        | Table   | Table对象    |
 
 [TODO List](https://github.com/yuanrui/CodeGenerator/issues/1)
