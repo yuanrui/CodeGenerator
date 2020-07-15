@@ -29,7 +29,6 @@ namespace Banana.AutoCode
             this.labelVersion.Text += VersionNumber;
             this.labelCopyright.Text += AssemblyCopyright.Contains(currentYear) ? AssemblyCopyright : AssemblyCopyright + " - " + currentYear;
             this.labelCompanyName.Text += AssemblyCompany;
-            this.textBoxDescription.Text += Environment.NewLine + AssemblyDescription;
         }
 
         #region 程序集特性访问器

@@ -48,7 +48,7 @@ namespace Banana.AutoCode
             Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            this.Text = this.Text + " - v" + About.VersionNumber;
+            //this.Text = this.Text + " - v" + About.VersionNumber;
             
             var theme = new VS2015LightTheme();
             this.dockPanel.Theme = theme;
@@ -57,6 +57,11 @@ namespace Banana.AutoCode
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
 
             CheckDirectoryPath();
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            tsbtnDatabase_Click(sender, e);
         }
 
         private void CheckDirectoryPath()
