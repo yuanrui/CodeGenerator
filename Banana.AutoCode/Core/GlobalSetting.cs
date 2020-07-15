@@ -19,7 +19,7 @@ namespace Banana.AutoCode.Core
                     return new string[0];
                 }
 
-                return input.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                return input.Split(new string[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries);
             }
         }
 
