@@ -505,19 +505,19 @@
   <data name="tsbtnDatabase.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         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
-        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
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALRSURBVDhPrZNbSJNhHMa/hIK666LLLruRgmB3EdiBzA4i
+        zoVh3ngzLIaoKS5TPlNp2uZp6tzJqVOHM53OQ01S8Ug5nc7DdAenm07nnIfpHEUhT9/WR14k0UUPvHwv
+        7/v/Pe//+cNH/BeRJBk2rtdf1fUP5s8tWgesq06jYdY09rF/WNiq6bopkUjO0qWnq6uv74HZ4XTu+79h
+        2xfA5o4PW7uH8Oz5YbG49ipEYnbwEbr8T80vWYd9ge9wbHiw7HTBbHdizmyHYcEMi2MDWp3OIq1vZHV0
+        6C43N/dcpLET9Y+MLP04Brw+H1weT8hgbNKIUWqZ7WtYdblhXV7bWLCsTH0aGlOp2ztZarX6PI0TRAY3
+        e2rCMIO9g0O4d3ZhNFkwqp/ByvoWZerH9v4RPNQKRnPvHsBkW/W3abQcGieIbLJgOo/3DnKlCg0tbRBK
+        5JieN+Er1ZbT7Q3FMtkcMC7ZYFy0YdG+joGR8RUaJ4isnDcGkbweJSIpMslCxCUmobOnF0Ed+ANYd3tg
+        oWJNzS1hZGIak/NmvO/u3aJxgsgvKjIVlQpRrWhELk+AW1HRSOakYvyLHm6vN2SwYFnG0OdJaPsGofnQ
+        B+7rvFUaJ4i0rOxZZUs7amqVyC7g4X50LDhpGSipFqNCWoc6VStq6ppQIamFoEpCnUtQyBM4aJwg7kRG
+        ctLf8gNNbVrwqcuY+EQkp6RBRs2kUlYfgviVYgqUUoYKKCjDXLLwZAYMBuNCVCzrGSedq0nJeDV3LybG
+        zXqacFxFFQuqpCirkYMvFFMmwdelKKeGXFxcvknjv3WGlZR06RGTeeXadQbrRWqqqUXTDXHDr9aDnZRT
+        3+C+paMbZCHvJMIpCrsREfE8hyQPZU1qiBTKUO5SkQySBhVIsuzoSXwCm649XeHh4ecex8XfTU7NlOfw
+        BDMFZUJ7Hk9g4Lzkyh4ymbfZbPbff7B/E0H8BM/95q2KrXSZAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="tsbtnDatabase.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
@@ -662,7 +662,7 @@
     <value>dockPanel</value>
   </data>
   <data name="&gt;&gt;dockPanel.Type" xml:space="preserve">
-    <value>WeifenLuo.WinFormsUI.Docking.DockPanel, WeifenLuo.WinFormsUI.Docking, Version=2.15.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481</value>
+    <value>WeifenLuo.WinFormsUI.Docking.DockPanel, WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481</value>
   </data>
   <data name="&gt;&gt;dockPanel.Parent" xml:space="preserve">
     <value>$this</value>
@@ -1815,7 +1815,7 @@
 </value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Banana AutoCode</value>
+    <value>AutoCode</value>
   </data>
   <data name="&gt;&gt;fileMenu.Name" xml:space="preserve">
     <value>fileMenu</value>

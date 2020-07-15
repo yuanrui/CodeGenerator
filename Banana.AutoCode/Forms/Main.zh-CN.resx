@@ -139,6 +139,6 @@
     <value>编译</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Banana代码生成器</value>
+    <value>代码生成器</value>
   </data>
 </root>
