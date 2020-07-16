@@ -218,6 +218,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DbPanel.zh-CN.resx">
       <DependentUpon>DbPanel.cs</DependentUpon>
+      <LastGenOutput>DbPanel.zh-CN.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.en-US.resx">
       <DependentUpon>Main.cs</DependentUpon>

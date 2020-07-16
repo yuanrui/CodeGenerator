@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Resources;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -19,6 +20,8 @@ namespace Banana.AutoCode.Forms
         const string MySql = "MySql";
         const string Oracle = "Oracle";
         const string SQLite = "SQLite";
+        protected ResourceManager ResourceMgr = new ResourceManager(typeof(DbConnBuilderPanel));
+        private DbPanel _dbPanel;
 
         protected class ViewModel
         {
@@ -42,10 +45,14 @@ namespace Banana.AutoCode.Forms
             InitializeComponent();
         }
 
-        public DbConnBuilderPanel(ConnectionStringSettings connSetting)
+        public DbConnBuilderPanel(DbPanel dbPanel) : this()
         {
-            InitializeComponent();
+            _dbPanel = dbPanel;
+        }
 
+        public DbConnBuilderPanel(DbPanel dbPanel, ConnectionStringSettings connSetting) : this()
+        {
+            _dbPanel = dbPanel;
             var model = SettingToModel(connSetting);
             Init(model);
         }
@@ -292,8 +299,21 @@ namespace Banana.AutoCode.Forms
             return model;
         }
 
-        public static void AddOrUpdateConnectionStrings(ConnectionStringSettings settings)
+        private void RefreshConnStrings()
         {
+            if (_dbPanel == null)
+            {
+                return;
+            }
+
+            _dbPanel.InitConnStrings();
+        }
+
+        protected void AddOrUpdateConnectionStrings(ConnectionStringSettings settings)
+        {
+            var title = ResourceMgr.GetString("TestConnTitle") ?? "Test Result";
+            var success = false;
+            var msg = string.Empty;
             try
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -309,13 +329,20 @@ namespace Banana.AutoCode.Forms
                 }
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.ConnectionStrings.SectionInformation.Name);
-
-                Trace.WriteLine(String.Format(Localization.Save_ConnectionString_Success, settings.Name));
+                success = true;
+                RefreshConnStrings();
+                msg = String.Format(Localization.Save_ConnectionString_Success, settings.Name);
+                Trace.WriteLine(msg);
             }
             catch (ConfigurationErrorsException ex)
             {
+                success = false;
+                msg = Localization.Save_ConnectionString_Exception + ex.Message;
                 Trace.WriteLine(Localization.Save_ConnectionString_Exception + ex);
             }
+
+            var icon = success ? MessageBoxIcon.Information : MessageBoxIcon.Warning;
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, icon);
         }
 
         private void btnTest_Click(object sender, EventArgs e)
@@ -340,8 +367,10 @@ namespace Banana.AutoCode.Forms
             {
                 Trace.WriteLine(ex);
             }
-
-            MessageBox.Show(success ? Localization.Test_Connection_Success : Localization.Test_Connection_Fail);
+            var title = ResourceMgr.GetString("TestConnTitle") ?? "Test Result";
+            var msg = success ? Localization.Test_Connection_Success : Localization.Test_Connection_Fail;
+            var icon = success ? MessageBoxIcon.Information : MessageBoxIcon.Warning;
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, icon);
         }
 
         private void btnSave_Click(object sender, EventArgs e)

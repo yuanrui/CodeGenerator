@@ -79,7 +79,7 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Finish generate table {0} code, no result. 的本地化字符串。
+        ///   查找类似 Finish generate table {0} code, without output(processed in template). 的本地化字符串。
         /// </summary>
         internal static string Finish_Generate_Empty {
             get {

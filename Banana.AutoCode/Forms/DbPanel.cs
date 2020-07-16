@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Resources;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -29,6 +30,7 @@ namespace Banana.AutoCode.Forms
 
         protected Hashtable ManagerMap;
         protected Hashtable TableMap;
+        protected ResourceManager ResourceMgr = new ResourceManager(typeof(DbPanel));
 
         public string DatabaseName { get; private set; }
 
@@ -54,13 +56,34 @@ namespace Banana.AutoCode.Forms
             tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
             tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
             tvDb.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseDoubleClick);
-
+            toolTip.SetToolTip(this.pboxDbAdd, ResourceMgr.GetString("DbAddToolTip"));
+            toolTip.SetToolTip(this.pboxDbEdit, ResourceMgr.GetString("DbEditToolTip"));
+            toolTip.SetToolTip(this.pboxDbDelete, ResourceMgr.GetString("DbDeleteToolTip"));
+            toolTip.SetToolTip(this.pboxDbRefresh, ResourceMgr.GetString("DbRefreshToolTip"));
+            
             RefreshTreeView();
+        }
+
+        public void InitConnStrings()
+        {
+            cbConnStrings.Items.Clear();
+
+            ConfigurationManager.RefreshSection("connectionStrings");
+            foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
+            {
+                if (String.IsNullOrWhiteSpace(css.ConnectionString) || String.IsNullOrWhiteSpace(css.ProviderName))
+                {
+                    continue;
+                }
+
+                cbConnStrings.Items.Add(css.Name);
+            }
+
         }
 
         protected void RefreshTreeView()
         {
-            cbConnStrings.Items.Clear();
+            InitConnStrings();
             tvDb.Nodes.Clear();
 
             foreach (DictionaryEntry item in TableMap)
@@ -75,18 +98,8 @@ namespace Banana.AutoCode.Forms
             }
 
             TableMap.Clear();
-            cbConnStrings.Text = String.Empty;
+            //cbConnStrings.Text = String.Empty;
 
-            ConfigurationManager.RefreshSection("connectionStrings");
-            foreach (ConnectionStringSettings css in ConfigurationManager.ConnectionStrings)
-            {
-                if (String.IsNullOrWhiteSpace(css.ConnectionString) || String.IsNullOrWhiteSpace(css.ProviderName))
-                {
-                    continue;
-                }
-
-                cbConnStrings.Items.Add(css.Name);
-            }
         }
 
         private void ResetDbNodeIcon(TreeNode dbNode)
@@ -295,13 +308,13 @@ namespace Banana.AutoCode.Forms
 
         private void pboxDbAdd_Click(object sender, EventArgs e)
         {
-            DbConnBuilderPanel options = new DbConnBuilderPanel();
+            DbConnBuilderPanel options = new DbConnBuilderPanel(this);
             options.ShowDialog(this);
         }
 
         private void pboxDbEdit_Click(object sender, EventArgs e)
         {
-            DbConnBuilderPanel options = new DbConnBuilderPanel(CurrentConnSetting);
+            DbConnBuilderPanel options = new DbConnBuilderPanel(this, CurrentConnSetting);
             options.ShowDialog(this);
         }
 

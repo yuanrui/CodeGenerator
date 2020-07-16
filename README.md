@@ -9,7 +9,7 @@
 
 操作系统：Windows XP +,  Windows Server 2003 +
 
-软件环境：.NET 4 +
+软件环境：[.NET 4.0 +](https://download.microsoft.com/download/9/5/A/95A9616B-7A37-4AF6-BC36-D6EA96C8DAAE/dotNetFx40_Full_x86_x64.exe)
 
 ### 支持数据库
 
@@ -31,11 +31,11 @@
 
 文件夹用途说明：Config存放配置文件，Templates存放模板文件，Output存放生成的代码。
 
-生成的代码所引用的代码见：https://github.com/yuanrui/Examples
+生成的源码所依赖的类库见：https://github.com/yuanrui/Examples
 
 ### 模板配置
 
-Templates文件夹包含生成代码所需的T4模板文件，不同的模板使用文件夹进行归类。一个简单的模板配置如下所示。
+用于代码生成的T4模板文件约定存放在Templates文件夹，生成代码时每个模板文件将生成对应的源代码，不同的模板可以使用文件夹进行归类。模板需要遵循[T4模板语法](https://docs.microsoft.com/zh-cn/visualstudio/modeling/code-generation-and-t4-text-templates)，文件命名以.tt或.ttinclude结尾，一个简单的模板配置如下所示。
 
 ```c#
 <#@ template language="C#" hostSpecific="true" debug="false" #>

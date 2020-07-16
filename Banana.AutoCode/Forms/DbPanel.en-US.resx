@@ -177,4 +177,16 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>WeifenLuo.WinFormsUI.Docking.DockContent, WeifenLuo.WinFormsUI.Docking, Version=2.15.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481</value>
   </data>
+  <data name="DbAddToolTip" xml:space="preserve">
+    <value>Add Connection String</value>
+  </data>
+  <data name="DbDeleteToolTip" xml:space="preserve">
+    <value>Delete Connection String</value>
+  </data>
+  <data name="DbEditToolTip" xml:space="preserve">
+    <value>Edit Connection String</value>
+  </data>
+  <data name="DbRefreshToolTip" xml:space="preserve">
+    <value>Refresh Connection String</value>
+  </data>
 </root>

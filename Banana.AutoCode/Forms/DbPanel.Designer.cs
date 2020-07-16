@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DbPanel));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.cbConnStrings = new System.Windows.Forms.ComboBox();
@@ -37,6 +38,7 @@
             this.pboxDbDelete = new System.Windows.Forms.PictureBox();
             this.pboxDbEdit = new System.Windows.Forms.PictureBox();
             this.pboxDbAdd = new System.Windows.Forms.PictureBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pboxDbRefresh)).BeginInit();
@@ -135,5 +137,6 @@
         private System.Windows.Forms.PictureBox pboxDbAdd;
         private System.Windows.Forms.PictureBox pboxDbDelete;
         private System.Windows.Forms.PictureBox pboxDbRefresh;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

@@ -124,7 +124,7 @@
     <value>完成数据表({0})的代码生成。</value>
   </data>
   <data name="Finish_Generate_Empty" xml:space="preserve">
-    <value>完成数据表({0})的代码生成，无结果。</value>
+    <value>完成数据表({0})的代码生成，无输出（模板内部处理）。</value>
   </data>
   <data name="Generate_Table" xml:space="preserve">
     <value>生成数据表:{0} 模板名称:{1} 输出路径:{2}</value>

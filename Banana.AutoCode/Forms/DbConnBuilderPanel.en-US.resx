@@ -120,4 +120,31 @@
   <data name="$this.Text" xml:space="preserve">
     <value>Connection String</value>
   </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Provider:</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Server:</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>User:</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Port:</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Instance:</value>
+  </data>
+  <data name="SaveConnTitle" xml:space="preserve">
+    <value>Saved Result</value>
+  </data>
+  <data name="TestConnTitle" xml:space="preserve">
+    <value>Tested Result</value>
+  </data>
 </root>

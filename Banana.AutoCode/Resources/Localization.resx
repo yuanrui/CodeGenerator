@@ -124,7 +124,7 @@
     <value>Finish generate table {0} code.</value>
   </data>
   <data name="Finish_Generate_Empty" xml:space="preserve">
-    <value>Finish generate table {0} code, no result.</value>
+    <value>Finish generate table {0} code, without output(processed in template).</value>
   </data>
   <data name="Generate_Table" xml:space="preserve">
     <value>Generate table:{0} TemplateName:{1} OutputPath:{2}</value>

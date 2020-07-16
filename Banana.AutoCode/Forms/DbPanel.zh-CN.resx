@@ -177,4 +177,16 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>WeifenLuo.WinFormsUI.Docking.DockContent, WeifenLuo.WinFormsUI.Docking, Version=2.15.0.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481</value>
   </data>
+  <data name="DbAddToolTip" xml:space="preserve">
+    <value>添加数据库连接</value>
+  </data>
+  <data name="DbDeleteToolTip" xml:space="preserve">
+    <value>删除数据库连接</value>
+  </data>
+  <data name="DbEditToolTip" xml:space="preserve">
+    <value>编辑数据库连接</value>
+  </data>
+  <data name="DbRefreshToolTip" xml:space="preserve">
+    <value>刷新数据库连接</value>
+  </data>
 </root>
