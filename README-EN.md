@@ -138,7 +138,7 @@ namespace Banana.Data
 
 host.Table object type is: Table，The include property fields:
 
-| 序号 | 名称                 | 类型          | 说明                                      |
+| Id   | Name                 | Type          | Description                               |
 | :--- | :------------------- | :------------ | ----------------------------------------- |
 | 1    | Id                   | String        | database table Id in schema               |
 | 2    | Name                 | String        | table name                                |
@@ -152,7 +152,7 @@ host.Table object type is: Table，The include property fields:
 
 Column type include property fields:
 
-| 序号 | 名称         | 类型    | 说明            |
+| Id | Name      | Type | Description |
 | :--- | :----------- | :------ | --------------- |
 | 1    | Id           | String  | column Id       |
 | 2    | Name         | String  | column field name |
