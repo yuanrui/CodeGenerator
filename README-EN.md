@@ -2,7 +2,7 @@
 [README in Chinese](README.md)
 
 A simple code generator, small and pretty. Used to create front&back end code, assist project development, improve software development efficiency. The code generator write by C#, using the [mono t4 template engine](https://github.com/mono/t4), built-in multiple code templates, can generate the Asp.Net Mvc, EasyUI, LayUI, Entity Framework, etc.
-![main ui](https://user-images.githubusercontent.com/3859838/87500061-367c6880-c68e-11ea-8506-4a9683413402.png)
+![main ui](https://user-images.githubusercontent.com/3859838/94229453-20aedd80-ff32-11ea-97dc-6eb6dc1ff315.png)
 
 ## User Guide
 
