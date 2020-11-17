@@ -24,7 +24,7 @@ Environment: [.NET 4.0 +](https://download.microsoft.com/download/9/5/A/95A9616B
 
 ### Getting Started
 
-1. From[project's website](https://github.com/yuanrui/CodeGenerator)download[the latest version](https://github.com/yuanrui/CodeGenerator/releases);
+1. Download from [project's website](https://github.com/yuanrui/CodeGenerator) get [the latest version](https://github.com/yuanrui/CodeGenerator/releases);
 2. Unzip the file and run: AutoCode.exe;
 3. Open Setting windows, set English language environment;
 4. Set database connection source and choose data table;
