@@ -48,7 +48,7 @@ order by table_name";
         public override List<Column> GetColumns(Table table)
         {
             const string sql = @"
-select col.ordinal_position as Id, col.column_name as Name, data_type as RawType, column_comment as Comment
+select distinct col.ordinal_position as Id, col.column_name as Name, data_type as RawType, column_comment as Comment
 , case when cons.constraint_type = 'PRIMARY KEY' then 1 else 0 end as IsPrimaryKey
 , case when cons.constraint_type = 'FOREIGN KEY' then 1 else 0 end as IsForeignKey
 , case when cons.constraint_type = 'UNIQUE' then 1 else 0 end as IsUnique
@@ -58,7 +58,8 @@ from information_schema.columns col
 left join information_schema.key_column_usage usa on col.table_schema = usa.constraint_schema and col.table_name = usa.table_name and col.column_name = usa.column_name
 left join information_schema.table_constraints cons on usa.table_schema = usa.constraint_schema and usa.table_name = cons.table_name and usa.constraint_name = cons.constraint_name 
 where col.table_schema=@TableSchema
-and col.table_name=@TableName";
+and col.table_name=@TableName
+order by 1";
             
             var result = new List<Column>();
             var cmd = Context.DatabaseObject.GetSqlStringCommand(sql);

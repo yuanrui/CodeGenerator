@@ -50,5 +50,21 @@ namespace Banana.AutoCode.DbSchema
 
         [NonSerialized]
         public Table Table;
+
+        public String CamelCase
+        {
+            get
+            {
+                return this.Name.ToCamelCase();
+            }
+        }
+
+        public String PascalCase
+        {
+            get
+            {
+                return this.Name.ToPascalCase();
+            }
+        }
     }
 }

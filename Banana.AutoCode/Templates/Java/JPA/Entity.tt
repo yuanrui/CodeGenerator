@@ -1,0 +1,87 @@
+<#
+//------------------------------------------------------------------------------
+// <copyright file="Entity.tt">
+//    Copyright (c) 2020, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2020-12-09 18:05:20</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="%TEMPLATES_DIR%\\TemplateFileManager.ttinclude" #>
+<#@ include file="%TEMPLATES_DIR%\\JavaConverter.ttinclude" #>
+
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.java", host.GetValue("OutputPath").ToString() + "\\Java\\JPA\\entity");
+#>
+/**
+ * Copyright (c) <#= DateTime.Now.ToString("yyyy") #> the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.banana.authserver.domain.entity;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * @author <#= Environment.UserName #>
+ * @since <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #>
+ */
+@Table(name = "<#= table.Name#>")
+@Entity
+public class <#= table.DisplayName #>Entity {
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+    /**
+     * <#= column.Comment #>
+     */
+    private <#= JavaConverter.AsJavaType(column.Type) #> <#= column.CamelCase #>;
+<#
+	}
+#>
+
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+    /**
+     * 获取 <#= column.Comment #>
+     */
+    <#= column.IsPrimaryKey ? "@Id" : "@Basic" #><#=column.IsPrimaryKey && column.Table.PrimaryKeyIsNumber ? Environment.NewLine + "    @GeneratedValue(strategy = GenerationType.AUTO)" : "" #>
+    @Column(name = "<#= column.Name #>", nullable = <#= column.IsNullable.ToString().ToLower() #><#= column.TypeName.Equals("string", StringComparison.OrdinalIgnoreCase) ? ", length=" + column.Length : "" #>)
+    public <#= JavaConverter.AsJavaType(column.Type) #> get<#= column.PascalCase #>() {
+        return this.<#= column.CamelCase #>;
+    }
+
+    /**
+     * 设置 <#= column.Comment #>
+     */
+    public void set<#= column.PascalCase #>(<#= JavaConverter.AsJavaType(column.Type) #> <#= column.CamelCase #>) {
+        this.<#= column.CamelCase #> = <#= column.CamelCase #>;
+    }
+
+<#
+	}
+#>
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true, new System.Text.UTF8Encoding(false));
+#>

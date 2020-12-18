@@ -19,6 +19,20 @@ namespace Banana.AutoCode.DbSchema
 
         public String Name { get; set; }
 
+        public String CamelCase
+        {
+            get
+            {
+                var name = this.DisplayName;
+                if (string.IsNullOrEmpty(name))
+                {
+                    return string.Empty;
+                }
+
+                return name.Substring(0, 1).ToLower() + name.Substring(1);
+            }
+        }
+
         public String Comment
         {
             get
@@ -38,11 +52,6 @@ namespace Banana.AutoCode.DbSchema
         {
             get
             {
-                //if (! Columns.Any(m => m.IsPrimaryKey))
-                //{
-                //    throw new ArgumentException(Name + " no primary key");
-                //}
-
                 return Columns.Where(m => m.IsPrimaryKey).ToList() ?? new List<Column>();
             }
         }
@@ -72,7 +81,6 @@ namespace Banana.AutoCode.DbSchema
                 }
             }
         }
-
 
         public List<Column> NonPrimaryKeyColumns
         {

@@ -5,6 +5,7 @@
 #><#@ import namespace="System.IO"
 #><#@ import namespace="System.Text"
 #><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#@ import namespace="Banana.AutoCode.DbSchema"
 #><#+
 public class ThriftTypeConverter
 {
@@ -18,8 +19,15 @@ public class ThriftTypeConverter
         const String DOUBLE = "double";
         const String STRING = "string";
         const String BINARY = "binary";
-           
-        switch (type.Name)
+        
+        var typeName = type.Name;
+        var nullableType = Nullable.GetUnderlyingType(type);
+        if (nullableType != null)
+        {
+            typeName = nullableType.Name;
+        }
+
+        switch (typeName)
         {
             case "String":
                 return STRING;

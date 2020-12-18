@@ -1,4 +1,4 @@
-# AutoCode
+# <img src="https://raw.githubusercontent.com/yuanrui/CodeGenerator/master/Banana.AutoCode/Resources/Icons.128x128.Logo.ico"  height="32px"> AutoCode
 [README in English](README-EN.md)
 
 一个小而美的代码生成器，用于创建前后端代码，辅助项目开发，提高软件开发效率。代码生成器采用C#语言编写，采用 [mono t4模板引擎](https://github.com/mono/t4)，内置多个代码模板，可生成Asp.Net Mvc、EasyUI、LayUI、Entity Framework等代码。
@@ -24,7 +24,7 @@
 
 ### 使用说明
 
-1. 从[项目官网](https://github.com/yuanrui/CodeGenerator)下载[最新版本](https://github.com/yuanrui/CodeGenerator/releases)；
+1. 从[项目首页](https://github.com/yuanrui/CodeGenerator)下载[最新版本](https://github.com/yuanrui/CodeGenerator/releases)；
 2. 解压文件，运行AutoCode.exe；
 3. 设置数据源，勾选数据表；
 4. 运行生成代码；

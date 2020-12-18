@@ -1,0 +1,295 @@
+<#
+//------------------------------------------------------------------------------
+// <copyright file="MySqlDao.tt">
+//    Copyright (c) 2020, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2020-12-17 17:45:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="%TEMPLATES_DIR%\\TemplateFileManager.ttinclude" #>
+<#@ include file="%TEMPLATES_DIR%\\JavaConverter.ttinclude" #>
+
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var entClassName = table.DisplayName + "Entity";
+    var entMap = table.DisplayName + "Map";
+    var pkCol = table.PrimaryKeyColumns.FirstOrDefault() ?? new Column();
+    var pkName = pkCol.Name;
+    var pkCamelName = pkCol.CamelCase;
+    var pkTypeName = JavaConverter.AsJavaType(pkCol.Type);
+    
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Dao.java", host.GetValue("OutputPath").ToString() + "\\Java\\MyBatis\\dao");
+#>
+/**
+ * Copyright (c) <#= DateTime.Now.ToString("yyyy") #> the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.banana.authserver.dao;
+
+import org.banana.authserver.domain.entity.<#= table.DisplayName #>Entity;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * <#= table.Name #>表数据库访问层 <#= table.Comment #>
+ * 
+ * @author <#= Environment.UserName #>
+ * @since <#= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #>
+ */
+@Mapper
+public interface <#= table.DisplayName #>Dao {
+
+	/**
+	 * 查询所有数据
+	 * 
+	 */
+    List<<#= entClassName #>> findAll();
+
+    /**
+	 * 查询总数
+	 * 
+     * @return 总数
+	 */
+    long count();
+
+    /**
+	 * 是否存在
+	 * 
+     * @return true:存在 false:不存在
+	 */
+    boolean existsById(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", JavaConverter.AsJavaType(m.Type), m.CamelCase)).Aggregate((a, b) => a + ", " + b) #>);
+    
+    /**
+	 * 根据主键值查询存在的数量
+	 * 
+     * @return 存在数量
+	 */
+    int existsCount(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", JavaConverter.AsJavaType(m.Type), m.CamelCase)).Aggregate((a, b) => a + ", " + b) #>);
+
+    /**
+     * 通过ID查询单条数据
+     *
+<# 
+	foreach(var column in table.PrimaryKeyColumns)
+	{
+#>
+     * @param <#= column.CamelCase #> 主键 <#= column.Comment #>
+<#
+	}
+#>
+     * @return 实例对象
+     */
+    <#= entClassName #> findAllById(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", JavaConverter.AsJavaType(m.Type), m.CamelCase)).Aggregate((a, b) => a + ", " + b) #>);
+
+    /**
+     * 查询指定行数据
+     *
+     * @param offset 查询起始位置
+     * @param limit  查询条数
+     * @return 对象列表
+     */
+    List<<#= entClassName #>> findAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 通过实体作为筛选条件查询
+     *
+     * @param ent 实例对象
+     * @return 对象列表
+     */
+    List<<#= entClassName #>> findAllByEntity(<#= entClassName #> ent);
+
+    /**
+     * 新增数据
+     *
+     * @param ent 实例对象
+     * @return 影响行数
+     */
+    int insert(<#= entClassName #> ent);
+
+    /**
+     * 批量新增数据（MyBatis原生foreach方法）
+     *
+     * @param entities List<<#= entClassName #>> 实例对象列表
+     * @return 影响行数
+     */
+    int insertBatch(@Param("entities") List<<#= entClassName #>> entities);
+
+    /**
+     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
+     *
+     * @param entities List<<#= entClassName #>> 实例对象列表
+     * @return 影响行数
+     */
+    int insertOrUpdateBatch(@Param("entities") List<<#= entClassName #>> entities);
+
+    /**
+     * 修改数据
+     *
+     * @param ent 实例对象
+     * @return 影响行数
+     */
+    int update(<#= entClassName #> ent);
+
+    /**
+     * 通过主键删除数据
+     *
+<# 
+	foreach(var column in table.PrimaryKeyColumns)
+	{
+#>
+     * @param <#= column.CamelCase #> 主键 <#= column.Comment #>
+<#
+	}
+#>
+     * @return 影响行数
+     */
+    int deleteById(<#= table.PrimaryKeyColumns.Select(m => String.Format("{0} {1}", JavaConverter.AsJavaType(m.Type), m.CamelCase)).Aggregate((a, b) => a + ", " + b) #>);
+}
+
+<# 
+	manager.EndBlock(); 
+
+    manager.StartNewFile(table.DisplayName + "Dao.xml", host.GetValue("OutputPath").ToString()+ "\\Java\\MyBatis\\mapper");
+#>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.banana.authserver.dao.<#= table.DisplayName #>Dao">
+    <resultMap type="org.banana.authserver.domain.entity.<#= entClassName #>" id="<#= entMap #>">
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+        <result property="<#= column.CamelCase #>" column="<#= column.Name #>" jdbcType="<#= JavaConverter.AsMyBatisJdbcType(column) #>"/>
+<#
+	}
+#>
+    </resultMap>
+
+    <!--查询所有数据-->
+    <select id="findAll" resultMap="<#= entMap #>">
+        select <#= table.Columns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #> 
+        from <#= table.Name #> 
+    </select>
+
+    <!--查询总数-->
+    <select id="count" resultMap="java.lang.Long">
+        select count(*)
+        from <#= table.Name #> 
+    </select>
+
+    <!--是否存在-->
+    <select id="existsById" resultMap="java.lang.Boolean">
+        select count(*)
+        from <#= table.Name #> 
+        where <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=#{{{1}}}", m.Name, m.CamelCase)).Aggregate((a, b) => a + " and " + b) #>
+    </select>
+
+    <!--根据主键值查询存在的数量-->
+    <select id="existsCount" resultMap="java.lang.Integer">
+        select count(*)
+        from <#= table.Name #> 
+        where <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=#{{{1}}}", m.Name, m.CamelCase)).Aggregate((a, b) => a + " and " + b) #>
+    </select>
+
+    <!--查询单个-->
+    <select id="findAllById" resultMap="<#= entMap #>">
+        select <#= table.Columns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #> 
+        from <#= table.Name #> 
+        where <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=#{{{1}}}", m.Name, m.CamelCase)).Aggregate((a, b) => a + " and " + b) #>
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="findAllByLimit" resultMap="<#= entMap #>">
+        select <#= table.Columns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #> 
+        from <#= table.Name #> 
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="findAllByEntity" resultMap="<#= entMap #>">
+        select <#= table.Columns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #> 
+        from <#= table.Name #> 
+        <where>
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+            <if test="<#= JavaConverter.GetTestCriteria(column) #>">
+                and <#= column.Name #> = #{<#= column.CamelCase #>}
+            </if>
+<#
+	}
+#>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="<#= pkCamelName #>" useGeneratedKeys="true">
+        insert into <#= table.Name #>(<#= table.NonPrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>)
+        values (<#= table.NonPrimaryKeyColumns.Select(m => "#{" + m.CamelCase + "}").Aggregate((a, b) => a + ", " + b) #>)
+    </insert>
+
+    <insert id="insertBatch" keyProperty="<#= pkCamelName #>" useGeneratedKeys="true">
+        insert into <#= table.Name #>(<#= table.NonPrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (<#= table.NonPrimaryKeyColumns.Select(m => "#{entity." + m.CamelCase + "}").Aggregate((a, b) => a + ", " + b) #>)
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="<#= pkCamelName #>" useGeneratedKeys="true">
+        insert into <#= table.Name #>(<#= table.Name #>(<#= table.NonPrimaryKeyColumns.Select(m => m.Name).Aggregate((a, b) => a + ", " + b) #>))
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (<#= table.NonPrimaryKeyColumns.Select(m => "#{entity." + m.CamelCase + "}").Aggregate((a, b) => a + ", " + b) #>)
+        </foreach>
+        on duplicate key update
+        <#= table.NonPrimaryKeyColumns.Select(m => m.Name + " = values(" + m.Name + ")").Aggregate((a, b) => a + ", " + b) #>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update <#= table.Name #>
+        <set>
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+            <if test="<#= JavaConverter.GetTestCriteria(column) #>">
+                <#= column.Name #> = #{<#= column.CamelCase #>}
+            </if>
+<#
+	}
+#>
+        </set>
+        where <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=#{{{1}}}", m.Name, m.CamelCase)).Aggregate((a, b) => a + " and " + b) #>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from <#= table.Name #> 
+        where <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=#{{{1}}}", m.Name, m.CamelCase)).Aggregate((a, b) => a + " and " + b) #>
+    </delete>
+</mapper>
+<# 
+	manager.EndBlock(); 
+	manager.Process(true, new System.Text.UTF8Encoding(false));
+#>

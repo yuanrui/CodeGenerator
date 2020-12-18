@@ -69,7 +69,7 @@ class Manager {
         currentBlock = null;
     }
 
-    public virtual void Process(bool split, bool sync = true) {
+    public virtual void Process(bool split) {
         if (split) {
             EndBlock();
             String headerText = template.ToString(header.Start, header.Length);
@@ -90,9 +90,34 @@ class Manager {
         }
     }
 
+    public virtual void Process(bool split, Encoding encoding) {
+        if (split) {
+            EndBlock();
+            String headerText = template.ToString(header.Start, header.Length);
+            String footerText = template.ToString(footer.Start, footer.Length);
+            String outputPath = Path.GetDirectoryName(host.TemplateFile);
+            files.Reverse();
+            if (!footer.IncludeInDefault)
+                template.Remove(footer.Start, footer.Length);
+            foreach(Block block in files) {
+				String fileName = Path.Combine(block.Folder ?? outputPath, block.Name);
+                String content = headerText + template.ToString(block.Start, block.Length) + footerText;
+                generatedFileNames.Add(fileName);
+                CreateFile(fileName, content, encoding);
+                template.Remove(block.Start, block.Length);
+            }
+            if (!header.IncludeInDefault)
+                template.Remove(header.Start, header.Length);
+        }
+    }
+
     protected virtual void CreateFile(String fileName, String content) {
+        CreateFile(fileName, content, new UTF8Encoding(true));
+    }
+
+    protected virtual void CreateFile(String fileName, String content, Encoding encoding) {
         if (IsFileContentDifferent(fileName, content))
-            System.IO.File.WriteAllText(fileName, content, new UTF8Encoding(true));
+            System.IO.File.WriteAllText(fileName, content, encoding);
     }
 
     public virtual String GetCustomToolNamespace(String fileName) {

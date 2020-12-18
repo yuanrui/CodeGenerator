@@ -1,0 +1,176 @@
+<#@ assembly name="System.Data.Linq"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#@ import namespace="Banana.AutoCode.DbSchema"
+#><#+
+public class JavaConverter
+{
+    public static String AsJavaType(Type type)
+    {
+        const String BOOL = "Boolean";
+        const String BYTE = "Byte";
+        const String I16 = "Integer";
+        const String I32 = "Integer";
+        const String I64 = "Long";
+        const String DOUBLE = "Double";
+        const String STRING = "String";
+        const String BINARY = "Byte[]";
+
+        var typeName = type.Name;
+        var nullableType = Nullable.GetUnderlyingType(type);
+        if (nullableType != null)
+        {
+            typeName = nullableType.Name;
+        }
+
+        switch (typeName)
+        {
+            case "String":
+                return STRING;
+            case "Byte[]":
+            case "SByte[]":
+                return BINARY;
+            case "Boolean":
+                return BOOL;
+            case "Byte":
+            case "SByte":
+                return BYTE;
+            case "Decimal":
+            case "Double":
+            case "Single":
+                return DOUBLE;
+            case "Int16":
+            case "UInt16":
+                return I16;
+            case "Int32":
+            case "UInt32":
+                return I32;
+            case "Int64":
+            case "UInt64":
+                return I64;
+            case "DateTime":
+                return "Date";
+            default:
+                break;
+        }
+
+        return STRING;
+    }
+    
+    public const string MyBatis_JdbcType_ARRAY = "ARRAY";
+    public const string MyBatis_JdbcType_BIGINT = "BIGINT";
+    public const string MyBatis_JdbcType_BINARY = "BINARY";
+    public const string MyBatis_JdbcType_BIT = "BIT";
+    public const string MyBatis_JdbcType_BLOB = "BLOB";
+    public const string MyBatis_JdbcType_BOOLEAN = "BOOLEAN";
+    public const string MyBatis_JdbcType_CHAR = "CHAR";
+    public const string MyBatis_JdbcType_CLOB = "CLOB";
+    public const string MyBatis_JdbcType_CURSOR = "CURSOR";
+    public const string MyBatis_JdbcType_DATALINK = "DATALINK";
+    public const string MyBatis_JdbcType_DATE = "DATE";
+    public const string MyBatis_JdbcType_DATETIMEOFFSET = "DATETIMEOFFSET";
+    public const string MyBatis_JdbcType_DECIMAL = "DECIMAL";
+    public const string MyBatis_JdbcType_DISTINCT = "DISTINCT";
+    public const string MyBatis_JdbcType_DOUBLE = "DOUBLE";
+    public const string MyBatis_JdbcType_FLOAT = "FLOAT";
+    public const string MyBatis_JdbcType_INTEGER = "INTEGER";
+    public const string MyBatis_JdbcType_JAVA_OBJECT = "JAVA_OBJECT";
+    public const string MyBatis_JdbcType_LONGNVARCHAR = "LONGNVARCHAR";
+    public const string MyBatis_JdbcType_LONGVARBINARY = "LONGVARBINARY";
+    public const string MyBatis_JdbcType_LONGVARCHAR = "LONGVARCHAR";
+    public const string MyBatis_JdbcType_NCHAR = "NCHAR";
+    public const string MyBatis_JdbcType_NCLOB = "NCLOB";
+    public const string MyBatis_JdbcType_NULL = "NULL";
+    public const string MyBatis_JdbcType_NUMERIC = "NUMERIC";
+    public const string MyBatis_JdbcType_NVARCHAR = "NVARCHAR";
+    public const string MyBatis_JdbcType_OTHER = "OTHER";
+    public const string MyBatis_JdbcType_REAL = "REAL";
+    public const string MyBatis_JdbcType_REF = "REF";
+    public const string MyBatis_JdbcType_ROWID = "ROWID";
+    public const string MyBatis_JdbcType_SMALLINT = "SMALLINT";
+    public const string MyBatis_JdbcType_SQLXML = "SQLXML";
+    public const string MyBatis_JdbcType_STRUCT = "STRUCT";
+    public const string MyBatis_JdbcType_TIME = "TIME";
+    public const string MyBatis_JdbcType_TIMESTAMP = "TIMESTAMP";
+    public const string MyBatis_JdbcType_TINYINT = "TINYINT";
+    public const string MyBatis_JdbcType_UNDEFINED = "UNDEFINED";
+    public const string MyBatis_JdbcType_VARBINARY = "VARBINARY";
+    public const string MyBatis_JdbcType_VARCHAR = "VARCHAR";
+
+    public static String AsMyBatisJdbcType(Column col)
+    {
+        DbType dataType = col.DataType;
+
+        switch (dataType)
+        {
+            case DbType.Binary:
+                return MyBatis_JdbcType_BINARY;
+            case DbType.Byte:
+                return MyBatis_JdbcType_TINYINT;
+            case DbType.Boolean:
+                return MyBatis_JdbcType_BOOLEAN;
+            case DbType.Currency:
+                return MyBatis_JdbcType_DECIMAL;
+            case DbType.Date:
+            case DbType.DateTime:
+                return MyBatis_JdbcType_DATE;
+            case DbType.Decimal:
+                return MyBatis_JdbcType_DECIMAL;
+            case DbType.Double:
+                return MyBatis_JdbcType_DOUBLE;
+            case DbType.UInt16:
+            case DbType.Int16:
+                return MyBatis_JdbcType_SMALLINT;
+            case DbType.UInt32:
+            case DbType.Int32:
+                return MyBatis_JdbcType_INTEGER;
+            case DbType.UInt64:
+            case DbType.Int64:
+                return MyBatis_JdbcType_BIGINT;
+            case DbType.Object:
+                return MyBatis_JdbcType_JAVA_OBJECT;
+            case DbType.SByte:
+                return MyBatis_JdbcType_TINYINT;
+            case DbType.Single:
+                return MyBatis_JdbcType_REAL;
+            case DbType.Time:
+                return MyBatis_JdbcType_TIME;
+            case DbType.VarNumeric:
+                return MyBatis_JdbcType_NUMERIC;
+            case DbType.Xml:
+                return MyBatis_JdbcType_SQLXML;
+            case DbType.DateTime2:
+            case DbType.DateTimeOffset:
+                return MyBatis_JdbcType_TIMESTAMP;
+            case DbType.StringFixedLength:
+                return MyBatis_JdbcType_NVARCHAR;
+            case DbType.AnsiString:
+            case DbType.AnsiStringFixedLength:
+            case DbType.Guid:
+            case DbType.String:
+            default:
+                return MyBatis_JdbcType_VARCHAR;
+        }
+    }
+
+    public static String GetTestCriteria(Column col)
+    {
+        if(col == null) 
+        {
+            return String.Empty;
+        }
+        
+        if(col.TypeName == null || col.TypeName.IndexOf("string", StringComparison.OrdinalIgnoreCase) < 0)
+        {
+            return col.CamelCase + " != null";
+        }
+
+        return col.CamelCase + " != null and " + col.CamelCase + " != ''";
+    }
+
+}
+#>

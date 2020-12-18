@@ -22,8 +22,8 @@ namespace Banana.AutoCode
 {
     public partial class Main : Form
     {
-        const string TEMPLATES_DIR = "Templates";
-        const string OUTPUT_DIR = "Output";
+        public const string TEMPLATES_DIR = ConfigConstants.TEMPLATES_DIR;
+        public const string OUTPUT_DIR = ConfigConstants.OUTPUT_DIR;
 
         DbPanel DbPanel = new DbPanel();
         OutputPanel OutputPanel = new OutputPanel();

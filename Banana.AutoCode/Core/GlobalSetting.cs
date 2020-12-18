@@ -16,10 +16,12 @@ namespace Banana.AutoCode.Core
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    return new string[0];
+                    return new string[1] { "T_" };
                 }
 
-                return input.Split(new string[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries);
+                return input.Split(new string[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries)
+                    .OrderByDescending(m => m.Length)
+                    .ToArray();
             }
         }
 

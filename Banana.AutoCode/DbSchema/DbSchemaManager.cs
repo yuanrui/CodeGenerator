@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Banana.AutoCode.Core;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using Banana.AutoCode.Core;
 
 namespace Banana.AutoCode.DbSchema
 {
@@ -21,32 +19,37 @@ namespace Banana.AutoCode.DbSchema
             Provider = DbSchemaFactory.Create(connSetting);
         }
 
-        public static string GetCamelCaseName(string name)
+        public static string GetCamelCase(string name)
         {
-            if (name == null)
-                return string.Empty;
-            string pascalName = GetPascalCaseName(name);
-            return pascalName.Substring(0, 1).ToLower() + pascalName.Substring(1);
-        }
-
-        private static string GetPascalCaseName(string name)
-        {
-            name = FixPrefixAndSuffix(name);
-            string[] splitNames;
-            name = Regex.Replace(name, "^[^a-zA-Z]+", string.Empty).Trim();
-
-            char[] splitter = { '_', ' ' };
-            splitNames = name.Split(splitter);
-
-            string pascalName = "";
-            foreach (string s in splitNames)
+            if (string.IsNullOrEmpty(name))
             {
-                if (s.Length > 0)
-                    pascalName += s.Substring(0, 1).ToUpper() + s.Substring(1);
+                return string.Empty;
+            }
+            name = FixPrefixAndSuffix(name);
+
+            if (name.IsAllUpperCase())
+            {
+                name = name.ToLower();
             }
 
-            //pascalName = FixPrefixAndSuffix(pascalName);
-            return pascalName;
+            
+            return name.ToCamelCase();
+        }
+
+        private static string GetPascalCase(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return string.Empty;
+            }
+            name = FixPrefixAndSuffix(name);
+
+            if (name.IsAllUpperCase())
+            {
+                name = name.ToLower();
+            }
+
+            return name.ToPascalCase();
         }
 
         private static string FixPrefixAndSuffix(string name)
@@ -83,7 +86,7 @@ namespace Banana.AutoCode.DbSchema
 
             foreach (var table in tables)
             {
-                table.DisplayName = GetPascalCaseName(table.Name.ToLower());
+                table.DisplayName = GetPascalCase(table.Name);
             }
         }
 

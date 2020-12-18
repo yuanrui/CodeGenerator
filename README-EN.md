@@ -1,4 +1,4 @@
-# AutoCode
+# <img src="https://raw.githubusercontent.com/yuanrui/EverythingSZ/main/WinFormUI/Resources/app.ico" height="32px"> AutoCode
 [README in Chinese](README.md)
 
 A simple code generator, small and pretty. Used to create front&back end code, assist project development, improve software development efficiency. The code generator write by C#, using the [mono t4 template engine](https://github.com/mono/t4), built-in multiple code templates, can generate the Asp.Net Mvc, EasyUI, LayUI, Entity Framework, etc.

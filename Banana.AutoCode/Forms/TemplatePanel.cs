@@ -17,7 +17,6 @@ namespace Banana.AutoCode.Forms
 {
     public partial class TemplatePanel : DockContent, IDisposable
     {
-        const string TEMPLATE_PATH = "Templates";
         const String DIRECTORY_ICON = "dir";
         protected Hashtable FileMap;
 
@@ -74,7 +73,7 @@ namespace Banana.AutoCode.Forms
         
         private string GetBasePath()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, TEMPLATE_PATH);
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigConstants.TEMPLATES_DIR);
         }
 
         protected void RefreshTreeView()

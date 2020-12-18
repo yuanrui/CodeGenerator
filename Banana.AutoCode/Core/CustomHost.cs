@@ -15,7 +15,7 @@ namespace Banana.AutoCode.Core
     public class CustomHost : TemplateGenerator, ITextTemplatingEngineHost
     {
         public CustomHost() : this(AppDomain.CreateDomain("Generation App Domain"))
-        { 
+        {
             
         }
 
