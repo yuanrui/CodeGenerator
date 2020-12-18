@@ -2,7 +2,7 @@
 [README in Chinese](README.md)
 
 A simple code generator, small and pretty. Used to create front&back end code, assist project development, improve software development efficiency. The code generator write by C#, using the [mono t4 template engine](https://github.com/mono/t4), built-in multiple code templates, can generate the Asp.Net Mvc, EasyUI, LayUI, Entity Framework, etc.
-![main ui](https://user-images.githubusercontent.com/3859838/87500061-367c6880-c68e-11ea-8506-4a9683413402.png)
+![main ui](https://user-images.githubusercontent.com/3859838/94229453-20aedd80-ff32-11ea-97dc-6eb6dc1ff315.png)
 
 ## User Guide
 
@@ -24,7 +24,7 @@ Environment: [.NET 4.0 +](https://download.microsoft.com/download/9/5/A/95A9616B
 
 ### Getting Started
 
-1. From[project's website](https://github.com/yuanrui/CodeGenerator)download[the latest version](https://github.com/yuanrui/CodeGenerator/releases);
+1. Download from [project's website](https://github.com/yuanrui/CodeGenerator) get [the latest version](https://github.com/yuanrui/CodeGenerator/releases);
 2. Unzip the file and run: AutoCode.exe;
 3. Open Setting windows, set English language environment;
 4. Set database connection source and choose data table;
