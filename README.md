@@ -1,7 +1,7 @@
 # <img src="https://raw.githubusercontent.com/yuanrui/CodeGenerator/master/Banana.AutoCode/Resources/Icons.128x128.Logo.ico"  height="32px"> AutoCode
 [README in English](README-EN.md)
 
-一个小而美的代码生成器，用于创建前后端代码，辅助项目开发，提高软件开发效率。代码生成器采用C#语言编写，采用 [mono t4模板引擎](https://github.com/mono/t4)，内置多个代码模板，可生成Asp.Net Mvc、EasyUI、LayUI、Entity Framework等代码。
+一个小而美的代码生成器，用于创建前后端代码，辅助项目开发，提高软件开发效率。代码生成器采用C#语言编写，采用 [mono t4模板引擎](https://github.com/mono/t4)，内置多个代码模板，可生成MyBatis、JPA、Asp.Net Mvc、EasyUI、LayUI、Entity Framework等代码。
 ![main ui](https://user-images.githubusercontent.com/3859838/87500061-367c6880-c68e-11ea-8506-4a9683413402.png)
 
 ## 用户指南
