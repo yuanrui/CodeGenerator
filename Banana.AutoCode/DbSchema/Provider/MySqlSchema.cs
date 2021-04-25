@@ -89,12 +89,12 @@ order by 1";
             switch (rawType.ToLower())
             {
                 case "bit":
+                case "bool":
                 case "boolean":
                     return GetTypeOf<Boolean>(isNullable);
                 case "tinyint":
                     return GetTypeOf<Byte>(isNullable);
                 case "smallint":
-                case "year":
                     return GetTypeOf<Int16>(isNullable);
                 case "int":
                 case "integer":
@@ -106,9 +106,13 @@ order by 1";
                     return GetTypeOf<Single>(isNullable);
                 case "double":
                     return GetTypeOf<Double>(isNullable);
+                case "numeric":
                 case "decimal":
+                case "dec":
+                case "real":
                     return GetTypeOf<Decimal>(isNullable);
                 case "date":
+                case "year":
                 case "time":
                 case "timestamp":
                 case "datetime":
@@ -134,6 +138,7 @@ order by 1";
             switch (rawType.ToLower())
             {
                 case "bit":
+                case "bool":
                 case "boolean":
                     return DbType.Boolean;
                 case "tinyint":
@@ -150,7 +155,10 @@ order by 1";
                     return DbType.Single;
                 case "double":
                     return DbType.Double;
+                case "numeric":
                 case "decimal":
+                case "dec":
+                case "real":
                     return DbType.Decimal;
                 case "year":
                 case "date":
