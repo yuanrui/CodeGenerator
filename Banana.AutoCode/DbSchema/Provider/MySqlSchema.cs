@@ -48,17 +48,35 @@ order by table_name";
         public override List<Column> GetColumns(Table table)
         {
             const string sql = @"
-select distinct col.ordinal_position as Id, col.column_name as Name, data_type as RawType, column_comment as Comment
-, case when cons.constraint_type = 'PRIMARY KEY' then 1 else 0 end as IsPrimaryKey
-, case when cons.constraint_type = 'FOREIGN KEY' then 1 else 0 end as IsForeignKey
-, case when cons.constraint_type = 'UNIQUE' then 1 else 0 end as IsUnique
+select col.ordinal_position as Id, col.column_name as Name, data_type as RawType, column_type as RawType2, column_comment as Comment
+, case when 
+(
+select count(*) from information_schema.key_column_usage usg, information_schema.table_constraints cons 
+where usg.table_schema = @TableSchema and usg.table_name = @TableName 
+and cons.table_schema = @TableSchema and cons.table_name = @TableName 
+and col.column_name = usg.column_name and usg.constraint_name = cons.constraint_name
+and cons.constraint_type = 'PRIMARY KEY'
+) > 0 then 1 else 0 end as IsPrimaryKey
+, case when 
+(
+select count(*) from information_schema.key_column_usage usg, information_schema.table_constraints cons 
+where usg.table_schema = @TableSchema and usg.table_name = @TableName 
+and cons.table_schema = @TableSchema and cons.table_name = @TableName 
+and col.column_name = usg.column_name and usg.constraint_name = cons.constraint_name
+and cons.constraint_type = 'FOREIGN KEY'
+) > 0 then 1 else 0 end as IsForeignKey
+, case when 
+(
+select count(*) from information_schema.key_column_usage usg, information_schema.table_constraints cons 
+where usg.table_schema = @TableSchema and usg.table_name = @TableName 
+and cons.table_schema = @TableSchema and cons.table_name = @TableName 
+and col.column_name = usg.column_name and usg.constraint_name = cons.constraint_name
+and cons.constraint_type = 'UNIQUE'
+) > 0 then 1 else 0 end as IsUnique
 , case is_nullable when 'YES' then 1 else 0 end IsNullable
 , character_maximum_length as Length, numeric_precision as ""Precision"", numeric_scale as Scale
 from information_schema.columns col
-left join information_schema.key_column_usage usa on col.table_schema = usa.constraint_schema and col.table_name = usa.table_name and col.column_name = usa.column_name
-left join information_schema.table_constraints cons on usa.table_schema = usa.constraint_schema and usa.table_name = cons.table_name and usa.constraint_name = cons.constraint_name 
-where col.table_schema=@TableSchema
-and col.table_name=@TableName
+where col.table_schema = @TableSchema and col.table_name = @TableName
 order by 1";
             
             var result = new List<Column>();
@@ -79,6 +97,17 @@ order by 1";
             return result;
         }
 
+        protected override void FixRawType(Column column)
+        {
+            if (column.RawType2 == "tinyint(1)" || column.RawType2 == "tinyint(1) unsigned")
+            {
+                column.Precision = 1;
+                return;
+            }
+
+            base.FixRawType(column);
+        }
+
         public override Type GetType(string rawType, short precision, short scale, bool isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
@@ -93,7 +122,7 @@ order by 1";
                 case "boolean":
                     return GetTypeOf<Boolean>(isNullable);
                 case "tinyint":
-                    return GetTypeOf<Byte>(isNullable);
+                    return ConvertToNumberType(precision, scale, isNullable);
                 case "smallint":
                     return GetTypeOf<Int16>(isNullable);
                 case "int":

@@ -142,44 +142,6 @@ namespace Banana.AutoCode.DbSchema.Provider
             return result;
         }
 
-        private static Type ConvertNumberToType(Int16 precision, Int16 scale, Boolean isNullable)
-        {
-            if (scale <= 0)
-            {
-                if (precision == 0)
-                {
-                    return GetTypeOf<Int64>(isNullable);
-                }
-
-                if (precision == 1)
-                {
-                    return GetTypeOf<Boolean>(isNullable);
-                }
-
-                if (precision <= 3)
-                {
-                    return GetTypeOf<Byte>(isNullable);
-                }
-
-                if (precision <= 4)
-                {
-                    return GetTypeOf<Int16>(isNullable);
-                }
-
-                if (precision <= 10)
-                {
-                    return GetTypeOf<Int32>(isNullable);
-                }
-
-                if (precision <= 19)
-                {
-                    return GetTypeOf<Int64>(isNullable);
-                }
-            }
-
-            return GetTypeOf<Decimal>(isNullable);
-        }
-
         public override Type GetType(String rawType, Int16 precision, Int16 scale, Boolean isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
@@ -204,7 +166,7 @@ namespace Banana.AutoCode.DbSchema.Provider
                 case "real":
                     return GetTypeOf<Decimal>(isNullable);
                 case "numeric":
-                    return ConvertNumberToType(precision, scale, isNullable);
+                    return ConvertToNumberType(precision, scale, isNullable);
                 case "date":
                 case "time":
                 case "timestamp":

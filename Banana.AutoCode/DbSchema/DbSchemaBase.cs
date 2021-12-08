@@ -127,6 +127,7 @@ namespace Banana.AutoCode.DbSchema
             column.Id = Convert.ToString(reader.GetValue(reader.GetOrdinal("Id")));
             column.Name = reader.GetString(reader.GetOrdinal("Name"));
             column.RawType = reader.GetString(reader.GetOrdinal("RawType"));
+            column.RawType2 = reader["RawType2"] == DBNull.Value ? string.Empty : reader.GetString(reader.GetOrdinal("RawType2"));
             column.Comment = reader["Comment"] == DBNull.Value ? string.Empty : reader.GetString(reader.GetOrdinal("Comment"));
 
             column.IsPrimaryKey = Convert.ToBoolean(reader.GetValue(reader.GetOrdinal("IsPrimaryKey")));
@@ -179,6 +180,52 @@ namespace Banana.AutoCode.DbSchema
             }
 
             return resultTable;
+        }
+
+        /// <summary>
+        /// convert Oracle/MySQL/SQLite number type
+        /// http://docs.oracle.com/cd/E51173_01/win.122/e17732/entityDataTypeMapping.htm
+        /// </summary>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <param name="isNullable"></param>
+        /// <returns></returns>
+        protected static Type ConvertToNumberType(Int16 precision, Int16 scale, Boolean isNullable)
+        {
+            if (scale == 0)
+            {
+                if (precision == 0)
+                {
+                    return GetTypeOf<Int64>(isNullable);
+                }
+
+                if (precision == 1)
+                {
+                    return GetTypeOf<Boolean>(isNullable);
+                }
+
+                if (precision <= 3)
+                {
+                    return GetTypeOf<Byte>(isNullable);
+                }
+
+                if (precision <= 4)
+                {
+                    return GetTypeOf<Int16>(isNullable);
+                }
+
+                if (precision <= 10)
+                {
+                    return GetTypeOf<Int32>(isNullable);
+                }
+
+                if (precision <= 19)
+                {
+                    return GetTypeOf<Int64>(isNullable);
+                }
+            }
+
+            return GetTypeOf<Decimal>(isNullable);
         }
     }
 }

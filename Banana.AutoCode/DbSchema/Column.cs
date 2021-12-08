@@ -17,6 +17,8 @@ namespace Banana.AutoCode.DbSchema
 
         public String RawType { get; set; }
 
+        public String RawType2 { get; set; }
+
         public DbType DataType { get; set; }
 
         public Type Type { get; set; }

@@ -91,52 +91,6 @@ ORDER BY tab.COLUMN_ID ASC ";
             base.FixRawType(column);
         }
 
-        /// <summary>
-        /// convert Oracle number type
-        /// http://docs.oracle.com/cd/E51173_01/win.122/e17732/entityDataTypeMapping.htm
-        /// </summary>
-        /// <param name="precision"></param>
-        /// <param name="scale"></param>
-        /// <param name="isNullable"></param>
-        /// <returns></returns>
-        private static Type ConvertNumberToType(Int16 precision, Int16 scale, Boolean isNullable)
-        {
-            if (scale == 0)
-            {
-                if (precision == 0)
-                {
-                    return GetTypeOf<Int64>(isNullable);
-                }
-
-                if (precision == 1)
-                {
-                    return GetTypeOf<Boolean>(isNullable);
-                }
-
-                if (precision <= 3)
-                {
-                    return GetTypeOf<Byte>(isNullable);
-                }
-
-                if (precision <= 4)
-                {
-                    return GetTypeOf<Int16>(isNullable);
-                }
-
-                if (precision <= 10)
-                {
-                    return GetTypeOf<Int32>(isNullable);
-                }
-
-                if (precision <= 19)
-                {
-                    return GetTypeOf<Int64>(isNullable);
-                }
-            }
-
-            return GetTypeOf<Decimal>(isNullable);
-        }
-
         public override Type GetType(String rawType, Int16 precision, Int16 scale, Boolean isNullable)
         {
             if (String.IsNullOrEmpty(rawType))
@@ -159,7 +113,7 @@ ORDER BY tab.COLUMN_ID ASC ";
                 case "INTERVAL YEAR TO MONTH":
                     return GetTypeOf<Int32>(isNullable);
                 case "NUMBER": 
-                    return ConvertNumberToType(precision, scale, isNullable);
+                    return ConvertToNumberType(precision, scale, isNullable);
                 case "INTERVAL DAY TO SECOND":
                     return GetTypeOf<TimeSpan>(isNullable);
                 case "DATE": 
