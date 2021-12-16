@@ -9,8 +9,8 @@ namespace Banana.AutoCode.DbSchema.Provider
     public class MySqlSchema : DbSchemaBase
     {
         public MySqlSchema(string connName) : base(connName)
-        { 
-            
+        {
+
         }
 
         public override List<Database> GetDatabases()
@@ -148,13 +148,14 @@ order by 1";
                     return GetTypeOf<DateTime>(isNullable);
                 case "char":
                 case "varchar":
-                case "longtext":
                 case "text":
+                case "tinytext":
+                case "longtext":
                     return typeof(String);
                 case "binary":
                 case "varbinary":
-                case "mediumblob":
                 case "blob":
+                case "mediumblob":
                 case "longblob":
                     return typeof(Byte[]);
                 default:
@@ -197,12 +198,14 @@ order by 1";
                     return DbType.DateTime;
                 case "char":
                 case "varchar":
-                case "longtext":
                 case "text":
+                case "tinytext":
+                case "longtext":
                     return DbType.String;
                 case "binary":
                 case "varbinary":
                 case "blob":
+                case "mediumblob":
                 case "longblob":
                     return DbType.Binary;
                 default:
