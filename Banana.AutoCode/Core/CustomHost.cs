@@ -91,6 +91,7 @@ namespace Banana.AutoCode.Core
                     typeof(System.Linq.Enumerable).Assembly.Location,
                     typeof(System.Data.SQLite.SQLiteConnection).Assembly.Location,
                     typeof(Oracle.ManagedDataAccess.Client.OracleDbType).Assembly.Location,
+                    typeof(MySql.Data.MySqlClient.MySqlDbType).Assembly.Location,
                     typeof(CustomHost).Assembly.Location
                 };
             }
@@ -111,6 +112,7 @@ namespace Banana.AutoCode.Core
                     "System.Text",
                     "System.Data",
                     "System.Data.SQLite",
+                    "MySql.Data.MySqlClient",
                     "Oracle.ManagedDataAccess.Client",
                     "Banana.AutoCode",
                     "Banana.AutoCode.DbSchema",
