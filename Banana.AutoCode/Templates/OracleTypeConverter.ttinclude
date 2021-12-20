@@ -20,7 +20,7 @@ public class OracleTypeConverter
     /// <param name="precision"></param>
     /// <param name="scale"></param>
     /// <returns></returns>
-    private static String ConvertNumberToTypeName(Int16 precision, Int16 scale)
+    private static String ConvertToNumberTypeName(Int16 precision, Int16 scale)
     {
         if (scale == 0)
         {
@@ -58,7 +58,7 @@ public class OracleTypeConverter
         return "Decimal";
     }
 
-    private static Type ConvertNumberToType(Int16 precision, Int16 scale, Boolean isNullable)
+    private static Type ConvertToNumberType(Int16 precision, Int16 scale, Boolean isNullable)
     {
         if (scale == 0)
         {
@@ -128,7 +128,7 @@ public class OracleTypeConverter
             case "LONG RAW": csharpType = "Byte[]"; break;
             case "NCHAR": csharpType = "String"; break;
             case "NCLOB": csharpType = "String"; break;
-            case "NUMBER": csharpType = ConvertNumberToTypeName(precision, scale); break;
+            case "NUMBER": csharpType = ConvertToNumberTypeName(precision, scale); break;
             case "NVARCHAR2": csharpType = "String"; break;
             case "RAW": csharpType = "Byte[]"; break;
             case "ROWID": csharpType = "String"; break;
@@ -183,7 +183,7 @@ public class OracleTypeConverter
             case "LONG RAW": csharpType = typeof(Byte[]); break;
             case "NCHAR": csharpType = typeof(String); break;
             case "NCLOB": csharpType = typeof(String); break;
-            case "NUMBER": csharpType = ConvertNumberToType(precision, scale, isNullable); break;
+            case "NUMBER": csharpType = ConvertToNumberType(precision, scale, isNullable); break;
             case "NVARCHAR2": csharpType = typeof(String); break;
             case "RAW": csharpType = typeof(Byte[]); break;
             case "ROWID": csharpType = typeof(String); break;
