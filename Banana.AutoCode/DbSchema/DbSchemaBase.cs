@@ -135,7 +135,7 @@ namespace Banana.AutoCode.DbSchema
             column.IsUnique = Convert.ToBoolean(reader.GetValue(reader.GetOrdinal("IsUnique")));
             column.IsNullable = Convert.ToBoolean(reader.GetValue(reader.GetOrdinal("IsNullable")));
 
-            column.Length = reader["Length"] == DBNull.Value ? 0 : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("Length")));
+            column.Length = reader["Length"] == DBNull.Value ? 0 : Convert.ToInt64(reader.GetValue(reader.GetOrdinal("Length")));
             column.Precision = reader["Precision"] == DBNull.Value ? (Int16)0 : Convert.ToInt16(reader.GetValue(reader.GetOrdinal("Precision")));
             column.Scale = reader["Scale"] == DBNull.Value ? (Int16)0 : Convert.ToInt16(reader.GetValue(reader.GetOrdinal("Scale")));
             

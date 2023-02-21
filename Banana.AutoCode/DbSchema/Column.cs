@@ -42,7 +42,7 @@ namespace Banana.AutoCode.DbSchema
 
         public Boolean IsNullable { get; set; }
 
-        public Int32 Length { get; set; }
+        public Int64 Length { get; set; }
 
         public Int16 Precision { get; set; }
 
