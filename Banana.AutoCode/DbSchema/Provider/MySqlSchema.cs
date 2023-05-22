@@ -8,6 +8,8 @@ namespace Banana.AutoCode.DbSchema.Provider
 {
     public class MySqlSchema : DbSchemaBase
     {
+        const string unsigned = "unsigned";
+
         public MySqlSchema(string connName) : base(connName)
         {
 
@@ -99,10 +101,23 @@ order by 1";
 
         protected override void FixRawType(Column column)
         {
+            if (column == null || string.IsNullOrEmpty(column.RawType2))
+            {
+                return;
+            }
+
             if (column.RawType2 == "tinyint(1)" || column.RawType2 == "tinyint(1) unsigned")
             {
                 column.Precision = 1;
                 return;
+            }
+
+            if (column.RawType2.IndexOf(unsigned, StringComparison.OrdinalIgnoreCase) > -1)
+            {
+                if (column.RawType.IndexOf(unsigned, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    column.RawType = column.RawType + " " + unsigned;
+                }
             }
 
             base.FixRawType(column);
@@ -122,15 +137,24 @@ order by 1";
                 case "boolean":
                     return GetTypeOf<Boolean>(isNullable);
                 case "tinyint":
+                case "tinyint unsigned":
                     return ConvertToNumberType(precision, scale, isNullable);
                 case "smallint":
                     return GetTypeOf<Int16>(isNullable);
+                case "smallint unsigned":
+                    return GetTypeOf<UInt16>(isNullable);
                 case "int":
                 case "integer":
                 case "mediumint":
                     return GetTypeOf<Int32>(isNullable);
+                case "int unsigned":
+                case "integer unsigned":
+                case "mediumint unsigned":
+                    return GetTypeOf<UInt32>(isNullable);
                 case "bigint":
                     return GetTypeOf<Int64>(isNullable);
+                case "bigint unsigned":
+                    return GetTypeOf<UInt64>(isNullable);
                 case "float":
                     return GetTypeOf<Single>(isNullable);
                 case "double":
@@ -151,6 +175,7 @@ order by 1";
                 case "text":
                 case "tinytext":
                 case "longtext":
+                case "json":
                     return typeof(String);
                 case "binary":
                 case "varbinary":
@@ -172,15 +197,24 @@ order by 1";
                 case "boolean":
                     return DbType.Boolean;
                 case "tinyint":
+                case "tinyint unsigned":
                     return DbType.Byte;
-                case "smallint":                
+                case "smallint":
                     return DbType.Int16;
+                case "smallint unsigned":
+                    return DbType.UInt16;
                 case "int":
                 case "integer":
                 case "mediumint":
                     return DbType.Int32;
+                case "int unsigned":
+                case "integer unsigned":
+                case "mediumint unsigned":
+                    return DbType.UInt32;
                 case "bigint":
                     return DbType.Int64;
+                case "bigint unsigned":
+                    return DbType.UInt64;
                 case "float":
                     return DbType.Single;
                 case "double":
@@ -201,6 +235,7 @@ order by 1";
                 case "text":
                 case "tinytext":
                 case "longtext":
+                case "json":
                     return DbType.String;
                 case "binary":
                 case "varbinary":

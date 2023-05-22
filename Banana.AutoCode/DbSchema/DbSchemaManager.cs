@@ -96,8 +96,9 @@ namespace Banana.AutoCode.DbSchema
             {
                 using (var ctx = DataContextScope.GetCurrent(ConnectionName).Begin())
                 {
+                    Provider.Context = ctx.DataContext;
                     var dbs = Provider.GetDatabases();
-
+                    
                     return dbs;
                 }
             }

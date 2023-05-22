@@ -1,0 +1,435 @@
+<#@ assembly name="System.Data.Linq"
+#><#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.Data"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#@ import namespace="MySql.Data.MySqlClient"
+#><#@ import namespace="Banana.AutoCode.DbSchema"
+#><#+
+public class MySqlTypeConverter
+{
+    private static String ConvertToNumberTypeName(Int16 precision, Int16 scale)
+    {
+        if (scale == 0)
+        {
+            if (precision == 0)
+            {
+                return "Int64";
+            }
+
+            if (precision == 1)
+            {
+                return "Boolean";
+            }
+
+            if (precision <= 3)
+            {
+                return "Byte";
+            }
+
+            if (precision <= 4)
+            {
+                return "Int16";
+            }
+
+            if (precision <= 9)
+            {
+                return "Int32";
+            }
+
+            if (precision <= 18)
+            {
+                return "Int64";
+            }
+        }
+
+        return "Decimal";
+    }
+
+    private static Type ConvertToNumberType(Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        if (scale == 0)
+        {
+            if (precision == 0)
+            {
+                return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
+            }
+
+            if (precision == 1)
+            {
+                return isNullable ? typeof(Nullable<Boolean>) : typeof(Boolean);
+            }
+
+            if (precision <= 3)
+            {
+                return isNullable ? typeof(Nullable<Byte>) : typeof(Byte);
+            }
+
+            if (precision <= 4)
+            {
+                return isNullable ? typeof(Nullable<Int16>) : typeof(Int16);
+            }
+
+            if (precision <= 9)
+            {
+                return isNullable ? typeof(Nullable<Int32>) : typeof(Int32);
+            }
+
+            if (precision <= 18)
+            {
+                return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
+            }
+        }
+
+        return isNullable ? typeof(Nullable<Decimal>) : typeof(Decimal);
+    }
+
+    public static String AsCsharpTypeName(String input, Int16 precision, Int16 scale)
+    {
+        if (String.IsNullOrEmpty(input))
+        {
+            return "String";
+        }
+
+        switch (input.ToLower())
+        {
+            case "bit":
+            case "bool":
+            case "boolean":
+                return "Boolean";
+            case "tinyint":
+            case "smallint":
+            case "int":
+            case "integer":
+            case "mediumint":
+            case "bigint":
+                return ConvertToNumberTypeName(precision, scale);
+            case "float":
+                return "Single";
+            case "double":
+                return "Double";
+            case "numeric":
+            case "decimal":
+            case "dec":
+            case "real":
+                return "Decimal";
+            case "date":
+            case "year":
+            case "time":
+            case "timestamp":
+            case "datetime":
+                return "DateTime";
+            case "char":
+            case "varchar":
+            case "text":
+            case "tinytext":
+            case "longtext":
+                return "String";
+            case "binary":
+            case "varbinary":
+            case "blob":
+            case "mediumblob":
+            case "longblob":
+                return "Byte[]";
+            default:
+                return "Object";
+        }
+
+        return "String";
+    }
+
+    public static String AsCsharpTypeName(String input, Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        var csharpType = AsCsharpTypeName(input, precision, scale);
+
+        if (isNullable)
+        {
+            if (csharpType != "Object" && csharpType != "String" && csharpType.All(m => m != '['))
+            {
+                csharpType = csharpType + "?";
+            }
+        }
+
+        return csharpType;
+    }
+
+    public static Type AsCsharpType(String input, Int16 precision, Int16 scale, Boolean isNullable)
+    {
+        if (String.IsNullOrEmpty(input))
+        {
+            return typeof(Object);
+        }
+
+        switch (input.ToLower())
+        {
+            case "bit":
+            case "bool":
+            case "boolean":
+                return isNullable ? typeof(Nullable<Boolean>) : typeof(Boolean);
+            case "tinyint":
+            case "smallint":
+            case "int":
+            case "integer":
+            case "mediumint":
+            case "bigint":
+                return ConvertToNumberType(precision, scale, isNullable);
+            case "float":
+                return isNullable ? typeof(Nullable<Single>) : typeof(Single);
+            case "double":
+                return isNullable ? typeof(Nullable<Double>) : typeof(Double);
+            case "numeric":
+            case "decimal":
+            case "dec":
+            case "real":
+                return isNullable ? typeof(Nullable<Decimal>) : typeof(Decimal);
+            case "date":
+            case "year":
+            case "time":
+            case "timestamp":
+            case "datetime":
+                return isNullable ? typeof(Nullable<DateTime>) : typeof(DateTime);
+            case "char":
+            case "varchar":
+            case "text":
+            case "tinytext":
+            case "longtext":
+                return typeof(String);
+            case "binary":
+            case "varbinary":
+            case "blob":
+            case "mediumblob":
+            case "longblob":
+                return typeof(Byte[]);
+            default:
+                return typeof(Object);
+        }
+        
+        return typeof(String);
+    }
+
+    public static DbType AsCsharpDbType(String input)
+    {
+        if(string.IsNullOrEmpty(input))
+        {
+            return DbType.String;
+        }
+
+        switch (input.ToLower())
+        {
+            case "bit":
+            case "bool":
+            case "boolean":
+                return DbType.Boolean;
+            case "tinyint":
+                return DbType.Byte;
+            case "smallint":                
+                return DbType.Int16;
+            case "int":
+            case "integer":
+            case "mediumint":
+                return DbType.Int32;
+            case "bigint":
+                return DbType.Int64;
+            case "float":
+                return DbType.Single;
+            case "double":
+                return DbType.Double;
+            case "numeric":
+            case "decimal":
+            case "dec":
+            case "real":
+                return DbType.Decimal;
+            case "year":
+            case "date":
+            case "time":
+            case "timestamp":
+            case "datetime":
+                return DbType.DateTime;
+            case "char":
+            case "varchar":
+            case "text":
+            case "tinytext":
+            case "longtext":
+                return DbType.String;
+            case "binary":
+            case "varbinary":
+            case "blob":
+            case "mediumblob":
+            case "longblob":
+                return DbType.Binary;
+            default:
+                return DbType.Object;
+        }
+    }
+
+    public static MySqlDbType AsMySqlDbType(String input)
+    {
+        if(string.IsNullOrEmpty(input))
+        {
+            return MySqlDbType.String;
+        }
+
+        switch (input.ToLower())
+        {
+            case "bit":
+            case "bool":
+            case "boolean":
+                return MySqlDbType.Bit;
+            case "tinyint":
+            case "tinyint unsigned":
+                return MySqlDbType.Byte;
+            case "smallint":                
+                return MySqlDbType.Int16;
+            case "smallint unsigned":
+                return MySqlDbType.UInt16;
+            case "int":
+            case "integer":
+            case "mediumint":
+                return MySqlDbType.Int32;
+            case "int unsigned":
+            case "integer unsigned":
+            case "mediumint unsigned":
+                return MySqlDbType.UInt32;
+            case "bigint":
+                return MySqlDbType.Int64;
+            case "bigint unsigned":
+                return MySqlDbType.UInt64;
+            case "float":
+                return MySqlDbType.Float;
+            case "double":
+                return MySqlDbType.Double;
+            case "numeric":
+            case "decimal":
+            case "dec":
+            case "real":
+                return MySqlDbType.Decimal;
+            case "year":
+            case "date":
+            case "time":
+            case "datetime":
+                return MySqlDbType.DateTime;
+            case "timestamp":
+                return MySqlDbType.Timestamp;
+            case "char":
+            case "varchar":
+                return MySqlDbType.String;
+            case "text":
+                return MySqlDbType.Text;
+            case "tinytext":
+                return MySqlDbType.TinyText;
+            case "longtext":
+                return MySqlDbType.LongText;
+            case "binary":
+                return MySqlDbType.Binary;
+            case "varbinary":
+                return MySqlDbType.VarBinary;
+            case "blob":
+                return MySqlDbType.Blob;
+            case "mediumblob":
+                return MySqlDbType.MediumBlob;
+            case "longblob":
+                return MySqlDbType.LongBlob;
+            default:
+                return MySqlDbType.String;
+        }
+
+        return MySqlDbType.String;
+    }
+
+    public static String GetReaderMethod(Column column, String index, String containerName)
+    {
+        var methodResult = String.Empty;
+        var dbTypeString = column.Type.ToString();
+        var typeName = column.TypeName;
+        var isNullable = column.IsNullable;
+        var defaultType = isNullable ? 
+            (dbTypeString.Contains("System.Nullable`1") ? dbTypeString.Replace("System.Nullable`1", String.Empty)
+                .Replace("System.", String.Empty).Replace("[", String.Empty).Replace("]", String.Empty)
+                : column.Type.Name)
+            : column.Type.Name;
+
+        switch (defaultType)
+        {                
+            case "Byte":
+            case "Int16":
+            case "Int32":
+            case "Int64":
+            case "DateTime":
+            case "Double":
+            case "Decimal":
+            case "Char":
+            case "Guid":
+                methodResult = String.Format("{3}{2}.Get{0}({1})", defaultType, index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            case "UInt16":
+            case "UInt32":
+            case "UInt64":
+                methodResult = String.Format("{2}{1}.GetValue({0})", index, containerName, String.Format("({0})", typeName));
+                break;
+            case "String":
+                methodResult = String.Format("{1}.GetString({0})", index, containerName);
+                break;
+            case "Single":
+                methodResult = String.Format("{2}{1}.GetFloat({0})", index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            case "Byte[]":
+                methodResult = String.Format("(Byte[]){1}.GetValue({0})", index, containerName);
+                break;
+            case "Boolean":
+                methodResult = String.Format("{2}Convert.ToBoolean({1}.GetByte({0}))", index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            default:
+                methodResult = String.Format("{1}.GetValue({0})", index, containerName);
+                break;
+        }
+            
+        return methodResult;
+    }
+
+    public static String GetReaderMethodByName(Column column, String index, String containerName)
+    {
+        return GetReaderMethod(column, containerName + ".GetOrdinal(\"" + column.Name + "\")", containerName);
+    }
+
+    public static String GetReaderIndex(Column column, Int32 index, String indexPrefix)
+    {
+        return indexPrefix + index.ToString();
+    }
+
+    public static String GetReaderIndexByName(Column column, Int32 index, String indexPrefix)
+    {
+        return "\"" + column.Name + "\"";
+    }
+
+    public static String GetFillExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix, Func<Column, Int32, String, String> indexMethod, Func<Column, String, String, String> readerMethod)
+    {
+        var expResult = String.Empty;
+		var name = column.PascalCase;
+        if (column.Type == typeof(String))
+        {
+            expResult = String.Format("{0}.{1} = {2}[{3}] == DBNull.Value ? null : {4};", 
+                objectName, name, containerName, indexMethod(column, index, indexPrefix), readerMethod(column, indexPrefix + index, containerName));
+        }
+        else
+        {
+            expResult = String.Format("{0}.{1} = {2}[{3}] == DBNull.Value ? default({4}) : {5};", 
+                objectName, name, containerName, indexMethod(column, index, indexPrefix), column.TypeName, readerMethod(column, indexPrefix + index, containerName));
+        }
+
+        return expResult;
+    }
+        
+    public static String GetFillIndexExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix)
+    {
+        return GetFillExpression(column, objectName, index, containerName, indexPrefix, GetReaderIndex, GetReaderMethod);
+    }
+        
+    public static String GetFillNameExpression(Column column, String objectName, Int32 index, String containerName, String indexPrefix)
+    {
+        return GetFillExpression(column, objectName, index, containerName, indexPrefix, GetReaderIndexByName, GetReaderMethodByName);
+    }
+}
+#>
