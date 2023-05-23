@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Data.Common;
+using Label = System.Reflection.Emit.Label;
 
 namespace Dapper
 {

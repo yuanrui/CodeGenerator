@@ -17,6 +17,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -94,6 +95,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AssemblyMetadataAttribute.cs" />
     <Compile Include="Core\ConfigConstants.cs" />
     <Compile Include="Core\CustomHost.cs" />
     <Compile Include="Core\DatabaseWrapper.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Core\Mono.TextTemplating\Tokeniser.cs" />
     <Compile Include="Core\SqlMapper.cs" />
     <Compile Include="Core\StringExtension.cs" />
+    <Compile Include="Core\VersionUtils.cs" />
     <Compile Include="DbSchema\Column.cs" />
     <Compile Include="DbSchema\Database.cs" />
     <Compile Include="DbSchema\DbSchemaBase.cs" />
@@ -389,6 +392,16 @@
     <Content Include="Templates\Oracle\DataProvider.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <LastGenOutput>DataProvider.txt</LastGenOutput>
+    </Content>
+    <Content Include="Templates\SqlSugar\AttributeModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AttributeModel.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\SqlSugar\FluentApiModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FluentApiModel.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Templates\Thrift\RPC.tt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

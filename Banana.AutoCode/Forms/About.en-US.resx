@@ -130,7 +130,7 @@
     <value>0</value>
   </data>
   <data name="labelProductName.Text" xml:space="preserve">
-    <value>Product:</value>
+    <value>Product: </value>
   </data>
   <data name="&gt;&gt;labelProductName.Name" xml:space="preserve">
     <value>labelProductName</value>
@@ -145,7 +145,7 @@
     <value>1</value>
   </data>
   <data name="labelVersion.Text" xml:space="preserve">
-    <value>Version:</value>
+    <value>Version: </value>
   </data>
   <data name="&gt;&gt;labelVersion.Name" xml:space="preserve">
     <value>labelVersion</value>
@@ -239,5 +239,8 @@
   </data>
   <data name="labelCompanyName.Text" xml:space="preserve">
     <value />
+  </data>
+  <data name="labelLicense.Text" xml:space="preserve">
+    <value>License: </value>
   </data>
 </root>

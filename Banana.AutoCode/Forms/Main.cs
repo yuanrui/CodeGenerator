@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Banana.AutoCode.Core;
+﻿using Banana.AutoCode.Core;
 using Banana.AutoCode.Forms;
 using Banana.AutoCode.Resources;
-using Microsoft.VisualStudio.TextTemplating;
+using Mono.TextTemplating;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Banana.AutoCode
@@ -268,9 +262,12 @@ namespace Banana.AutoCode
         private void DoRun(IEnumerable<DbSchema.Table> tables, IEnumerable<string> files)
         {
             const string FILE_NAME_KEY = "FILE_NAME";
-            var engine = new Engine();
+            var engine = new Mono.TextTemplating.TemplatingEngine();
             var host = new CustomHost();
-
+#if NET
+            engine.UseInProcessCompiler();
+            host.UseInProcessCompiler();
+#endif
             var basePath = OUTPUT_DIR;
 
             foreach (var path in files)

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Banana.AutoCode.VS2022", "Banana.AutoCode\Banana.AutoCode.VS2022.csproj", "{D65F2C6F-0AE6-4EB6-B907-CC7D36D041E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{C8AE6835-7788-4A3D-ACB6-5C7F93EF88BB}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D65F2C6F-0AE6-4EB6-B907-CC7D36D041E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65F2C6F-0AE6-4EB6-B907-CC7D36D041E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65F2C6F-0AE6-4EB6-B907-CC7D36D041E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65F2C6F-0AE6-4EB6-B907-CC7D36D041E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE496FB4-37FE-439F-A5F4-3EA9C4F535EA}
+	EndGlobalSection
+EndGlobal

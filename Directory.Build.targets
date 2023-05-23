@@ -1,0 +1,10 @@
+<Project>
+	<Target Name="_BuildCompileTime" BeforeTargets="GetAssemblyVersion" Condition=" '$(MSBuildProjectExtension)' == '.csproj'">
+		<ItemGroup>
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<_Parameter1>CompileTime</_Parameter1>
+				<_Parameter2>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</_Parameter2>
+			</AssemblyAttribute>
+		</ItemGroup>
+	</Target>
+</Project>

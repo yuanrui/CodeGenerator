@@ -14,30 +14,27 @@ namespace Banana.AutoCode.Core
     [Serializable]
     public class CustomHost : TemplateGenerator, ITextTemplatingEngineHost
     {
-        public CustomHost() : this(AppDomain.CreateDomain("Generation App Domain"))
+        public CustomHost()
         {
-            
-        }
-
-        public CustomHost(AppDomain appDomain)
-        {
-            HostDomain = appDomain;
+            HostDomain = AppDomain.CurrentDomain;
         }
 
         protected AppDomain HostDomain { get; private set; }
 
         public Table Table { get; set; }
 
-        //private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
+        private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
 
         public void SetValue(string key, object value)
         {
-            HostDomain.SetData(key, value);
+            _extendProperties[key] = value;
+            //HostDomain.SetData(key, value);
         }
 
         public object GetValue(string key)
         {
-            return HostDomain.GetData(key);
+            return _extendProperties[key];
+            //return HostDomain.GetData(key);
         }
 
         //the path and file name of the text template that is being processed  

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Simple.Common.Reflection;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,15 +11,6 @@ namespace Banana.AutoCode
 {
     partial class About : Form
     {
-        public readonly static DateTime VersionDate;
-
-        public readonly static Int64 VersionNumber;
-
-        static About()
-        {
-            VersionDate = System.IO.File.GetLastWriteTime(typeof(About).Assembly.Location);
-            VersionNumber = Int64.Parse(VersionDate.ToString("yyyyMMdd"));
-        }
 
         public About()
         {
@@ -26,9 +18,9 @@ namespace Banana.AutoCode
             var currentYear = DateTime.Now.Year.ToString();
             this.Text += AssemblyTitle;
             this.labelProductName.Text += AssemblyProduct;
-            this.labelVersion.Text += VersionNumber;
+            this.labelVersion.Text += AssemblyVersion;
             this.labelCopyright.Text += AssemblyCopyright.Contains(currentYear) ? AssemblyCopyright : AssemblyCopyright + " - " + currentYear;
-            this.labelCompanyName.Text += AssemblyCompany;
+            this.labelLicense.Text += "MIT";
         }
 
         #region 程序集特性访问器
@@ -54,7 +46,7 @@ namespace Banana.AutoCode
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return "v" + VersionUtils.GetVersion();
             }
         }
 
