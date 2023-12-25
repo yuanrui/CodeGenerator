@@ -1,5 +1,5 @@
 ﻿using Banana.AutoCode.Resources;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Configuration;
@@ -183,6 +183,7 @@ namespace Banana.AutoCode.Forms
                 case "Oracle.ManagedDataAccess.Client":
                     return OracleToModel(connSetting);
                 case "MySql.Data.MySqlClient":
+                case "MySqlConnector":
                     return MySqlToModel(connSetting);
                 default:
                     return null;
@@ -262,7 +263,7 @@ namespace Banana.AutoCode.Forms
                     break;
                 case MySql:
                     settings.ConnectionString = GetMySqlConnectionString(model);
-                    settings.ProviderName = "MySql.Data.MySqlClient";
+                    settings.ProviderName = "MySqlConnector";
                     break;
                 case Oracle:
                     settings.ConnectionString = GetOracleConnectionString(model);

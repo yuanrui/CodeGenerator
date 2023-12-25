@@ -1,5 +1,5 @@
 ﻿using Banana.AutoCode.Core;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data.Common;
@@ -21,7 +21,8 @@ namespace Banana.AutoCode
 #endif
 #if NET
             DbProviderFactories.RegisterFactory("System.Data.SQLite", SQLiteFactory.Instance);
-            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+            //DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+            DbProviderFactories.RegisterFactory("MySqlConnector", MySqlConnectorFactory.Instance);
             DbProviderFactories.RegisterFactory("Oracle.ManagedDataAccess.Client", OracleClientFactory.Instance);
             DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
 #endif

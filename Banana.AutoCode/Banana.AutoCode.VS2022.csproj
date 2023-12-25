@@ -39,14 +39,14 @@
     <ItemGroup>
         <PackageReference Include="DockPanelSuite" Version="3.1.0" />
         <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0-1.final" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0-1.final" />
-        <PackageReference Include="MySql.Data" Version="8.0.33" />
-        <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.100" />
-        <PackageReference Include="System.CodeDom" Version="7.0.0" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+        <PackageReference Include="MySqlConnector" Version="2.3.3" />
+        <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.120" />
+        <PackageReference Include="System.CodeDom" Version="8.0.0" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
     </ItemGroup>
 
     <ItemGroup>
