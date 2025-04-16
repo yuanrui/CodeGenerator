@@ -218,6 +218,9 @@ namespace Banana.AutoCode.Forms
             builder.Database = model.Instance;
             builder.UserID = model.User;
             builder.Password = model.Password;
+            builder.SslMode = MySqlSslMode.Disabled;
+            builder.AllowPublicKeyRetrieval = true;
+            builder.AllowUserVariables = true;
 
             return builder.ToString();
         }
@@ -360,6 +363,7 @@ namespace Banana.AutoCode.Forms
                 using (var conn = factory.CreateConnection())
                 {
                     conn.ConnectionString = settings.ConnectionString;
+                    // Trace.WriteLine(conn.ConnectionString);
                     conn.Open();
                     success = conn.State == ConnectionState.Open;
                 }
