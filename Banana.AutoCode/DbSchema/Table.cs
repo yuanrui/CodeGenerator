@@ -69,12 +69,23 @@ namespace Banana.AutoCode.DbSchema
                 switch (typeName)
                 {
                     case "Byte":
+                    case "SByte":
                     case "Int16":
+                    case "UInt16":
                     case "Int32":
+                    case "UInt32":
                     case "Int64":
+                    case "UInt64":
+                    case "Int128":
+                    case "UInt128":
+                    case "IntPtr":
+                    case "UIntPtr":
                     case "Single":
                     case "Double":
                     case "Decimal":
+                    case "Half":
+                    case "BigInteger":
+                    case "Complex":
                         return true;
                     default:
                         return false;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -14,7 +14,7 @@
         <AssemblyName>AutoCode</AssemblyName>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <Company>https://github.com/yuanrui</Company>
-        <Copyright>Copyright © YuanRui 2017</Copyright>
+        <Copyright>Copyright © YuanRui 2017-2025</Copyright>
         <Product>Banana.AutoCode</Product>
         <Title>AutoCode</Title>
         <Authors>YuanRui</Authors>
