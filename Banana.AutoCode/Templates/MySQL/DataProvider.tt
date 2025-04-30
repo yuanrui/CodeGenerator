@@ -117,7 +117,7 @@ WHERE <#= table.PrimaryKeyColumns.Select(m => String.Format("{0}=@{0}", m.Name))
             foreach(var col in table.PrimaryKeyColumns)
             {
 #>
-                cmd.Parameters.Add(new MySqlParameter("<#= col.PascalCase #>", MySqlDbType.<#= MySqlTypeConverter.AsMySqlDbType(col.RawType).ToString() #>) { Value = <#= col.Name #>, Direction = ParameterDirection.Input });
+                cmd.Parameters.Add(new MySqlParameter("<#= col.Name #>", MySqlDbType.<#= MySqlTypeConverter.AsMySqlDbType(col.RawType).ToString() #>) { Value = <#= col.Name #>, Direction = ParameterDirection.Input });
 <#
             }
 #>
