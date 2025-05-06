@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -53,7 +54,8 @@ namespace Simple.Common.Reflection
 
         internal static DateTime GetAssemblyCompileTime(Assembly assembly)
         {
-#if NETSTANDARD2_0_OR_GREATER
+#if NET
+            // .net core get CompileTime
             var metas = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
             foreach (var attr in metas)
             {
@@ -70,13 +72,22 @@ namespace Simple.Common.Reflection
                     }
                 }
             }
-
-#endif
-#if NETFRAMEWORK
-            return GetLinkerTimestampLocal(assembly);
 #else
-            return File.GetLastWriteTime(assembly.Location);
+            // .net framework get CompileTime
+            var metaAttr = assembly.GetCustomAttributes(true)
+                .FirstOrDefault(a => a.GetType().Name == "AssemblyMetadataAttribute" && a.GetType().GetProperty("Key")?.GetValue(a, null)?.ToString() == CompileTime);
+            if (metaAttr != null)
+            {
+                var value = metaAttr.GetType().GetProperty("Value")?.GetValue(metaAttr, null)?.ToString();
+                if (DateTime.TryParseExact(value, new[] { yyyyMMddHHmmss, yyyyMMdd }, CultureInfo.CurrentCulture, DateTimeStyles.None, out var time))
+                {
+                    return time;
+                }
+            }
+
+            return GetLinkerTimestampLocal(assembly);
 #endif
+            return File.GetLastWriteTime(assembly.Location);
         }
 
         public static string GetVersion()

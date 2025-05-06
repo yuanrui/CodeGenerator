@@ -1,5 +1,9 @@
 ﻿using Banana.AutoCode.Resources;
+#if NET
 using MySqlConnector;
+#else
+using MySql.Data.MySqlClient;
+#endif
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Configuration;
@@ -218,9 +222,10 @@ namespace Banana.AutoCode.Forms
             builder.Database = model.Instance;
             builder.UserID = model.User;
             builder.Password = model.Password;
-            builder.SslMode = MySqlSslMode.Disabled;
+            builder.SslMode = MySqlSslMode.None;
             builder.AllowPublicKeyRetrieval = true;
             builder.AllowUserVariables = true;
+            builder.CharacterSet = "utf8mb4";
 
             return builder.ToString();
         }
@@ -267,6 +272,9 @@ namespace Banana.AutoCode.Forms
                 case MySql:
                     settings.ConnectionString = GetMySqlConnectionString(model);
                     settings.ProviderName = "MySqlConnector";
+#if !NET
+                    settings.ProviderName = "MySql.Data.MySqlClient";
+#endif
                     break;
                 case Oracle:
                     settings.ConnectionString = GetOracleConnectionString(model);

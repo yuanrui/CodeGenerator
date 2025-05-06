@@ -1,5 +1,9 @@
 ﻿using Banana.AutoCode.Core;
+#if NET
 using MySqlConnector;
+#else
+using MySql.Data.MySqlClient;
+#endif
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data.Common;
@@ -16,9 +20,6 @@ namespace Banana.AutoCode
     {
         static Program()
         {
-#if !NET
-            CosturaUtility.Initialize();
-#endif
 #if NET
             DbProviderFactories.RegisterFactory("System.Data.SQLite", SQLiteFactory.Instance);
             //DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);

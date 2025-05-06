@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Banana.AutoCode.DbSchema;
+using Microsoft.VisualStudio.TextTemplating;
+using Mono.TextTemplating;
+#if NET
+using MySqlConnector;
+#else
+using MySql.Data.MySqlClient;
+#endif
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
-using Banana.AutoCode.DbSchema;
-using Microsoft.VisualStudio.TextTemplating;
-using Mono.TextTemplating;
 
 namespace Banana.AutoCode.Core
 {
@@ -88,7 +91,11 @@ namespace Banana.AutoCode.Core
                     typeof(System.Linq.Enumerable).Assembly.Location,
                     typeof(System.Data.SQLite.SQLiteConnection).Assembly.Location,
                     typeof(Oracle.ManagedDataAccess.Client.OracleDbType).Assembly.Location,
+#if NET
                     typeof(MySqlConnector.MySqlDbType).Assembly.Location,
+#else
+                    typeof(MySql.Data.MySqlClient.MySqlDbType).Assembly.Location,
+#endif                
                     typeof(CustomHost).Assembly.Location
                 };
             }
@@ -109,7 +116,11 @@ namespace Banana.AutoCode.Core
                     "System.Text",
                     "System.Data",
                     "System.Data.SQLite",
+#if NET
                     "MySqlConnector",
+#else
+                    "MySql.Data.MySqlClient",
+#endif
                     "Oracle.ManagedDataAccess.Client",
                     "Banana.AutoCode",
                     "Banana.AutoCode.DbSchema",
