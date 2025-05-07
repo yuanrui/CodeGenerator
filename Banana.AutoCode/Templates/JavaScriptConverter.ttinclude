@@ -64,7 +64,8 @@ public class JavaScriptConverter
             case "UInt64":
                 return NUMBER;
             case "DateTime":
-                return DATE;
+                return STRING;
+                // return DATE;
             default:
                 break;
         }
