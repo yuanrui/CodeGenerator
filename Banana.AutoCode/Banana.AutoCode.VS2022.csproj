@@ -89,6 +89,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="AutoCode.dll.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="Templates\JavaScript\TypeScriptEntity.tt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
