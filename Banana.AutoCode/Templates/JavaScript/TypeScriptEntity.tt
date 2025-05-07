@@ -1,0 +1,40 @@
+<#
+//------------------------------------------------------------------------------
+// <copyright file="TypeScriptEntity.tt">
+//    Copyright (c) 2025, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2025-05-06 18:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ template language="C#" hostSpecific="true" debug="false" #>
+<#@ output encoding="utf-8" extension=".cs" #>
+<#@ include file="%TEMPLATES_DIR%\\TemplateFileManager.ttinclude" #>
+<#@ include file="%TEMPLATES_DIR%\\JavaScriptConverter.ttinclude" #>
+
+<# 
+	CustomHost host = (CustomHost)(Host);
+	Table table = host.Table;
+    var manager = Manager.Create(host, GenerationEnvironment);
+	manager.StartNewFile(table.DisplayName + "Entity.ts", host.GetValue("OutputPath").ToString() + "\\JavaScript");
+#>
+/**
+ * <#= string.IsNullOrEmpty(table.Comment) ? string.Format("Table/View [{0}] map to [{1}] entity class", table.Name, table.DisplayName) : table.Comment #>
+ */
+export interface <#= table.DisplayName #>Entity {
+<# 
+	foreach(var column in table.Columns)
+	{
+#>
+    /**
+     * <#= column.Comment #>
+     */
+    <#= column.PascalCase #>: <#= JavaScriptConverter.AsTypeScriptType(column.Type) #>;
+<#
+	}
+#>
+}
+<# 
+	manager.EndBlock(); 
+	manager.Process(true, new System.Text.UTF8Encoding(false));
+#>

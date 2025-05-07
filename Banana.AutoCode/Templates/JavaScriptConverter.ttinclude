@@ -1,0 +1,75 @@
+<#
+//------------------------------------------------------------------------------
+// <copyright file="JavaScriptConverter.ttinclude">
+//    Copyright (c) 2025, https://github.com/yuanrui All rights reserved.
+// </copyright>
+// <author>Yuan Rui</author>
+// <date>2025-05-06 18:00:00</date>
+//------------------------------------------------------------------------------
+#>
+<#@ assembly name="System.Xml"
+#><#@ assembly name="System.Xml.Linq"
+#><#@ import namespace="System.Collections.Generic"
+#><#@ import namespace="System.IO"
+#><#@ import namespace="System.Text"
+#><#@ import namespace="Microsoft.VisualStudio.TextTemplating"
+#><#@ import namespace="Banana.AutoCode.DbSchema"
+#><#+
+public class JavaScriptConverter
+{
+    public static String AsTypeScriptType(Type type)
+    {
+        return AsJavaScriptType(type, "any");
+    }
+    
+    public static String AsJavaScriptType(Type type)
+    {
+        return AsJavaScriptType(type, "object");
+    }
+
+    public static String AsJavaScriptType(Type type, String anyType)
+    {
+        const String BOOLEAN = "boolean";
+        const String STRING = "string";
+        const String NUMBER = "number";
+        const String DATE = "Date";
+
+        var typeName = type.Name;
+        var nullableType = Nullable.GetUnderlyingType(type);
+        if (nullableType != null)
+        {
+            typeName = nullableType.Name;
+        }
+
+        switch (typeName)
+        {
+            case "Guid":
+            case "String":
+                return STRING;
+            case "Byte[]":
+            case "SByte[]":
+                return anyType;
+            case "Boolean":
+                return BOOLEAN;
+            case "Byte":
+            case "SByte":
+            case "Decimal":
+            case "Double":
+            case "Single":
+            case "Int16":
+            case "UInt16":
+            case "Int32":
+            case "UInt32":
+            case "Int64":
+            case "UInt64":
+                return NUMBER;
+            case "DateTime":
+                return DATE;
+            default:
+                break;
+        }
+
+        return anyType;
+    }
+}
+#>

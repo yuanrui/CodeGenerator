@@ -18,6 +18,7 @@ public class JavaConverter
         const String DOUBLE = "Double";
         const String STRING = "String";
         const String BINARY = "Byte[]";
+        const String DATE = "Date";
 
         var typeName = type.Name;
         var nullableType = Nullable.GetUnderlyingType(type);
@@ -28,6 +29,7 @@ public class JavaConverter
 
         switch (typeName)
         {
+            case "Guid":
             case "String":
                 return STRING;
             case "Byte[]":
@@ -52,7 +54,7 @@ public class JavaConverter
             case "UInt64":
                 return I64;
             case "DateTime":
-                return "Date";
+                return DATE;
             default:
                 break;
         }
