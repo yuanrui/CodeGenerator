@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -8,6 +9,11 @@ namespace Banana.AutoCode.DbSchema.Provider
 {
     public class OracleSchema : DbSchemaBase
     {
+        static OracleSchema()
+        {
+            OracleConfiguration.BindByName = true;
+        }
+
         public OracleSchema(String connName) : base(connName)
         { 
             
