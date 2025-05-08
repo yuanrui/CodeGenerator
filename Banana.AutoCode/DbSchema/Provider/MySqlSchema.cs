@@ -41,7 +41,7 @@ select table_name as Id, table_name as Name, table_comment as Comment, table_sch
 from information_schema.tables
 where table_schema=@TableSchema
 order by table_name";
-
+            
             var result = Context.Query<Table>(sql, new { TableSchema = db.Name });
 
             return result ?? new List<Table>();
@@ -90,7 +90,7 @@ order by 1";
             {
                 while (reader.Read())
                 {
-                    var column = Fill(reader);
+                    var column = Fill(reader, true);
 
                     result.Add(column);
                 }

@@ -120,14 +120,18 @@ namespace Banana.AutoCode.DbSchema
             
         }
 
-        public virtual Column Fill(IDataReader reader)
+        public virtual Column Fill(IDataReader reader, bool hasRawType2 = false)
         {
             var column = new Column();
 
             column.Id = Convert.ToString(reader.GetValue(reader.GetOrdinal("Id")));
             column.Name = reader.GetString(reader.GetOrdinal("Name"));
             column.RawType = reader.GetString(reader.GetOrdinal("RawType"));
-            column.RawType2 = reader["RawType2"] == DBNull.Value ? string.Empty : reader.GetString(reader.GetOrdinal("RawType2"));
+            if (hasRawType2)
+            {
+                column.RawType2 = reader["RawType2"] == DBNull.Value ? string.Empty : reader.GetString(reader.GetOrdinal("RawType2"));
+            }
+
             column.Comment = reader["Comment"] == DBNull.Value ? string.Empty : reader.GetString(reader.GetOrdinal("Comment"));
 
             column.IsPrimaryKey = Convert.ToBoolean(reader.GetValue(reader.GetOrdinal("IsPrimaryKey")));
