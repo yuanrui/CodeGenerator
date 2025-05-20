@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Dapper;
@@ -12,6 +13,7 @@ namespace Banana.AutoCode.Core
     public class DataContext : IDisposable
     {
         protected const string ConnectionName = "DefaultConnectionString";
+        private string _connectionString;
         private DbConnection _dbConnection;
 
         private DbTransaction _dbTransaction;
@@ -59,6 +61,7 @@ namespace Banana.AutoCode.Core
             _database = new DatabaseWrapper(_dbProviderFactory);
             _dbConnection = _dbProviderFactory.CreateConnection();
             _dbConnection.ConnectionString = connSetting.ConnectionString;
+            _connectionString = connSetting.ConnectionString;
         }
 
         public void OpenConnection()
@@ -80,7 +83,25 @@ namespace Banana.AutoCode.Core
 
         public string GetConnectionString()
         {
-            return _dbConnection.ConnectionString;
+            return _connectionString;
+        }
+
+        public void SetConnectionString(string connStr)
+        {
+            var oldState = _dbConnection.State;
+            if (_dbConnection.State == ConnectionState.Open)
+            {
+                Dispose();
+                _dbConnection = _dbProviderFactory.CreateConnection();
+            }
+
+            _connectionString = connStr;
+            _dbConnection.ConnectionString = connStr;
+
+            if (_dbConnection.State != oldState && oldState == ConnectionState.Open)
+            {
+                _dbConnection.Open();
+            }
         }
 
         public void BeginTransaction()

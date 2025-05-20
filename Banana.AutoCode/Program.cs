@@ -5,6 +5,7 @@ using MySqlConnector;
 using MySql.Data.MySqlClient;
 #endif
 using Oracle.ManagedDataAccess.Client;
+using Npgsql;
 using System;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -26,6 +27,8 @@ namespace Banana.AutoCode
             DbProviderFactories.RegisterFactory("MySqlConnector", MySqlConnectorFactory.Instance);
             DbProviderFactories.RegisterFactory("Oracle.ManagedDataAccess.Client", OracleClientFactory.Instance);
             DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
+            DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", Microsoft.Data.SqlClient.SqlClientFactory.Instance);
+            DbProviderFactories.RegisterFactory("Npgsql", NpgsqlFactory.Instance);
 #endif
         }
 

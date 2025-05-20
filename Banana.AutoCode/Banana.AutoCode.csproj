@@ -119,12 +119,16 @@
     <Compile Include="Core\VersionUtils.cs" />
     <Compile Include="DbSchema\Column.cs" />
     <Compile Include="DbSchema\Database.cs" />
+    <Compile Include="DbSchema\DbProviderConfig.cs" />
     <Compile Include="DbSchema\DbSchemaBase.cs" />
     <Compile Include="DbSchema\DbSchemaFactory.cs" />
     <Compile Include="DbSchema\DbSchemaManager.cs" />
     <Compile Include="DbSchema\DbTypeMapper.cs" />
+    <Compile Include="DbSchema\DbViewExtension.cs" />
+    <Compile Include="DbSchema\DbViewModel.cs" />
     <Compile Include="DbSchema\Provider\MySqlSchema.cs" />
     <Compile Include="DbSchema\Provider\OracleSchema.cs" />
+    <Compile Include="DbSchema\Provider\PostgreSqlSchema.cs" />
     <Compile Include="DbSchema\Provider\SQLiteSchema.cs" />
     <Compile Include="DbSchema\Provider\SqlServerSchema.cs" />
     <Compile Include="DbSchema\Table.cs" />
@@ -453,6 +457,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DM.DmProvider">
+      <Version>8.3.1.33449</Version>
+    </PackageReference>
     <PackageReference Include="DockPanelSuite">
       <Version>3.1.1</Version>
     </PackageReference>
@@ -461,6 +468,9 @@
     </PackageReference>
     <PackageReference Include="MySql.Data">
       <Version>6.9.12</Version>
+    </PackageReference>
+    <PackageReference Include="Npgsql">
+      <Version>2.2.7</Version>
     </PackageReference>
     <PackageReference Include="Oracle.ManagedDataAccess">
       <Version>19.22.0</Version>

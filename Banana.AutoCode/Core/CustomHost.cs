@@ -96,6 +96,8 @@ namespace Banana.AutoCode.Core
 #else
                     typeof(MySql.Data.MySqlClient.MySqlDbType).Assembly.Location,
 #endif                
+                    typeof(Npgsql.NpgsqlConnection).Assembly.Location,
+                    typeof(Dm.DmDbType).Assembly.Location,
                     typeof(CustomHost).Assembly.Location
                 };
             }
@@ -115,13 +117,11 @@ namespace Banana.AutoCode.Core
                     "System.Linq",
                     "System.Text",
                     "System.Data",
-                    "System.Data.SQLite",
-#if NET
-                    "MySqlConnector",
-#else
-                    "MySql.Data.MySqlClient",
-#endif
-                    "Oracle.ManagedDataAccess.Client",
+                    DbProviderConfig.NS.System_Data_SQLite,
+                    DbProviderConfig.NS.MySqlConnector,
+                    DbProviderConfig.NS.Oracle_ManagedDataAccess_Client,
+                    DbProviderConfig.NS.System_Data_SqlClient,
+                    DbProviderConfig.NS.Npgsql,
                     "Banana.AutoCode",
                     "Banana.AutoCode.DbSchema",
                     "Banana.AutoCode.Core"                    

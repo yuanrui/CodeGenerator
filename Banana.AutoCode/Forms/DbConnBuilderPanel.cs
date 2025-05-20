@@ -1,4 +1,5 @@
-﻿using Banana.AutoCode.Resources;
+﻿using Banana.AutoCode.DbSchema;
+using Banana.AutoCode.Resources;
 #if NET
 using MySqlConnector;
 #else
@@ -20,29 +21,8 @@ namespace Banana.AutoCode.Forms
 {
     public partial class DbConnBuilderPanel : Form
     {
-        const string SqlServer = "Sql Server";
-        const string MySql = "MySql";
-        const string Oracle = "Oracle";
-        const string SQLite = "SQLite";
         protected ResourceManager ResourceMgr = new ResourceManager(typeof(DbConnBuilderPanel));
         private DbPanel _dbPanel;
-
-        protected class ViewModel
-        {
-            public string Provider { get; set; }
-
-            public string Server { get; set; }
-
-            public int Port { get; set; }
-
-            public string User { get; set; }
-
-            public string Password { get; set; }
-
-            public string Name { get; set; }
-
-            public string Instance { get; set; }
-        }
 
         public DbConnBuilderPanel()
         {
@@ -52,16 +32,29 @@ namespace Banana.AutoCode.Forms
         public DbConnBuilderPanel(DbPanel dbPanel) : this()
         {
             _dbPanel = dbPanel;
+            InitUIValues();
         }
 
         public DbConnBuilderPanel(DbPanel dbPanel, ConnectionStringSettings connSetting) : this()
         {
             _dbPanel = dbPanel;
-            var model = SettingToModel(connSetting);
-            Init(model);
+
+            InitUIValues();
+            var model = DbProviderConfig.CreateDbViewModel(connSetting);
+            InitModel(model);
         }
 
-        private void Init(ViewModel model)
+        private void InitUIValues()
+        {
+            cboDataProvider.Items.Clear();
+            var dataProviders = DbProviderConfig.GetDataProviders();
+            foreach (var item in dataProviders)
+            {
+                cboDataProvider.Items.Add(item);
+            }
+        }
+
+        private void InitModel(DbViewModel model)
         {
             if (model == null)
             {
@@ -81,218 +74,16 @@ namespace Banana.AutoCode.Forms
             txtPassword.Text = model.Password;
         }
 
-        private ViewModel SqlServerToModel(ConnectionStringSettings connSetting)
-        {
-            var model = new ViewModel();
-            model.Name = connSetting.Name;
-            model.Provider = SqlServer;
-
-            var builder = new SqlConnectionStringBuilder(connSetting.ConnectionString);
-            model.Server = builder.DataSource;
-            model.User = builder.UserID;
-            model.Password = builder.Password;
-            model.Instance = builder.InitialCatalog;
-
-            var sources = builder.DataSource.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            if (sources != null && sources.Length == 2)
-            {
-                var port = 1433;
-                if (!int.TryParse(sources[1], out port))
-                {
-                    port = 1433;
-                }
-
-                model.Port = port;
-            }
-
-            return model;
-        }
-
-        private ViewModel MySqlToModel(ConnectionStringSettings connSetting)
-        {
-            var model = new ViewModel();
-            model.Name = connSetting.Name;
-            model.Provider = MySql;
-
-            var builder = new MySqlConnectionStringBuilder(connSetting.ConnectionString);
-            model.Server = builder.Server;
-            model.Port = (int)builder.Port;
-            model.User = builder.UserID;
-            model.Password = builder.Password;
-            model.Instance = builder.Database;
-
-            return model;
-        }
-
-        private ViewModel SQLiteToModel(ConnectionStringSettings connSetting)
-        {
-            var model = new ViewModel();
-            model.Name = connSetting.Name;
-            model.Provider = SQLite;
-
-            var builder = new SQLiteConnectionStringBuilder(connSetting.ConnectionString);
-            model.Password = builder.Password;
-            model.Instance = builder.DataSource;
-
-            return model;
-        }
-
-        private ViewModel OracleToModel(ConnectionStringSettings connSetting)
-        {
-            var model = new ViewModel();
-            model.Name = connSetting.Name;
-            model.Provider = Oracle;
-
-            var builder = new OracleConnectionStringBuilder(connSetting.ConnectionString);
-            var dataSource = builder.DataSource;
-
-            model.Server = GetMatchText(dataSource, @"\(HOST=?(.+?)\)");
-            var port = 1521;
-            var portText = GetMatchText(dataSource, @"\(PORT=?(.+?)\)");
-            if (! int.TryParse(portText, out port))
-            {
-                port = 1521;
-            }
-            model.Port = port;
-            model.Instance = GetMatchText(dataSource, @"\(SERVICE_NAME=?(.+?)\)");
-            model.User = builder.UserID;
-            model.Password = builder.Password;
-            return model;
-        }
-
-        private string GetMatchText(string input, string pattern)
-        {
-            var match = Regex.Match(input, pattern);
-            if (match.Success)
-            {
-                return match.Groups[1].Value;
-            }
-
-            return string.Empty;
-        }
-
-        private ViewModel SettingToModel(ConnectionStringSettings connSetting)
-        {
-            if (connSetting == null)
-            {
-                return null;
-            }
-
-            switch (connSetting.ProviderName)
-            {
-                case "System.Data.SqlClient":
-                    return SqlServerToModel(connSetting);
-                case "System.Data.SQLite":
-                    return SQLiteToModel(connSetting);
-                case "Oracle.ManagedDataAccess.Client":
-                    return OracleToModel(connSetting);
-                case "MySql.Data.MySqlClient":
-                case "MySqlConnector":
-                    return MySqlToModel(connSetting);
-                default:
-                    return null;
-            }
-        }
-
-        private string GetSqlServerConnectionString(ViewModel model)
-        {
-            var builder = new SqlConnectionStringBuilder();
-            builder.InitialCatalog = model.Instance;
-            builder.DataSource = model.Server;
-            builder.UserID = model.User;
-            builder.Password = model.Password;
-
-            if (model.Port != 0 && model.Port != 1433)
-            {
-                builder.DataSource += "," + model.Port;
-            }
-
-            return builder.ToString();
-        }
-
-        private string GetMySqlConnectionString(ViewModel model)
-        {
-            if (model.Port == 0)
-            {
-                model.Port = 3306;
-            }
-            var builder = new MySqlConnectionStringBuilder();
-            builder.Server = model.Server;
-            builder.Port = (uint)model.Port;
-            builder.Database = model.Instance;
-            builder.UserID = model.User;
-            builder.Password = model.Password;
-            builder.SslMode = MySqlSslMode.None;
-            builder.AllowPublicKeyRetrieval = true;
-            builder.AllowUserVariables = true;
-            builder.CharacterSet = "utf8mb4";
-
-            return builder.ToString();
-        }
-
-        private string GetOracleConnectionString(ViewModel model)
-        {
-            if (model.Port == 0)
-            {
-                model.Port = 1521;
-            }
-
-            var builder = new OracleConnectionStringBuilder();
-            builder.DataSource = $"(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={model.Server})(PORT={model.Port}))(CONNECT_DATA=(SERVICE_NAME={model.Instance})))";
-            builder.UserID = model.User;
-            builder.Password = model.Password;
-
-            return builder.ToString();
-        }
-
-        private string GetSQLiteConnectionString(ViewModel model)
-        {
-            var builder = new SQLiteConnectionStringBuilder();
-            builder.DataSource = model.Instance;
-            if (! string.IsNullOrWhiteSpace(model.Password))
-            {
-                builder.Password = model.Password;
-            }
-
-            return builder.ToString();
-        }
-
         private ConnectionStringSettings BuildSettings()
         {
-            ConnectionStringSettings settings = new ConnectionStringSettings();
             var model = GetModel();
-            settings.Name = model.Name;
 
-            switch (model.Provider)
-            {
-                case SqlServer:
-                    settings.ConnectionString = GetSqlServerConnectionString(model);
-                    settings.ProviderName = "System.Data.SqlClient";
-                    break;
-                case MySql:
-                    settings.ConnectionString = GetMySqlConnectionString(model);
-                    settings.ProviderName = "MySqlConnector";
-#if !NET
-                    settings.ProviderName = "MySql.Data.MySqlClient";
-#endif
-                    break;
-                case Oracle:
-                    settings.ConnectionString = GetOracleConnectionString(model);
-                    settings.ProviderName = "Oracle.ManagedDataAccess.Client";
-                    break;
-                case SQLite:
-                    settings.ConnectionString = GetSQLiteConnectionString(model);
-                    settings.ProviderName = "System.Data.SQLite";
-                    break;
-                default:
-                    break;
-            }
-            return settings;
+            return DbProviderConfig.ToSettings(model) ?? new ConnectionStringSettings() { Name = model?.Name }; 
         }
 
-        private ViewModel GetModel()
+        private DbViewModel GetModel()
         {
-            var model = new ViewModel();
+            var model = new DbViewModel();
             model.Provider = cboDataProvider.Text;
             model.Server = txtServer.Text;
             model.User = txtUser.Text;
@@ -405,23 +196,8 @@ namespace Banana.AutoCode.Forms
         private void cboDataProvider_SelectedIndexChanged(object sender, EventArgs e)
         {
             var provider = cboDataProvider.Text;
-            switch (provider)
-            {
-                case SqlServer:
-                    txtPort.Text = "1433";
-                    break;
-                case MySql:
-                    txtPort.Text = "3306";
-                    break;
-                case Oracle:
-                    txtPort.Text = "1521";
-                    break;
-                case SQLite:
-                    txtPort.Text = string.Empty;
-                    break;
-                default:
-                    break;
-            }
+            var port = DbProviderConfig.ToPort(provider);
+            txtPort.Text = port == 0 ? string.Empty : port.ToString();
         }
     }
 }

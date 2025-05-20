@@ -11,20 +11,13 @@ namespace Banana.AutoCode.DbSchema
     {
         public static DbSchemaBase Create(ConnectionStringSettings connSetting)
         {
-            switch (connSetting.ProviderName)
+            var dbSchemaBase = DbProviderConfig.CreateDbSchemaBase(connSetting);
+            if (dbSchemaBase == null)
             {
-                case "System.Data.SqlClient":
-                    return new SqlServerSchema(connSetting.Name);
-                case "System.Data.SQLite":
-                    return new SQLiteSchema(connSetting.Name);
-                case "Oracle.ManagedDataAccess.Client":
-                    return new OracleSchema(connSetting.Name);
-                case "MySql.Data.MySqlClient":
-                case "MySqlConnector":
-                    return new MySqlSchema(connSetting.Name);
-                default:
-                    return new SqlServerSchema(connSetting.Name);
+                return new SqlServerSchema(connSetting.Name);
             }
+
+            return dbSchemaBase;
         }
     }
 }
