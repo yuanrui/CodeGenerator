@@ -37,18 +37,18 @@
         <None Remove="packages.config" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DM.DmProvider" Version="8.3.1.33449" />
+        <PackageReference Include="DM.DmProvider" Version="8.3.1.36935" />
         <PackageReference Include="DockPanelSuite" Version="3.1.1" />
         <PackageReference Include="DockPanelSuite.ThemeVS2015" Version="3.1.1" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.14.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="MySqlConnector" Version="2.4.0" />
         <PackageReference Include="Npgsql" Version="9.0.3" />
         <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
-        <PackageReference Include="System.CodeDom" Version="9.0.4" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
-        <PackageReference Include="System.Data.Odbc" Version="9.0.4" />
+        <PackageReference Include="System.CodeDom" Version="9.0.5" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.5" />
+        <PackageReference Include="System.Data.Odbc" Version="9.0.5" />
         <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
         <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
     </ItemGroup>
