@@ -149,7 +149,7 @@ public class OracleTypeConverter
 
         if (isNullable)
         {
-            if (csharpType != "Object" && csharpType != "String" && csharpType.All(m => m != '['))
+            if (csharpType != "Object" && csharpType != "String" && !csharpType.EndsWith("[]"))
             {
                 csharpType = csharpType + "?";
             }
@@ -307,6 +307,12 @@ public class OracleTypeConverter
             case "Char":
             case "Guid":
                 methodResult = String.Format("{3}{2}.Get{0}({1})", defaultType, index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
+                break;
+            case "SByte":
+            case "UInt16":
+            case "UInt32":
+            case "UInt64":
+                methodResult = String.Format("{2}{1}.GetValue({0})", index, containerName, String.Format("({0})", typeName));
                 break;
             case "String":
                 methodResult = String.Format("{1}.GetString({0})", index, containerName);

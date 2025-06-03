@@ -100,12 +100,25 @@ public class MySqlTypeConverter
             case "boolean":
                 return "Boolean";
             case "tinyint":
+                return precision <= 3 ? "SByte" : "Int16";
+            case "tinyint unsigned":
+                return precision <= 3 ? "Byte" : "UInt16";
             case "smallint":
+                return "Int16";
+            case "smallint unsigned":
+                return "UInt16";
             case "int":
             case "integer":
             case "mediumint":
+                return "Int32";
+            case "int unsigned":
+            case "integer unsigned":
+            case "mediumint unsigned":
+                return "UInt32";
             case "bigint":
-                return ConvertToNumberTypeName(precision, scale);
+                return "Int64";
+            case "bigint unsigned":
+                return "UInt64";
             case "float":
                 return "Single";
             case "double":
@@ -134,10 +147,8 @@ public class MySqlTypeConverter
             case "longblob":
                 return "Byte[]";
             default:
-                return "Object";
+                return "String";
         }
-
-        return "String";
     }
 
     public static String AsCsharpTypeName(String input, Int16 precision, Int16 scale, Boolean isNullable)
@@ -146,7 +157,7 @@ public class MySqlTypeConverter
 
         if (isNullable)
         {
-            if (csharpType != "Object" && csharpType != "String" && csharpType.All(m => m != '['))
+            if (csharpType != "Object" && csharpType != "String" && !csharpType.EndsWith("[]"))
             {
                 csharpType = csharpType + "?";
             }
@@ -159,7 +170,7 @@ public class MySqlTypeConverter
     {
         if (String.IsNullOrEmpty(input))
         {
-            return typeof(Object);
+            return typeof(String);
         }
 
         switch (input.ToLower())
@@ -169,12 +180,25 @@ public class MySqlTypeConverter
             case "boolean":
                 return isNullable ? typeof(Nullable<Boolean>) : typeof(Boolean);
             case "tinyint":
+                return precision <= 3 ? (isNullable ? typeof(Nullable<SByte>) : typeof(SByte)) : (isNullable ? typeof(Nullable<Int16>) : typeof(Int16));
+            case "tinyint unsigned":
+                return precision <= 3 ? (isNullable ? typeof(Nullable<Byte>) : typeof(Byte)) : (isNullable ? typeof(Nullable<UInt16>) : typeof(UInt16));
             case "smallint":
+                return isNullable ? typeof(Nullable<Int16>) : typeof(Int16);
+            case "smallint unsigned":
+                return isNullable ? typeof(Nullable<UInt16>) : typeof(UInt16);
             case "int":
             case "integer":
             case "mediumint":
+                return isNullable ? typeof(Nullable<Int32>) : typeof(Int32);
+            case "int unsigned":
+            case "integer unsigned":
+            case "mediumint unsigned":
+                return isNullable ? typeof(Nullable<UInt32>) : typeof(UInt32);
             case "bigint":
-                return ConvertToNumberType(precision, scale, isNullable);
+                return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
+            case "bigint unsigned":
+                return isNullable ? typeof(Nullable<UInt64>) : typeof(UInt64);
             case "float":
                 return isNullable ? typeof(Nullable<Single>) : typeof(Single);
             case "double":
@@ -203,10 +227,8 @@ public class MySqlTypeConverter
             case "longblob":
                 return typeof(Byte[]);
             default:
-                return typeof(Object);
+                return typeof(String);
         }
-        
-        return typeof(String);
     }
 
     public static DbType AsCsharpDbType(String input)
@@ -223,15 +245,25 @@ public class MySqlTypeConverter
             case "boolean":
                 return DbType.Boolean;
             case "tinyint":
+                return DbType.SByte;
+            case "tinyint unsigned":
                 return DbType.Byte;
-            case "smallint":                
+            case "smallint":
                 return DbType.Int16;
+            case "smallint unsigned":
+                return DbType.UInt16;
             case "int":
             case "integer":
             case "mediumint":
                 return DbType.Int32;
+            case "int unsigned":
+            case "integer unsigned":
+            case "mediumint unsigned":
+                return DbType.UInt32;
             case "bigint":
                 return DbType.Int64;
+            case "bigint unsigned":
+                return DbType.UInt64;
             case "float":
                 return DbType.Single;
             case "double":
@@ -260,7 +292,7 @@ public class MySqlTypeConverter
             case "longblob":
                 return DbType.Binary;
             default:
-                return DbType.Object;
+                return DbType.String;
         }
     }
 
@@ -278,9 +310,10 @@ public class MySqlTypeConverter
             case "boolean":
                 return MySqlDbType.Bit;
             case "tinyint":
-            case "tinyint unsigned":
                 return MySqlDbType.Byte;
-            case "smallint":                
+            case "tinyint unsigned":
+                return MySqlDbType.UByte;
+            case "smallint":
                 return MySqlDbType.Int16;
             case "smallint unsigned":
                 return MySqlDbType.UInt16;
@@ -334,8 +367,6 @@ public class MySqlTypeConverter
             default:
                 return MySqlDbType.String;
         }
-
-        return MySqlDbType.String;
     }
 
     public static String GetReaderMethod(Column column, String index, String containerName)
@@ -363,6 +394,7 @@ public class MySqlTypeConverter
             case "Guid":
                 methodResult = String.Format("{3}{2}.Get{0}({1})", defaultType, index, containerName, isNullable ? String.Format("({0})", typeName) : String.Empty);
                 break;
+            case "SByte":
             case "UInt16":
             case "UInt32":
             case "UInt64":
