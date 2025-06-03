@@ -14,11 +14,11 @@ Environment: [.NET 4.0 +](https://download.microsoft.com/download/9/5/A/95A9616B
 
 ### Supported databases
 
+- MySQL
+- PostgreSQL
+- SQLite
 - Sql Server
 - Oracle
-- MySql
-- SQLite
-- PostgreSql
 
 ### Getting Started
 
