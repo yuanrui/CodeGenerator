@@ -14,11 +14,11 @@
 
 ### 支持数据库
 
+- MySQL
+- PostgreSQL
+- SQLite
 - Sql Server
 - Oracle
-- MySQL
-- SQLite
-- PostgreSQL
 
 ### 使用说明
 
