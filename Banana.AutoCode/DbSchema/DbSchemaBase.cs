@@ -193,14 +193,15 @@ namespace Banana.AutoCode.DbSchema
         /// <param name="precision"></param>
         /// <param name="scale"></param>
         /// <param name="isNullable"></param>
+        /// <param name="isUnsignedType"></param>
         /// <returns></returns>
-        protected static Type ConvertToNumberType(Int16 precision, Int16 scale, Boolean isNullable)
+        protected static Type ConvertToNumberType(Int16 precision, Int16 scale, Boolean isNullable, Boolean isUnsignedType = false)
         {
             if (scale == 0)
             {
                 if (precision == 0)
                 {
-                    return GetTypeOf<Int64>(isNullable);
+                    return isUnsignedType ? GetTypeOf<UInt64>(isNullable) : GetTypeOf<Int64>(isNullable);
                 }
 
                 if (precision == 1)
@@ -210,22 +211,22 @@ namespace Banana.AutoCode.DbSchema
 
                 if (precision <= 3)
                 {
-                    return GetTypeOf<Byte>(isNullable);
+                    return isUnsignedType ? GetTypeOf<Byte>(isNullable) : GetTypeOf<SByte>(isNullable);
                 }
 
                 if (precision <= 4)
                 {
-                    return GetTypeOf<Int16>(isNullable);
+                    return isUnsignedType ? GetTypeOf<UInt16>(isNullable) : GetTypeOf<Int16>(isNullable);
                 }
 
                 if (precision <= 10)
                 {
-                    return GetTypeOf<Int32>(isNullable);
+                    return isUnsignedType ? GetTypeOf<UInt32>(isNullable) : GetTypeOf<Int32>(isNullable);
                 }
 
                 if (precision <= 19)
                 {
-                    return GetTypeOf<Int64>(isNullable);
+                    return isUnsignedType ? GetTypeOf<UInt64>(isNullable) : GetTypeOf<Int64>(isNullable);
                 }
             }
 

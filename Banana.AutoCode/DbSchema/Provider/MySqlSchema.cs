@@ -106,7 +106,8 @@ order by 1";
                 return;
             }
 
-            if (column.RawType2 == "tinyint(1)" || column.RawType2 == "tinyint(1) unsigned")
+            if (column.RawType2.Equals("tinyint(1)", StringComparison.OrdinalIgnoreCase) 
+                || column.RawType2.Equals("tinyint(1) unsigned", StringComparison.OrdinalIgnoreCase))
             {
                 column.Precision = 1;
                 return;
@@ -137,8 +138,9 @@ order by 1";
                 case "boolean":
                     return GetTypeOf<Boolean>(isNullable);
                 case "tinyint":
-                case "tinyint unsigned":
                     return ConvertToNumberType(precision, scale, isNullable);
+                case "tinyint unsigned":
+                    return ConvertToNumberType(precision, scale, isNullable, true);
                 case "smallint":
                     return GetTypeOf<Int16>(isNullable);
                 case "smallint unsigned":
@@ -184,7 +186,7 @@ order by 1";
                 case "longblob":
                     return typeof(Byte[]);
                 default:
-                    return typeof(Object);
+                    return typeof(String);
             }
         }
 
@@ -197,8 +199,9 @@ order by 1";
                 case "boolean":
                     return DbType.Boolean;
                 case "tinyint":
+                    return precision <= 3 ? DbType.SByte : DbType.Int16;
                 case "tinyint unsigned":
-                    return DbType.Byte;
+                    return precision <= 3 ? DbType.Byte : DbType.UInt16;
                 case "smallint":
                     return DbType.Int16;
                 case "smallint unsigned":
@@ -244,7 +247,7 @@ order by 1";
                 case "longblob":
                     return DbType.Binary;
                 default:
-                    return DbType.Object;
+                    return DbType.String;
             }
         }
     }

@@ -43,12 +43,12 @@ public class OracleTypeConverter
                 return "Int16";
             }
 
-            if (precision <= 9)
+            if (precision <= 10)
             {
                 return "Int32";
             }
 
-            if (precision <= 18)
+            if (precision <= 19)
             {
                 return "Int64";
             }
@@ -81,12 +81,12 @@ public class OracleTypeConverter
                 return isNullable ? typeof(Nullable<Int16>) : typeof(Int16);
             }
 
-            if (precision <= 9)
+            if (precision <= 10)
             {
                 return isNullable ? typeof(Nullable<Int32>) : typeof(Int32);
             }
 
-            if (precision <= 18)
+            if (precision <= 19)
             {
                 return isNullable ? typeof(Nullable<Int64>) : typeof(Int64);
             }
