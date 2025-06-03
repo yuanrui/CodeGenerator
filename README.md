@@ -15,12 +15,10 @@
 ### 支持数据库
 
 - Sql Server
-
 - Oracle
-
 - MySql
-
 - SQLite
+- PostgreSql
 
 ### 使用说明
 
