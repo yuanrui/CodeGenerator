@@ -16,9 +16,9 @@
 
 - Sql Server
 - Oracle
-- MySql
+- MySQL
 - SQLite
-- PostgreSql
+- PostgreSQL
 
 ### 使用说明
 
