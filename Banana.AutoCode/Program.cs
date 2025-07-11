@@ -54,6 +54,7 @@ namespace Banana.AutoCode
             Environment.SetEnvironmentVariable("APP_DIR", directory);
             Environment.SetEnvironmentVariable("OUTPUT_DIR", Path.Combine(directory, ConfigConstants.OUTPUT_DIR));
             Environment.SetEnvironmentVariable("TEMPLATES_DIR", Path.Combine(directory, ConfigConstants.TEMPLATES_DIR));
+            OracleConfiguration.BindByName = true;
         }
     }
 }
