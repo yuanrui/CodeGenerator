@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
-// <copyright file="StringExtension.cs" company="CQ Ebos Co., Ltd.">
-//    Copyright (c) 2020, CQ Ebos Co., Ltd. All rights reserved.
+// <copyright file="StringExtension.cs">
+//    Copyright (c) 2020, YuanRui. All rights reserved.
 // </copyright>
 // <author>Yuan Rui</author>
 // <email>yuanrui@live.cn</email>
