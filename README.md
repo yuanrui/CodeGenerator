@@ -112,6 +112,15 @@ dotnet publish Banana.AutoCode\Banana.AutoCode.VS2022.csproj -c Release -r win-x
 
 build 与 publish 都会复制 `Config`、`Templates`、`AutoCode.dll.config` 和本地化资源；`Thrift` 目录不在 csproj 的复制项里，如需使用 Build 功能，请手动把 `Banana.AutoCode/Thrift` 复制到输出目录。也可以直接用 Visual Studio 2022 打开 `Banana.AutoCode.VS2022.sln` 后按 F5 调试。
 
+net40 工程（`Banana.AutoCode/Banana.AutoCode.csproj`）的依赖只由 `packages.config` 声明，`packages/` 是本地缓存目录、不纳入版本库（已被 `.gitignore` 忽略）。克隆后必须先把包还原到 `packages/` 再编译，否则 csproj 中 `HintPath` 指向的程序集不存在，会报找不到引用：
+
+```powershell
+nuget restore Banana.AutoCode\Banana.AutoCode.csproj
+msbuild Banana.AutoCode\Banana.AutoCode.csproj /p:Configuration=Release /p:Platform=AnyCPU
+```
+
+`packages.config` 是 net40 依赖的唯一声明来源，升级或增删依赖时只需改它；net40 编译还需要本机安装 .NET Framework 4.0 目标包。上面的 `dotnet restore` / `dotnet build` 只针对 net8 工程，两者互不影响。
+
 ### net40 与 net8 的差异
 
 | 项目 | net40 工程 | net8 工程 |

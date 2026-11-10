@@ -112,6 +112,15 @@ dotnet publish Banana.AutoCode\Banana.AutoCode.VS2022.csproj -c Release -r win-x
 
 Both build and publish copy `Config`, `Templates`, `AutoCode.dll.config`, and satellite resources. The `Thrift` directory is not part of the csproj copy items; if you need the Build feature, copy `Banana.AutoCode/Thrift` into the output directory manually. You can also open `Banana.AutoCode.VS2022.sln` in Visual Studio 2022 and press F5.
 
+The net40 project (`Banana.AutoCode/Banana.AutoCode.csproj`) declares its dependencies only in `packages.config`; `packages/` is a local cache directory that is not committed (it is ignored by `.gitignore`). After cloning you must restore the packages into `packages/` before building, otherwise the assemblies referenced by `HintPath` in the csproj are missing and the build fails with unresolved references:
+
+```powershell
+nuget restore Banana.AutoCode\Banana.AutoCode.csproj
+msbuild Banana.AutoCode\Banana.AutoCode.csproj /p:Configuration=Release /p:Platform=AnyCPU
+```
+
+`packages.config` is the single source of truth for net40 dependencies; upgrade or add packages there only. Building net40 also requires the .NET Framework 4.0 targeting pack on your machine. The `dotnet restore` / `dotnet build` commands above apply to the net8 project only; the two do not interfere.
+
 ### net40 vs. net8
 
 | Item | net40 project | net8 project |
