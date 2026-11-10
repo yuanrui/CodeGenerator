@@ -1,4 +1,5 @@
 ﻿using Banana.AutoCode.DbSchema;
+using Banana.AutoCode.Core;
 using Banana.AutoCode.Resources;
 using System;
 using System.Collections;
@@ -18,7 +19,6 @@ namespace Banana.AutoCode.Forms
         const Int32 DB_NODE_LEVEL = 1;
         const Int32 TABLE_NODE_LEVEL = 2;
 
-        const String ROOT_ON_ICON = "databases";
         const String DB_ON_ICON = "database";
         const String DB_OFF_ICON = "databaseOff";
         const String TABLE_OFF_ICON = "tables";
@@ -40,16 +40,43 @@ namespace Banana.AutoCode.Forms
             Init();
         }
 
+        private static ImageList _sharedIconList;
+
+        /// <summary>
+        /// 连接树与各下拉共用的 16×16 图标列表，进程内只创建一次；
+        /// 位图本身来自 <see cref="DbProviderIcons"/> 的静态缓存。
+        /// </summary>
+        internal static ImageList SharedIconList
+        {
+            get
+            {
+                if (_sharedIconList == null)
+                {
+                    var imageList = new ImageList();
+                    imageList.ColorDepth = ColorDepth.Depth32Bit;
+
+                    imageList.Images.Add(DbProviderIcons.DefaultKey, DbProviderIcons.DefaultImage);
+                    imageList.Images.Add(DB_ON_ICON, Properties.Resources.Icons_16x16_DataActive);
+                    imageList.Images.Add(DB_OFF_ICON, Properties.Resources.Icons_16x16_DataInactive);
+                    imageList.Images.Add(TABLE_OFF_ICON, Properties.Resources.Icons_16x16_Table);
+
+                    foreach (var icon in DbProviderIcons.Images)
+                    {
+                        imageList.Images.Add(icon.Key, icon.Value);
+                    }
+
+                    _sharedIconList = imageList;
+                }
+
+                return _sharedIconList;
+            }
+        }
+
         protected void Init()
         {
             ManagerMap = new Hashtable();
             TableMap = new Hashtable();
-            IconList = new ImageList();
-
-            IconList.Images.Add("databases", Properties.Resources.Icons_16x16_Datas);
-            IconList.Images.Add("database", Properties.Resources.Icons_16x16_DataActive);
-            IconList.Images.Add("databaseOff", Properties.Resources.Icons_16x16_DataInactive);
-            IconList.Images.Add("tables", Properties.Resources.Icons_16x16_Table);
+            IconList = SharedIconList;
 
             tvDb.ImageList = IconList;
             tvDb.DrawMode = TreeViewDrawMode.OwnerDrawText;
@@ -60,7 +87,14 @@ namespace Banana.AutoCode.Forms
             toolTip.SetToolTip(this.pboxDbEdit, ResourceMgr.GetString("DbEditToolTip"));
             toolTip.SetToolTip(this.pboxDbDelete, ResourceMgr.GetString("DbDeleteToolTip"));
             toolTip.SetToolTip(this.pboxDbRefresh, ResourceMgr.GetString("DbRefreshToolTip"));
-            
+
+            // 可编辑 ComboBox 的编辑区由原生 EDIT 绘制，不会触发 DrawItem，
+            // 子控件覆盖也会被原生编辑框盖住；改为 DropDownList 后收起状态
+            // 以 ComboBoxEdit 状态回到同一套 DrawItem，图标才能稳定显示。
+            cbConnStrings.DropDownStyle = ComboBoxStyle.DropDownList;
+            DbIconComboBox.Apply(cbConnStrings);
+            cbConnStrings.DrawItem += new DrawItemEventHandler(cbConnStrings_DrawItem);
+
             RefreshTreeView();
         }
 
@@ -79,6 +113,7 @@ namespace Banana.AutoCode.Forms
                 cbConnStrings.Items.Add(css.Name);
             }
 
+            DbIconComboBox.FitDropDownWidth(cbConnStrings);
         }
 
         protected void RefreshTreeView()
@@ -211,12 +246,56 @@ namespace Banana.AutoCode.Forms
 
         private void cbConnStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Items 被清空（刷新配置）时选中项为 null，这里直接返回，避免空引用。
+            if (cbConnStrings.SelectedItem == null)
+            {
+                return;
+            }
+
             tvDb.Nodes.Clear();
+
             CurrentConnSetting = ConfigurationManager.ConnectionStrings[cbConnStrings.SelectedItem.ToString()];
-            
+
             Task.Factory.StartNew(() => {
                 DoChangeDataSource(CurrentConnSetting);
             });
+        }
+
+        private void cbConnStrings_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            var combo = sender as ComboBox;
+            if (combo == null)
+            {
+                return;
+            }
+
+            var text = e.Index >= 0 && e.Index < combo.Items.Count
+                ? combo.GetItemText(combo.Items[e.Index])
+                : combo.Text;
+
+            // 设计器里不解析配置，降级为纯文本绘制，避免设计时异常。
+            if (this.DesignMode || combo.Items.Count == 0)
+            {
+                DbIconComboBox.DrawPlain(e, combo, text);
+                return;
+            }
+
+            DbIconComboBox.Draw(e, combo, text, GetProviderName(text));
+        }
+
+        /// <summary>
+        /// 按连接名反查配置里的 ProviderName；取不到时返回空串，由 <see cref="DbProviderIcons.GetImage"/>
+        /// 回退到默认数据库图标。
+        /// </summary>
+        private static string GetProviderName(string connectionName)
+        {
+            if (String.IsNullOrWhiteSpace(connectionName))
+            {
+                return String.Empty;
+            }
+
+            var settings = ConfigurationManager.ConnectionStrings[connectionName];
+            return settings == null || settings.ProviderName == null ? String.Empty : settings.ProviderName;
         }
 
         private void DoChangeDataSource(ConnectionStringSettings settings)
@@ -226,7 +305,7 @@ namespace Banana.AutoCode.Forms
             var dbs = dbSchemaManager.GetDatabases();
             var root = new TreeNode(settings.Name, 0, 0);
             root.ToolTipText = settings.ConnectionString;
-            root.ImageKey = ROOT_ON_ICON;
+            root.ImageKey = DbProviderIcons.GetIconKey(settings.ProviderName);
             root.SelectedImageKey = root.ImageKey;
 
             foreach (var db in dbs)

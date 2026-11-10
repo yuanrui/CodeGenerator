@@ -185,11 +185,13 @@ CodeGenerator/
 │  │  ├─ TemplatePanel.cs                # template browser and preview
 │  │  ├─ OutputPanel.cs                  # Trace log output
 │  │  ├─ OptionsPanel.cs                 # naming prefixes/suffixes, UI language
-│  │  └─ DbConnBuilderPanel.cs           # connection editor, writes config back
+│  │  ├─ DbConnBuilderPanel.cs           # connection editor, writes config back
+│  │  └─ DbIconComboBox.cs               # owner-draw (icon + text) for both connection drop-downs
 │  ├─ Core/                              # T4 host, data context, global settings
 │  │  ├─ CustomHost.cs                   # T4 host exposing Table
 │  │  ├─ DataContext.cs / DataContextScope.cs
 │  │  ├─ GlobalSetting.cs                # removePrefix / removeSuffix
+│  │  ├─ DbProviderIcons.cs              # provider → icon mapping and bitmap cache
 │  │  └─ Mono.TextTemplating/            # T4 engine copy used by net40
 │  ├─ _src/                              # mono/t4 v2.3.1 fork (net8)
 │  │  ├─ Mono.TextTemplating/
@@ -203,7 +205,8 @@ CodeGenerator/
 │  ├─ Templates/                         # built-in T4 templates by stack
 │  ├─ Config/                            # setting.config / db.config
 │  ├─ Thrift/                            # thrift.exe
-│  ├─ Resources/                         # icons and localization (zh-CN / en-US)
+│  ├─ Resources/                         # localization resources and icons
+│  │  └─ DbIcons/                        # database type icons 16×16 / 32×32 + SOURCES.md
 │  ├─ app.config / AutoCode.dll.config   # configuration forwarding
 │  ├─ Banana.AutoCode.VS2022.csproj      # net8.0-windows project
 │  └─ Banana.AutoCode.csproj             # net40 project (VS2019)
@@ -707,6 +710,13 @@ Switch to `Banana.AutoCode.VS2022.csproj` and `net8.0-windows`; the T4 engine mo
 
 </details>
 
+<details>
+<summary>Why can't I type into the two connection drop-downs?</summary>
+
+Both drop-downs use the `DropDownList` style, so values can only be picked from the list. A `Provider` must match a name registered in `DbProviderConfig`, and a connection name must already exist in `ConnectionStrings`; typed text can neither be saved nor used to read metadata.
+
+</details>
+
 <a id="contributing"></a>
 ## Contributing
 
@@ -728,6 +738,14 @@ New database providers are welcome. Please include:
 - A redacted connection string sample.
 - Type-mapping evidence: native type → `DbType` / .NET `Type` / `TypeName`.
 - net40 vs. net8 differences if both projects are supported.
+
+**UI strings**
+
+UI strings live in `Resources/Localization.resx` (neutral English) and `Localization.zh-CN.resx`; both files must keep the same key set.
+
+1. Add the same key to both resx files with the text for each language.
+2. Confirm `Localization.Designer.cs` exposes a matching property (add the `public static string` member manually if it is not generated).
+3. Reference it as `Localization.xxx` in code instead of hard-coding UI text.
 
 Make sure the change contains no real connection strings, credentials, personal paths, or generated temporary files. See the [TODO List](https://github.com/yuanrui/CodeGenerator/issues/1) for open items.
 
@@ -751,6 +769,7 @@ If this project helps you, a Star is the most direct support: [github.com/yuanru
 | Dapper | Metadata queries and data access | Apache-2.0 |
 | DockPanelSuite | WinForms docking layout | MIT |
 | Roslyn (`Microsoft.CodeAnalysis`) | In-process T4 compilation on net8 | MIT |
+| [DBeaver](https://github.com/dbeaver/dbeaver) | Database type icons (16×16 / 32×32; see [SOURCES.md](Banana.AutoCode/Resources/DbIcons/SOURCES.md) for origins and licenses) | Apache-2.0 |
 
 License information comes from each package's `nuspec` or source headers; refer to each project for details.
 

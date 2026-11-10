@@ -203,6 +203,56 @@ namespace Banana.AutoCode.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_MySql {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_MySql", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_Oracle {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_Oracle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_PostgreSql {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_PostgreSql", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_SQLite {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_SQLite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_16x16_SqlServer {
+            get {
+                object obj = ResourceManager.GetObject("Icons_16x16_SqlServer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap Icons_16x16_OpenCollection {
             get {
                 object obj = ResourceManager.GetObject("Icons_16x16_OpenCollection", resourceCulture);

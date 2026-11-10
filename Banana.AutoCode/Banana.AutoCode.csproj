@@ -93,6 +93,7 @@
     <Compile Include="Core\DataContext.cs" />
     <Compile Include="Core\DataContextScope.cs" />
     <Compile Include="Core\DbUtils.cs" />
+    <Compile Include="Core\DbProviderIcons.cs" />
     <Compile Include="Core\GlobalSetting.cs" />
     <Compile Include="Core\IconUtils.cs" />
     <Compile Include="Core\Microsoft.VisualStudio.TextTemplating\DirectiveProcessor.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Forms\DbConnBuilderPanel.Designer.cs">
       <DependentUpon>DbConnBuilderPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DbIconComboBox.cs" />
     <Compile Include="Forms\DbPanel.cs">
       <SubType>Form</SubType>
     </Compile>

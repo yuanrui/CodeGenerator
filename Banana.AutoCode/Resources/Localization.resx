@@ -162,11 +162,11 @@
   <data name="Unchecked_Tables" xml:space="preserve">
     <value>Unchecked tables can not generate code.</value>
   </data>
-  <data name="Templates_Not_Exists_Format" xml:space="preserve">
-    <value>Template directory:{0} not exists.</value>
+  <data name="Templates_Directory_Not_Exists" xml:space="preserve">
+    <value>Template directory {0} does not exist.</value>
   </data>
-  <data name="Templates_Not_Exists_Format_Auto" xml:space="preserve">
-    <value>Template directory:{0} not exists, auto created.</value>
+  <data name="Templates_Directory_Not_Exists_Auto_Created" xml:space="preserve">
+    <value>Template directory {0} does not exist and was created automatically.</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>

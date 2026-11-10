@@ -162,11 +162,11 @@
   <data name="Unchecked_Tables" xml:space="preserve">
     <value>未选中数据表，无法生成代码。</value>
   </data>
-  <data name="Templates_Not_Exists_Format" xml:space="preserve">
-    <value>模板目录({0})不存在，自动创建。</value>
-  </data>
-  <data name="Templates_Not_Exists_Format1" xml:space="preserve">
+  <data name="Templates_Directory_Not_Exists" xml:space="preserve">
     <value>模板目录({0})不存在。</value>
+  </data>
+  <data name="Templates_Directory_Not_Exists_Auto_Created" xml:space="preserve">
+    <value>模板目录({0})不存在，已自动创建。</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>保存</value>

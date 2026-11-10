@@ -34,7 +34,7 @@ namespace Banana.AutoCode.Forms
             if (!Directory.Exists(basePath))
             {
                 Directory.CreateDirectory(basePath);
-                Trace.WriteLine(string.Format(Localization.Templates_Not_Exists_Format_Auto, basePath));
+                Trace.WriteLine(string.Format(Localization.Templates_Directory_Not_Exists_Auto_Created, basePath));
             }
 
             InitImageList(iconList, basePath);
@@ -97,7 +97,7 @@ namespace Banana.AutoCode.Forms
 
             if (!Directory.Exists(basePath))
             {
-                Trace.WriteLine(String.Format(Localization.Templates_Not_Exists_Format, basePath));
+                Trace.WriteLine(String.Format(Localization.Templates_Directory_Not_Exists, basePath));
                 return;
             }
 

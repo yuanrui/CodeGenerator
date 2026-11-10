@@ -19,10 +19,10 @@ namespace Banana.AutoCode.Resources {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Localization {
+    public class Localization {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Banana.AutoCode.Resources {
         ///   返回此类使用的缓存的 ResourceManager 实例。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Banana.AutoCode.Resources.Localization", typeof(Localization).Assembly);
@@ -47,11 +47,11 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Prompt 的本地化字符串。
         /// </summary>
-        internal static string Caption_Prompt {
+        public static string Caption_Prompt {
             get {
                 return ResourceManager.GetString("Caption_Prompt", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Finish generate table {0} code. 的本地化字符串。
         /// </summary>
-        internal static string Finish_Generate {
+        public static string Finish_Generate {
             get {
                 return ResourceManager.GetString("Finish_Generate", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Finish generate table {0} code, without output(processed in template). 的本地化字符串。
         /// </summary>
-        internal static string Finish_Generate_Empty {
+        public static string Finish_Generate_Empty {
             get {
                 return ResourceManager.GetString("Finish_Generate_Empty", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Finished 的本地化字符串。
         /// </summary>
-        internal static string Finished {
+        public static string Finished {
             get {
                 return ResourceManager.GetString("Finished", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Generate table:{0} TemplateName:{1} OutputPath:{2} 的本地化字符串。
         /// </summary>
-        internal static string Generate_Table {
+        public static string Generate_Table {
             get {
                 return ResourceManager.GetString("Generate_Table", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Begin generate Thrift 的本地化字符串。
         /// </summary>
-        internal static string Generate_Thrift_Begin {
+        public static string Generate_Thrift_Begin {
             get {
                 return ResourceManager.GetString("Generate_Thrift_Begin", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Generate Thrift({0}) Exception:{1} 的本地化字符串。
         /// </summary>
-        internal static string Generate_Thrift_Exception {
+        public static string Generate_Thrift_Exception {
             get {
                 return ResourceManager.GetString("Generate_Thrift_Exception", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Finished generate Thrift 的本地化字符串。
         /// </summary>
-        internal static string Generate_Thrift_Finished {
+        public static string Generate_Thrift_Finished {
             get {
                 return ResourceManager.GetString("Generate_Thrift_Finished", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 No template file. run stop. 的本地化字符串。
         /// </summary>
-        internal static string No_Template_File {
+        public static string No_Template_File {
             get {
                 return ResourceManager.GetString("No_Template_File", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Output directory not exists, auto create. 的本地化字符串。
         /// </summary>
-        internal static string Output_Not_Exists {
+        public static string Output_Not_Exists {
             get {
                 return ResourceManager.GetString("Output_Not_Exists", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Are you sure remove database connection &quot;{0}&quot;? 的本地化字符串。
         /// </summary>
-        internal static string Remove_ConnectionString_Confirm {
+        public static string Remove_ConnectionString_Confirm {
             get {
                 return ResourceManager.GetString("Remove_ConnectionString_Confirm", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Error remove db connection settings, Exception:  的本地化字符串。
         /// </summary>
-        internal static string Remove_ConnectionString_Exception {
+        public static string Remove_ConnectionString_Exception {
             get {
                 return ResourceManager.GetString("Remove_ConnectionString_Exception", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Remove db connection settings {0} success 的本地化字符串。
         /// </summary>
-        internal static string Remove_ConnectionString_Success {
+        public static string Remove_ConnectionString_Success {
             get {
                 return ResourceManager.GetString("Remove_ConnectionString_Success", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Save 的本地化字符串。
         /// </summary>
-        internal static string Save {
+        public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Error writing db connection settings, Exception:  的本地化字符串。
         /// </summary>
-        internal static string Save_ConnectionString_Exception {
+        public static string Save_ConnectionString_Exception {
             get {
                 return ResourceManager.GetString("Save_ConnectionString_Exception", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Save db connection settings {0} success 的本地化字符串。
         /// </summary>
-        internal static string Save_ConnectionString_Success {
+        public static string Save_ConnectionString_Success {
             get {
                 return ResourceManager.GetString("Save_ConnectionString_Success", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Error writing app settings 的本地化字符串。
         /// </summary>
-        internal static string Save_Setting_Exception {
+        public static string Save_Setting_Exception {
             get {
                 return ResourceManager.GetString("Save_Setting_Exception", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Save settings {0}={1} success 的本地化字符串。
         /// </summary>
-        internal static string Save_Setting_Success {
+        public static string Save_Setting_Success {
             get {
                 return ResourceManager.GetString("Save_Setting_Success", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Text File(*.txt)|*.txt|All File(*.*)|*.* 的本地化字符串。
         /// </summary>
-        internal static string SaveFileDialog_Filter {
+        public static string SaveFileDialog_Filter {
             get {
                 return ResourceManager.GetString("SaveFileDialog_Filter", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Template: 的本地化字符串。
         /// </summary>
-        internal static string Template {
+        public static string Template {
             get {
                 return ResourceManager.GetString("Template", resourceCulture);
             }
@@ -243,34 +243,34 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Templates directory not exists, auto create. 的本地化字符串。
         /// </summary>
-        internal static string Templates_Not_Exists {
+        public static string Templates_Not_Exists {
             get {
                 return ResourceManager.GetString("Templates_Not_Exists", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 Template directory:{0} not exists. 的本地化字符串。
+        ///   查找类似 Template directory {0} does not exist. 的本地化字符串。
         /// </summary>
-        internal static string Templates_Not_Exists_Format {
+        public static string Templates_Directory_Not_Exists {
             get {
-                return ResourceManager.GetString("Templates_Not_Exists_Format", resourceCulture);
+                return ResourceManager.GetString("Templates_Directory_Not_Exists", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 Template directory:{0} not exists, auto created. 的本地化字符串。
+        ///   查找类似 Template directory {0} does not exist and was created automatically. 的本地化字符串。
         /// </summary>
-        internal static string Templates_Not_Exists_Format_Auto {
+        public static string Templates_Directory_Not_Exists_Auto_Created {
             get {
-                return ResourceManager.GetString("Templates_Not_Exists_Format_Auto", resourceCulture);
+                return ResourceManager.GetString("Templates_Directory_Not_Exists_Auto_Created", resourceCulture);
             }
         }
         
         /// <summary>
         ///   查找类似 Test Fail 的本地化字符串。
         /// </summary>
-        internal static string Test_Connection_Fail {
+        public static string Test_Connection_Fail {
             get {
                 return ResourceManager.GetString("Test_Connection_Fail", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Test Success 的本地化字符串。
         /// </summary>
-        internal static string Test_Connection_Success {
+        public static string Test_Connection_Success {
             get {
                 return ResourceManager.GetString("Test_Connection_Success", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace Banana.AutoCode.Resources {
         /// <summary>
         ///   查找类似 Unchecked tables can not generate code. 的本地化字符串。
         /// </summary>
-        internal static string Unchecked_Tables {
+        public static string Unchecked_Tables {
             get {
                 return ResourceManager.GetString("Unchecked_Tables", resourceCulture);
             }

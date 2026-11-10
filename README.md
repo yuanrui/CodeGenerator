@@ -185,11 +185,13 @@ CodeGenerator/
 │  │  ├─ TemplatePanel.cs                # 模板目录浏览与预览
 │  │  ├─ OutputPanel.cs                  # Trace 日志输出
 │  │  ├─ OptionsPanel.cs                 # 命名前缀/后缀、界面语言
-│  │  └─ DbConnBuilderPanel.cs           # 连接串编辑，写回配置文件
+│  │  ├─ DbConnBuilderPanel.cs           # 连接串编辑，写回配置文件
+│  │  └─ DbIconComboBox.cs               # 两个连接下拉的 owner-draw（图标 + 文本）
 │  ├─ Core/                              # 生成宿主、数据上下文、全局设置
 │  │  ├─ CustomHost.cs                   # T4 宿主，向模板暴露 Table
 │  │  ├─ DataContext.cs / DataContextScope.cs
 │  │  ├─ GlobalSetting.cs                # removePrefix / removeSuffix
+│  │  ├─ DbProviderIcons.cs              # Provider → 图标映射与位图缓存
 │  │  └─ Mono.TextTemplating/            # net40 使用的 T4 引擎副本
 │  ├─ _src/                              # mono/t4 v2.3.1 fork（net8 使用）
 │  │  ├─ Mono.TextTemplating/
@@ -203,7 +205,8 @@ CodeGenerator/
 │  ├─ Templates/                         # 内置 T4 模板（按技术栈分目录）
 │  ├─ Config/                            # setting.config / db.config
 │  ├─ Thrift/                            # thrift.exe
-│  ├─ Resources/                         # 图标、本地化资源（zh-CN / en-US）
+│  ├─ Resources/                         # 本地化资源与图标
+│  │  └─ DbIcons/                        # 数据库类型图标 16×16 / 32×32 + SOURCES.md
 │  ├─ app.config / AutoCode.dll.config   # 配置节转发
 │  ├─ Banana.AutoCode.VS2022.csproj      # net8.0-windows 主工程
 │  └─ Banana.AutoCode.csproj             # net40 旧工程（VS2019）
@@ -707,6 +710,13 @@ Build 按钮会扫描 `Output` 下的 `*.thrift`，调用 `Thrift/thrift.exe`。
 
 </details>
 
+<details>
+<summary>为什么两个连接下拉不能手动输入？</summary>
+
+「数据库类型」与「数据库连接」两个下拉是 `DropDownList` 风格，只能从列表中选择。`Provider` 必须命中 `DbProviderConfig` 中已注册的名称，连接名必须已存在于 `ConnectionStrings`，手输的内容既保存不了，也读不到元数据。
+
+</details>
+
 <a id="contributing"></a>
 ## 参与贡献
 
@@ -728,6 +738,14 @@ Build 按钮会扫描 `Output` 下的 `*.thrift`，调用 `Thrift/thrift.exe`。
 - 脱敏后的连接串样例。
 - 类型映射验证结果：原生类型 → `DbType` / .NET `Type` / `TypeName`。
 - net40 与 net8 的差异说明（如果两个工程都要支持）。
+
+**界面文案**
+
+界面文案位于 `Resources/Localization.resx`（默认英文）与 `Localization.zh-CN.resx`，两者键集合必须一致。
+
+1. 在两个 resx 中添加同名键并分别填写对应语言的文案。
+2. 确认 `Localization.Designer.cs` 中生成同名属性（未自动生成时手动补 `public static string`）。
+3. 代码中通过 `Localization.xxx` 引用，不要硬编码界面字符串。
 
 提交前请确保不包含真实连接串、密码、个人路径或生成的临时文件。待办事项见 [TODO List](https://github.com/yuanrui/CodeGenerator/issues/1)。
 
@@ -751,6 +769,7 @@ Build 按钮会扫描 `Output` 下的 `*.thrift`，调用 `Thrift/thrift.exe`。
 | Dapper | 元数据查询与数据访问 | Apache-2.0 |
 | DockPanelSuite | WinForms 停靠布局 | MIT |
 | Roslyn (`Microsoft.CodeAnalysis`) | net8 下的 T4 进程内编译 | MIT |
+| [DBeaver](https://github.com/dbeaver/dbeaver) | 数据库类型图标（16×16 / 32×32，来源与许可见 [SOURCES.md](Banana.AutoCode/Resources/DbIcons/SOURCES.md)） | Apache-2.0 |
 
 License 信息来自各包的 `nuspec` 或源码头；具体以各自仓库为准。
 

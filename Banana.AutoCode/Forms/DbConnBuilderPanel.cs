@@ -52,6 +52,35 @@ namespace Banana.AutoCode.Forms
             {
                 cboDataProvider.Items.Add(item);
             }
+
+            // 可编辑 ComboBox 的编辑区不触发 DrawItem，改为 DropDownList 后
+            // 收起状态的图标与列表项由同一套 DrawItem 绘制。
+            cboDataProvider.DropDownStyle = ComboBoxStyle.DropDownList;
+            DbIconComboBox.Apply(cboDataProvider);
+            cboDataProvider.DrawItem += new DrawItemEventHandler(cboDataProvider_DrawItem);
+            DbIconComboBox.FitDropDownWidth(cboDataProvider);
+        }
+
+        private void cboDataProvider_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            var combo = sender as ComboBox;
+            if (combo == null)
+            {
+                return;
+            }
+
+            var provider = e.Index >= 0 && e.Index < combo.Items.Count
+                ? combo.GetItemText(combo.Items[e.Index])
+                : combo.Text;
+
+            // 设计器里不取图标，降级为纯文本绘制，避免设计时异常。
+            if (this.DesignMode || combo.Items.Count == 0)
+            {
+                DbIconComboBox.DrawPlain(e, combo, provider);
+                return;
+            }
+
+            DbIconComboBox.Draw(e, combo, provider, provider);
         }
 
         private void InitModel(DbViewModel model)
