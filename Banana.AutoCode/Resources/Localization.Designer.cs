@@ -293,5 +293,239 @@ namespace Banana.AutoCode.Resources {
                 return ResourceManager.GetString("Unchecked_Tables", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 Copy connection string 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Menu_Copy {
+            get {
+                return ResourceManager.GetString("ConnectionString_Menu_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Not applicable to this provider 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_NotApplicable {
+            get {
+                return ResourceManager.GetString("ConnectionString_NotApplicable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copied: {0} 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Copied {
+            get {
+                return ResourceManager.GetString("ConnectionString_Copied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copied: {0} ({1} item(s) to fill in before use) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_CopiedWithPlaceholders {
+            get {
+                return ResourceManager.GetString("ConnectionString_CopiedWithPlaceholders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copy failed: {0} 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_CopyFailed {
+            get {
+                return ResourceManager.GetString("ConnectionString_CopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ({0} to fill in) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_MenuPlaceholderSuffix {
+            get {
+                return ResourceManager.GetString("ConnectionString_MenuPlaceholderSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 host 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_Host {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_Host", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 database 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_Database {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_Database", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 SID/service name 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_ServiceName {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_ServiceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 user name 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_User {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 instance name 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_InstanceName {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_InstanceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 file path 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_FilePath {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 password 的本地化字符串。
+        /// </summary>
+        public static string ConnectionString_Placeholder_Password {
+            get {
+                return ResourceManager.GetString("ConnectionString_Placeholder_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copy connection info 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Menu_Copy {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Menu_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Including password (plain text) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Menu_IncludePassword {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Menu_IncludePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Without password 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Menu_ExcludePassword {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Menu_ExcludePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Host 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_Host {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_Host", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Port 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_Port {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Named instance 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_Instance {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_Instance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Service name (SID/service name) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_ServiceName {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_ServiceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 User name 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_User {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Password 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_Password {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 File path 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_FilePath {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copied connection info (contains plain-text password) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_CopiedWithPassword {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_CopiedWithPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copied connection info (without password) 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_CopiedWithoutPassword {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_CopiedWithoutPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Copy failed: {0} 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_CopyFailed {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_CopyFailed", resourceCulture);
+            }
+        }
     }
 }

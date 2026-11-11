@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.Resources;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -31,6 +32,12 @@ namespace Banana.AutoCode.Forms
         protected Hashtable ManagerMap;
         protected Hashtable TableMap;
         protected ResourceManager ResourceMgr = new ResourceManager(typeof(DbPanel));
+
+        // 两个右键菜单的容器长期复用：菜单关闭过程中系统仍会回访该对象，
+        // 在 Closed 里 Dispose 会抛 ObjectDisposedException。容器交给
+        // 设计器组件容器，随 DbPanel.Dispose(bool) 的 components.Dispose() 释放。
+        private ContextMenuStrip _connectionInfoMenu;
+        private ContextMenuStrip _connectionStringMenu;
 
         public string DatabaseName { get; private set; }
 
@@ -83,6 +90,7 @@ namespace Banana.AutoCode.Forms
             tvDb.DrawNode += new DrawTreeNodeEventHandler(tvDb_DrawNode);
             tvDb.NodeMouseClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseClick);
             tvDb.NodeMouseDoubleClick += new TreeNodeMouseClickEventHandler(tvDb_NodeMouseDoubleClick);
+            tvDb.MouseDown += new MouseEventHandler(tvDb_MouseDown);
             toolTip.SetToolTip(this.pboxDbAdd, ResourceMgr.GetString("DbAddToolTip"));
             toolTip.SetToolTip(this.pboxDbEdit, ResourceMgr.GetString("DbEditToolTip"));
             toolTip.SetToolTip(this.pboxDbDelete, ResourceMgr.GetString("DbDeleteToolTip"));
@@ -244,6 +252,416 @@ namespace Banana.AutoCode.Forms
             e.DrawDefault = true;
         }
 
+        /// <summary>
+        /// 右键菜单按节点层级分流：
+        /// 连接节点（根节点）只提供人读的「复制连接信息」；
+        /// 数据库节点只提供九种格式的「复制连接字符串」；
+        /// 表节点不提供菜单。
+        /// 连接配置与库名都从节点自身取值，不依赖「当前选中连接」。
+        /// </summary>
+        void tvDb_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+            {
+                return;
+            }
+
+            var node = tvDb.GetNodeAt(e.X, e.Y);
+            if (node == null)
+            {
+                return;
+            }
+
+            if (node.Level == ROOT_NODE_LEVEL)
+            {
+                var rootSettings = node.Tag as ConnectionStringSettings;
+                if (rootSettings != null)
+                {
+                    ShowConnectionInfoMenu(rootSettings, e.Location);
+                }
+
+                return;
+            }
+
+            if (node.Level != DB_NODE_LEVEL)
+            {
+                return;
+            }
+
+            var settings = node.Parent == null ? null : node.Parent.Tag as ConnectionStringSettings;
+            var db = node.Tag as Database;
+            if (settings == null || db == null)
+            {
+                return;
+            }
+
+            ShowConnectionStringMenu(settings, db.Name, e.Location);
+        }
+
+        private void ShowConnectionStringMenu(ConnectionStringSettings settings, String databaseName, Point location)
+        {
+            // 无法识别的 Provider 不提供菜单，避免生成语义错误的结果。
+            var model = CreateConnectionStringModel(settings, databaseName);
+            if (model == null)
+            {
+                return;
+            }
+
+            var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
+
+            // 只复用容器，菜单项每次按当前节点重建。
+            var menu = GetConnectionStringMenu();
+            ResetMenuItems(menu);
+
+            var root = new ToolStripMenuItem(GetLocalizedText("ConnectionString_Menu_Copy", "Copy connection string"));
+            menu.Items.Add(root);
+
+            foreach (var format in DbConnectionStringFormats.AllFormats)
+            {
+                var item = new ToolStripMenuItem(DbConnectionStringFormats.GetFormatName(format));
+                var result = DbConnectionStringFormats.Build(format, model, resolver);
+
+                if (result == null)
+                {
+                    // 语义上不存在该组合（如 Go DSN 对 SQL Server），保持不可用。
+                    item.Enabled = false;
+                    item.ToolTipText = GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider");
+                }
+                else
+                {
+                    item.Tag = new ConnectionStringMenuContext
+                    {
+                        Settings = settings,
+                        DatabaseName = databaseName,
+                        Format = format
+                    };
+
+                    if (result.HasPlaceholders)
+                    {
+                        item.Text += String.Format(
+                            GetLocalizedText("ConnectionString_MenuPlaceholderSuffix", " ({0} to fill in)"),
+                            result.PlaceholderCount);
+                    }
+
+                    item.Click += new EventHandler(ConnectionStringMenuItem_Click);
+                }
+
+                root.DropDownItems.Add(item);
+            }
+
+            menu.Show(tvDb, location);
+        }
+
+        private void ConnectionStringMenuItem_Click(object sender, EventArgs e)
+        {
+            var item = sender as ToolStripMenuItem;
+            var context = item == null ? null : item.Tag as ConnectionStringMenuContext;
+            if (context == null)
+            {
+                return;
+            }
+
+            var format = context.Format;
+            var formatName = DbConnectionStringFormats.GetFormatName(format);
+
+            var model = CreateConnectionStringModel(context.Settings, context.DatabaseName);
+            if (model == null)
+            {
+                ShowConnectionStringFeedback(String.Format(GetLocalizedText("ConnectionString_CopyFailed", "Copy failed: {0}"), formatName));
+                return;
+            }
+
+            try
+            {
+                var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
+                var result = DbConnectionStringFormats.Build(format, model, resolver);
+                if (result == null)
+                {
+                    ShowConnectionStringFeedback(String.Format(GetLocalizedText("ConnectionString_CopyFailed", "Copy failed: {0}"), formatName));
+                    return;
+                }
+
+                Clipboard.SetText(result.Text);
+
+                // 反馈与日志只记格式名与待填写个数，不写入含密码的连接串。
+                var message = result.HasPlaceholders
+                    ? String.Format(
+                        GetLocalizedText("ConnectionString_CopiedWithPlaceholders", "Copied: {0} ({1} item(s) to fill in before use)"),
+                        formatName,
+                        result.PlaceholderCount)
+                    : String.Format(GetLocalizedText("ConnectionString_Copied", "Copied: {0}"), formatName);
+
+                ShowConnectionStringFeedback(message);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                ShowConnectionStringFeedback(String.Format(GetLocalizedText("ConnectionString_CopyFailed", "Copy failed: {0}"), ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// 连接节点（根节点）右键弹出「复制连接信息」菜单：
+        /// 内容是给人阅读/转发的纯文本清单，与数据库节点上的连接字符串菜单互不影响。
+        /// </summary>
+        private void ShowConnectionInfoMenu(ConnectionStringSettings settings, Point location)
+        {
+            var model = DbProviderConfig.CreateDbViewModel(settings);
+            if (model == null)
+            {
+                return;
+            }
+
+            var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
+
+            // 只复用容器，菜单项每次按当前节点重建。
+            var menu = GetConnectionInfoMenu();
+            ResetMenuItems(menu);
+
+            var root = new ToolStripMenuItem(GetLocalizedText("ConnectionInfo_Menu_Copy", "Copy connection info"));
+            menu.Items.Add(root);
+
+            AddConnectionInfoItem(root, settings, DbConnectionInfoPasswordMode.IncludePassword, "ConnectionInfo_Menu_IncludePassword", "Including password (plain text)", model, resolver);
+            AddConnectionInfoItem(root, settings, DbConnectionInfoPasswordMode.ExcludePassword, "ConnectionInfo_Menu_ExcludePassword", "Without password", model, resolver);
+
+            menu.Show(tvDb, location);
+        }
+
+        /// <summary>
+        /// 连接信息菜单的复用容器，首次创建后加入设计器组件容器，
+        /// 由 <c>Dispose(bool)</c> 里已有的 <c>components.Dispose()</c> 统一释放。
+        /// </summary>
+        private ContextMenuStrip GetConnectionInfoMenu()
+        {
+            if (_connectionInfoMenu == null)
+            {
+                _connectionInfoMenu = CreateReusableMenu();
+            }
+
+            return _connectionInfoMenu;
+        }
+
+        private ContextMenuStrip GetConnectionStringMenu()
+        {
+            if (_connectionStringMenu == null)
+            {
+                _connectionStringMenu = CreateReusableMenu();
+            }
+
+            return _connectionStringMenu;
+        }
+
+        private ContextMenuStrip CreateReusableMenu()
+        {
+            var menu = new ContextMenuStrip();
+            menu.ShowItemToolTips = true;
+
+            if (components != null)
+            {
+                components.Add(menu);
+            }
+
+            return menu;
+        }
+
+        /// <summary>
+        /// 重建菜单项前清空旧项。<c>Items.Clear()</c> 不会释放菜单项句柄，
+        /// 这里逐项移除并显式 Dispose（含子项），避免重复打开后句柄累积。
+        /// </summary>
+        private static void ResetMenuItems(ContextMenuStrip menu)
+        {
+            // 菜单还开着时不替换它正在跟踪的项。
+            if (menu.Visible)
+            {
+                menu.Close();
+            }
+
+            DisposeMenuItems(menu.Items);
+        }
+
+        private static void DisposeMenuItems(ToolStripItemCollection items)
+        {
+            for (var i = items.Count - 1; i >= 0; i--)
+            {
+                var item = items[i];
+
+                var menuItem = item as ToolStripMenuItem;
+                if (menuItem != null)
+                {
+                    DisposeMenuItems(menuItem.DropDownItems);
+                }
+
+                items.RemoveAt(i);
+                item.Dispose();
+            }
+        }
+
+        private void AddConnectionInfoItem(
+            ToolStripMenuItem parent,
+            ConnectionStringSettings settings,
+            DbConnectionInfoPasswordMode mode,
+            String textKey,
+            String textFallback,
+            DbViewModel model,
+            ConnectionStringPlaceholderResolver resolver)
+        {
+            var item = new ToolStripMenuItem(GetLocalizedText(textKey, textFallback));
+            var result = DbConnectionInfoFormatter.Build(model, mode, resolver);
+
+            if (result == null)
+            {
+                item.Enabled = false;
+                item.ToolTipText = GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider");
+                parent.DropDownItems.Add(item);
+                return;
+            }
+
+            item.Tag = new ConnectionInfoMenuContext
+            {
+                Settings = settings,
+                Mode = mode
+            };
+
+            if (result.HasPlaceholders)
+            {
+                item.Text += String.Format(
+                    GetLocalizedText("ConnectionString_MenuPlaceholderSuffix", " ({0} to fill in)"),
+                    result.PlaceholderCount);
+            }
+
+            item.Click += new EventHandler(ConnectionInfoMenuItem_Click);
+            parent.DropDownItems.Add(item);
+        }
+
+        private void ConnectionInfoMenuItem_Click(object sender, EventArgs e)
+        {
+            var item = sender as ToolStripMenuItem;
+            var context = item == null ? null : item.Tag as ConnectionInfoMenuContext;
+            if (context == null)
+            {
+                return;
+            }
+
+            var model = DbProviderConfig.CreateDbViewModel(context.Settings);
+            if (model == null)
+            {
+                ShowConnectionStringFeedback(GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider"));
+                return;
+            }
+
+            try
+            {
+                var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
+                var result = DbConnectionInfoFormatter.Build(model, context.Mode, resolver);
+                if (result == null)
+                {
+                    ShowConnectionStringFeedback(GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider"));
+                    return;
+                }
+
+                Clipboard.SetText(result.Text);
+
+                var message = context.Mode == DbConnectionInfoPasswordMode.IncludePassword
+                    ? GetLocalizedText("ConnectionInfo_CopiedWithPassword", "Copied connection info (contains plain-text password)")
+                    : GetLocalizedText("ConnectionInfo_CopiedWithoutPassword", "Copied connection info (without password)");
+
+                if (result.HasPlaceholders)
+                {
+                    message += String.Format(
+                        GetLocalizedText("ConnectionString_MenuPlaceholderSuffix", " ({0} to fill in)"),
+                        result.PlaceholderCount);
+                }
+
+                // 日志与提示只记模式，不写入清单内容（清单可能含明文密码）。
+                ShowConnectionStringFeedback(message);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                ShowConnectionStringFeedback(String.Format(GetLocalizedText("ConnectionInfo_CopyFailed", "Copy failed: {0}"), ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// 连接字符串按「连接配置 + 数据库节点」拼装。
+        /// SQL Server / MySQL / PostgreSQL 的库名以节点为准；
+        /// SQLite 的库标识是文件路径、Oracle 的库标识是 SERVICE_NAME，
+        /// 节点名（"main" / schema 用户名）不代表库名，保留连接配置里的值。
+        /// </summary>
+        private static DbViewModel CreateConnectionStringModel(ConnectionStringSettings settings, String databaseName)
+        {
+            var model = DbProviderConfig.CreateDbViewModel(settings);
+            if (model == null)
+            {
+                return null;
+            }
+
+            var provider = DbConnectionStringFormats.NormalizeProvider(model.Provider);
+            if (provider == DbConnectionStringFormats.SqlServer
+                || provider == DbConnectionStringFormats.MySql
+                || provider == DbConnectionStringFormats.PostgreSQL)
+            {
+                model.Instance = databaseName;
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// 连接字符串菜单项上下文：命中时刻的连接配置、库名与格式快照，
+        /// 避免依赖「当前选中连接」这类隐式状态。
+        /// </summary>
+        private sealed class ConnectionStringMenuContext
+        {
+            public ConnectionStringSettings Settings { get; set; }
+
+            public String DatabaseName { get; set; }
+
+            public DbConnectionFormat Format { get; set; }
+        }
+
+        /// <summary>
+        /// 连接信息菜单项上下文。
+        /// </summary>
+        private sealed class ConnectionInfoMenuContext
+        {
+            public ConnectionStringSettings Settings { get; set; }
+
+            public DbConnectionInfoPasswordMode Mode { get; set; }
+        }
+
+        /// <summary>
+        /// 占位符文案跟随当前 UI 语言；键缺失时退化为键名，保证仍可识别。
+        /// </summary>
+        private static String ResolveConnectionStringPlaceholder(String key)
+        {
+            return GetLocalizedText(key, key);
+        }
+
+        /// <summary>
+        /// 非阻塞反馈：状态栏同级的托盘式 ToolTip + 输出面板日志。
+        /// </summary>
+        private void ShowConnectionStringFeedback(String message)
+        {
+            Trace.WriteLine(message);
+
+            try
+            {
+                var point = tvDb.PointToClient(Cursor.Position);
+                toolTip.Show(message, tvDb, point.X + 12, point.Y + 18, 2500);
+            }
+            catch
+            {
+                // 提示失败不影响已经完成的复制动作。
+            }
+        }
+
+        private static String GetLocalizedText(String key, String fallback)
+        {
+            var value = Localization.ResourceManager.GetString(key, Localization.Culture);
+            return String.IsNullOrEmpty(value) ? fallback : value;
+        }
+
         private void cbConnStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Items 被清空（刷新配置）时选中项为 null，这里直接返回，避免空引用。
@@ -304,6 +722,8 @@ namespace Banana.AutoCode.Forms
 
             var dbs = dbSchemaManager.GetDatabases();
             var root = new TreeNode(settings.Name, 0, 0);
+            // 连接配置绑定在根节点上：右键菜单直接从节点取，避免依赖「当前选中连接」。
+            root.Tag = settings;
             root.ToolTipText = settings.ConnectionString;
             root.ImageKey = DbProviderIcons.GetIconKey(settings.ProviderName);
             root.SelectedImageKey = root.ImageKey;

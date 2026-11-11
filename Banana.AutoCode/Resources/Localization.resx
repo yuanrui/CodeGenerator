@@ -195,4 +195,82 @@
   <data name="Remove_ConnectionString_Confirm" xml:space="preserve">
     <value>Are you sure remove database connection "{0}"?</value>
   </data>
+  <data name="ConnectionString_Menu_Copy" xml:space="preserve">
+    <value>Copy connection string</value>
+  </data>
+  <data name="ConnectionString_NotApplicable" xml:space="preserve">
+    <value>Not applicable to this provider</value>
+  </data>
+  <data name="ConnectionString_Copied" xml:space="preserve">
+    <value>Copied: {0}</value>
+  </data>
+  <data name="ConnectionString_CopiedWithPlaceholders" xml:space="preserve">
+    <value>Copied: {0} ({1} item(s) to fill in before use)</value>
+  </data>
+  <data name="ConnectionString_CopyFailed" xml:space="preserve">
+    <value>Copy failed: {0}</value>
+  </data>
+  <data name="ConnectionString_MenuPlaceholderSuffix" xml:space="preserve">
+    <value> ({0} to fill in)</value>
+  </data>
+  <data name="ConnectionString_Placeholder_Host" xml:space="preserve">
+    <value>host</value>
+  </data>
+  <data name="ConnectionString_Placeholder_Database" xml:space="preserve">
+    <value>database</value>
+  </data>
+  <data name="ConnectionString_Placeholder_ServiceName" xml:space="preserve">
+    <value>SID/service name</value>
+  </data>
+  <data name="ConnectionString_Placeholder_User" xml:space="preserve">
+    <value>user name</value>
+  </data>
+  <data name="ConnectionString_Placeholder_InstanceName" xml:space="preserve">
+    <value>instance name</value>
+  </data>
+  <data name="ConnectionString_Placeholder_FilePath" xml:space="preserve">
+    <value>file path</value>
+  </data>
+  <data name="ConnectionString_Placeholder_Password" xml:space="preserve">
+    <value>password</value>
+  </data>
+  <data name="ConnectionInfo_Menu_Copy" xml:space="preserve">
+    <value>Copy connection info</value>
+  </data>
+  <data name="ConnectionInfo_Menu_IncludePassword" xml:space="preserve">
+    <value>Including password (plain text)</value>
+  </data>
+  <data name="ConnectionInfo_Menu_ExcludePassword" xml:space="preserve">
+    <value>Without password</value>
+  </data>
+  <data name="ConnectionInfo_Label_Host" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="ConnectionInfo_Label_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="ConnectionInfo_Label_Instance" xml:space="preserve">
+    <value>Named instance</value>
+  </data>
+  <data name="ConnectionInfo_Label_ServiceName" xml:space="preserve">
+    <value>Service name (SID/service name)</value>
+  </data>
+  <data name="ConnectionInfo_Label_User" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="ConnectionInfo_Label_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ConnectionInfo_Label_FilePath" xml:space="preserve">
+    <value>File path</value>
+  </data>
+  <data name="ConnectionInfo_CopiedWithPassword" xml:space="preserve">
+    <value>Copied connection info (contains plain-text password)</value>
+  </data>
+  <data name="ConnectionInfo_CopiedWithoutPassword" xml:space="preserve">
+    <value>Copied connection info (without password)</value>
+  </data>
+  <data name="ConnectionInfo_CopyFailed" xml:space="preserve">
+    <value>Copy failed: {0}</value>
+  </data>
 </root>

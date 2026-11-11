@@ -94,6 +94,8 @@
     <Compile Include="Core\DatabaseWrapper.cs" />
     <Compile Include="Core\DataContext.cs" />
     <Compile Include="Core\DataContextScope.cs" />
+    <Compile Include="Core\DbConnectionInfoFormatter.cs" />
+    <Compile Include="Core\DbConnectionStringFormats.cs" />
     <Compile Include="Core\DbUtils.cs" />
     <Compile Include="Core\DbProviderIcons.cs" />
     <Compile Include="Core\GlobalSetting.cs" />
