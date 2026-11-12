@@ -29,5 +29,11 @@ namespace Banana.AutoCode.DbSchema
         public string Name { get; set; }
 
         public string Instance { get; set; }
+
+        /// <summary>
+        /// SQL Server 具名实例（Data Source 中 <c>host\instance</c> 的 instance 部分）。
+        /// <see cref="Instance"/> 在各 Provider 下另作库名/服务名/文件路径使用，二者不可混用。
+        /// </summary>
+        public string ServerInstance { get; set; }
     }
 }

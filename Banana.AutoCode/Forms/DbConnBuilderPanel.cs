@@ -24,6 +24,10 @@ namespace Banana.AutoCode.Forms
         protected ResourceManager ResourceMgr = new ResourceManager(typeof(DbConnBuilderPanel));
         private DbPanel _dbPanel;
 
+        // 编辑已有连接时保留原始模型：SQL Server 的库名（Initial Catalog）不在对话框里编辑，
+        // 保存时从原模型带过来，避免被「实例」输入框改写。
+        private DbViewModel _originalModel;
+
         public DbConnBuilderPanel()
         {
             InitializeComponent();
@@ -93,8 +97,9 @@ namespace Banana.AutoCode.Forms
             cboDataProvider.Text = model.Provider;
             txtServer.Text = model.Server;
             txtName.Text = model.Name;
-            txtInstance.Text = model.Instance;
-            txtServer.Text = model.Server;
+            // SQL Server 下「实例」表示具名实例；其余 Provider 仍沿用原语义（库名/服务名/文件路径）。
+            txtInstance.Text = model.Provider == DbProviderConfig.SqlServer ? model.ServerInstance : model.Instance;
+            _originalModel = model;
             txtUser.Text = model.User;
             if (model.Port > 0)
             {
@@ -121,11 +126,21 @@ namespace Banana.AutoCode.Forms
             int.TryParse(txtPort.Text, out port);
             model.Port = port;
             model.Name = txtName.Text;
-            model.Instance = txtInstance.Text;
+
+            if (model.Provider == DbProviderConfig.SqlServer)
+            {
+                model.ServerInstance = txtInstance.Text;
+                model.Instance = _originalModel == null ? String.Empty : _originalModel.Instance;
+            }
+            else
+            {
+                model.Instance = txtInstance.Text;
+            }
 
             if (string.IsNullOrWhiteSpace(model.Name))
             {
-                model.Name = model.Provider + ":" + model.Instance;
+                var suffix = String.IsNullOrWhiteSpace(model.Instance) ? model.ServerInstance : model.Instance;
+                model.Name = model.Provider + ":" + suffix;
             }
 
             return model;

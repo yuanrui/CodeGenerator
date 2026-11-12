@@ -234,14 +234,8 @@
   <data name="ConnectionString_Placeholder_Password" xml:space="preserve">
     <value>password</value>
   </data>
-  <data name="ConnectionInfo_Menu_Copy" xml:space="preserve">
-    <value>Copy connection info</value>
-  </data>
-  <data name="ConnectionInfo_Menu_IncludePassword" xml:space="preserve">
-    <value>Including password (plain text)</value>
-  </data>
-  <data name="ConnectionInfo_Menu_ExcludePassword" xml:space="preserve">
-    <value>Without password</value>
+  <data name="ConnectionInfo_Menu_CopyParams" xml:space="preserve">
+    <value>Copy connection parameters</value>
   </data>
   <data name="ConnectionInfo_Label_Host" xml:space="preserve">
     <value>Host</value>
@@ -251,6 +245,9 @@
   </data>
   <data name="ConnectionInfo_Label_Instance" xml:space="preserve">
     <value>Named instance</value>
+  </data>
+  <data name="ConnectionInfo_Label_Database" xml:space="preserve">
+    <value>Database</value>
   </data>
   <data name="ConnectionInfo_Label_ServiceName" xml:space="preserve">
     <value>Service name (SID/service name)</value>
@@ -264,11 +261,8 @@
   <data name="ConnectionInfo_Label_FilePath" xml:space="preserve">
     <value>File path</value>
   </data>
-  <data name="ConnectionInfo_CopiedWithPassword" xml:space="preserve">
-    <value>Copied connection info (contains plain-text password)</value>
-  </data>
-  <data name="ConnectionInfo_CopiedWithoutPassword" xml:space="preserve">
-    <value>Copied connection info (without password)</value>
+  <data name="ConnectionInfo_Copied" xml:space="preserve">
+    <value>Copied connection parameters (contains plain-text password)</value>
   </data>
   <data name="ConnectionInfo_CopyFailed" xml:space="preserve">
     <value>Copy failed: {0}</value>

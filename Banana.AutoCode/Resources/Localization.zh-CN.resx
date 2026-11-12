@@ -234,14 +234,8 @@
   <data name="ConnectionString_Placeholder_Password" xml:space="preserve">
     <value>密码</value>
   </data>
-  <data name="ConnectionInfo_Menu_Copy" xml:space="preserve">
-    <value>复制连接信息</value>
-  </data>
-  <data name="ConnectionInfo_Menu_IncludePassword" xml:space="preserve">
-    <value>含密码（明文）</value>
-  </data>
-  <data name="ConnectionInfo_Menu_ExcludePassword" xml:space="preserve">
-    <value>不含密码</value>
+  <data name="ConnectionInfo_Menu_CopyParams" xml:space="preserve">
+    <value>复制连接参数</value>
   </data>
   <data name="ConnectionInfo_Label_Host" xml:space="preserve">
     <value>主机</value>
@@ -251,6 +245,9 @@
   </data>
   <data name="ConnectionInfo_Label_Instance" xml:space="preserve">
     <value>实例名</value>
+  </data>
+  <data name="ConnectionInfo_Label_Database" xml:space="preserve">
+    <value>数据库</value>
   </data>
   <data name="ConnectionInfo_Label_ServiceName" xml:space="preserve">
     <value>服务名（SID/服务名）</value>
@@ -264,11 +261,8 @@
   <data name="ConnectionInfo_Label_FilePath" xml:space="preserve">
     <value>文件路径</value>
   </data>
-  <data name="ConnectionInfo_CopiedWithPassword" xml:space="preserve">
-    <value>已复制连接信息（含明文密码）</value>
-  </data>
-  <data name="ConnectionInfo_CopiedWithoutPassword" xml:space="preserve">
-    <value>已复制连接信息（不含密码）</value>
+  <data name="ConnectionInfo_Copied" xml:space="preserve">
+    <value>已复制连接参数（含明文密码）</value>
   </data>
   <data name="ConnectionInfo_CopyFailed" xml:space="preserve">
     <value>复制失败：{0}</value>

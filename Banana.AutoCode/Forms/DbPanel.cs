@@ -307,11 +307,21 @@ namespace Banana.AutoCode.Forms
                 return;
             }
 
+            // 连接参数取连接配置本身；库名用数据库节点自身（库节点名可能比配置里的更新）。
+            var infoModel = DbProviderConfig.CreateDbViewModel(settings);
+
             var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
 
             // 只复用容器，菜单项每次按当前节点重建。
             var menu = GetConnectionStringMenu();
             ResetMenuItems(menu);
+
+            // 菜单顺序：复制连接参数 → 分隔线 → 复制连接字符串 ▸ 九种格式。
+            if (infoModel != null)
+            {
+                menu.Items.Add(CreateConnectionInfoMenuItem(settings, infoModel, resolver, databaseName));
+                menu.Items.Add(new ToolStripSeparator());
+            }
 
             var root = new ToolStripMenuItem(GetLocalizedText("ConnectionString_Menu_Copy", "Copy connection string"));
             menu.Items.Add(root);
@@ -401,8 +411,9 @@ namespace Banana.AutoCode.Forms
         }
 
         /// <summary>
-        /// 连接节点（根节点）右键弹出「复制连接信息」菜单：
-        /// 内容是给人阅读/转发的纯文本清单，与数据库节点上的连接字符串菜单互不影响。
+        /// 连接节点（根节点）右键弹出「复制连接参数」。
+        /// 与数据库节点上的同名项共用 <see cref="CreateConnectionInfoMenuItem"/>，
+        /// 配置取自被右键的节点自身，不依赖「当前选中连接」。
         /// </summary>
         private void ShowConnectionInfoMenu(ConnectionStringSettings settings, Point location)
         {
@@ -418,11 +429,7 @@ namespace Banana.AutoCode.Forms
             var menu = GetConnectionInfoMenu();
             ResetMenuItems(menu);
 
-            var root = new ToolStripMenuItem(GetLocalizedText("ConnectionInfo_Menu_Copy", "Copy connection info"));
-            menu.Items.Add(root);
-
-            AddConnectionInfoItem(root, settings, DbConnectionInfoPasswordMode.IncludePassword, "ConnectionInfo_Menu_IncludePassword", "Including password (plain text)", model, resolver);
-            AddConnectionInfoItem(root, settings, DbConnectionInfoPasswordMode.ExcludePassword, "ConnectionInfo_Menu_ExcludePassword", "Without password", model, resolver);
+            menu.Items.Add(CreateConnectionInfoMenuItem(settings, model, resolver, null));
 
             menu.Show(tvDb, location);
         }
@@ -496,30 +503,32 @@ namespace Banana.AutoCode.Forms
             }
         }
 
-        private void AddConnectionInfoItem(
-            ToolStripMenuItem parent,
+        /// <summary>
+        /// 生成「复制连接参数」菜单项。连接节点与数据库节点共用这一套生成逻辑：
+        /// 配置由调用方从被右键的节点取得，输出固定包含密码（为空时用占位符）。
+        /// <paramref name="databaseName"/> 为数据库节点自身的库名；连接节点传 null，
+        /// 由连接配置里的库名回退。
+        /// </summary>
+        private ToolStripMenuItem CreateConnectionInfoMenuItem(
             ConnectionStringSettings settings,
-            DbConnectionInfoPasswordMode mode,
-            String textKey,
-            String textFallback,
             DbViewModel model,
-            ConnectionStringPlaceholderResolver resolver)
+            ConnectionStringPlaceholderResolver resolver,
+            String databaseName)
         {
-            var item = new ToolStripMenuItem(GetLocalizedText(textKey, textFallback));
-            var result = DbConnectionInfoFormatter.Build(model, mode, resolver);
+            var item = new ToolStripMenuItem(GetLocalizedText("ConnectionInfo_Menu_CopyParams", "Copy connection parameters"));
+            var result = DbConnectionInfoFormatter.Build(model, databaseName, resolver);
 
             if (result == null)
             {
                 item.Enabled = false;
                 item.ToolTipText = GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider");
-                parent.DropDownItems.Add(item);
-                return;
+                return item;
             }
 
             item.Tag = new ConnectionInfoMenuContext
             {
                 Settings = settings,
-                Mode = mode
+                DatabaseName = databaseName
             };
 
             if (result.HasPlaceholders)
@@ -530,7 +539,7 @@ namespace Banana.AutoCode.Forms
             }
 
             item.Click += new EventHandler(ConnectionInfoMenuItem_Click);
-            parent.DropDownItems.Add(item);
+            return item;
         }
 
         private void ConnectionInfoMenuItem_Click(object sender, EventArgs e)
@@ -552,7 +561,7 @@ namespace Banana.AutoCode.Forms
             try
             {
                 var resolver = new ConnectionStringPlaceholderResolver(ResolveConnectionStringPlaceholder);
-                var result = DbConnectionInfoFormatter.Build(model, context.Mode, resolver);
+                var result = DbConnectionInfoFormatter.Build(model, context.DatabaseName, resolver);
                 if (result == null)
                 {
                     ShowConnectionStringFeedback(GetLocalizedText("ConnectionString_NotApplicable", "Not applicable to this provider"));
@@ -561,9 +570,7 @@ namespace Banana.AutoCode.Forms
 
                 Clipboard.SetText(result.Text);
 
-                var message = context.Mode == DbConnectionInfoPasswordMode.IncludePassword
-                    ? GetLocalizedText("ConnectionInfo_CopiedWithPassword", "Copied connection info (contains plain-text password)")
-                    : GetLocalizedText("ConnectionInfo_CopiedWithoutPassword", "Copied connection info (without password)");
+                var message = GetLocalizedText("ConnectionInfo_Copied", "Copied connection parameters (contains plain-text password)");
 
                 if (result.HasPlaceholders)
                 {
@@ -572,7 +579,7 @@ namespace Banana.AutoCode.Forms
                         result.PlaceholderCount);
                 }
 
-                // 日志与提示只记模式，不写入清单内容（清单可能含明文密码）。
+                // 日志与提示只记结果类型，不写入清单内容（清单含明文密码）。
                 ShowConnectionStringFeedback(message);
             }
             catch (Exception ex)
@@ -608,6 +615,17 @@ namespace Banana.AutoCode.Forms
         }
 
         /// <summary>
+        /// 连接参数菜单项上下文：命中时刻的连接配置与库名快照。
+        /// 数据库节点的库名取自节点自身，避免配置里的库名过期或不同。
+        /// </summary>
+        private sealed class ConnectionInfoMenuContext
+        {
+            public ConnectionStringSettings Settings { get; set; }
+
+            public String DatabaseName { get; set; }
+        }
+
+        /// <summary>
         /// 连接字符串菜单项上下文：命中时刻的连接配置、库名与格式快照，
         /// 避免依赖「当前选中连接」这类隐式状态。
         /// </summary>
@@ -618,16 +636,6 @@ namespace Banana.AutoCode.Forms
             public String DatabaseName { get; set; }
 
             public DbConnectionFormat Format { get; set; }
-        }
-
-        /// <summary>
-        /// 连接信息菜单项上下文。
-        /// </summary>
-        private sealed class ConnectionInfoMenuContext
-        {
-            public ConnectionStringSettings Settings { get; set; }
-
-            public DbConnectionInfoPasswordMode Mode { get; set; }
         }
 
         /// <summary>

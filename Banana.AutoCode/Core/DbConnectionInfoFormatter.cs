@@ -14,22 +14,6 @@ using System.Text;
 namespace Banana.AutoCode.Core
 {
     /// <summary>
-    /// 连接信息的密码呈现方式。
-    /// </summary>
-    public enum DbConnectionInfoPasswordMode
-    {
-        /// <summary>
-        /// 输出真实密码；密码为空时输出占位符。
-        /// </summary>
-        IncludePassword = 0,
-
-        /// <summary>
-        /// 整行不输出密码。
-        /// </summary>
-        ExcludePassword = 1
-    }
-
-    /// <summary>
     /// 人读连接信息清单的拼装结果。
     /// </summary>
     public sealed class DbConnectionInfoResult
@@ -92,6 +76,7 @@ namespace Banana.AutoCode.Core
         private const String LabelHost = "ConnectionInfo_Label_Host";
         private const String LabelPort = "ConnectionInfo_Label_Port";
         private const String LabelInstance = "ConnectionInfo_Label_Instance";
+        private const String LabelDatabase = "ConnectionInfo_Label_Database";
         private const String LabelServiceName = "ConnectionInfo_Label_ServiceName";
         private const String LabelUser = "ConnectionInfo_Label_User";
         private const String LabelPassword = "ConnectionInfo_Label_Password";
@@ -110,12 +95,14 @@ namespace Banana.AutoCode.Core
         };
 
         /// <summary>
-        /// 拼装连接信息清单。
+        /// 拼装连接参数清单。固定输出密码（为空时写占位符）。
+        /// <paramref name="databaseName"/> 是调用方确认的库名（数据库节点取节点自身），
+        /// 为空时回退到连接配置里的库名；仍为空则不输出「数据库」行。
         /// Provider 未知时返回 null；其余情况返回清单（可能含占位符）。
         /// </summary>
         public static DbConnectionInfoResult Build(
             DbViewModel model,
-            DbConnectionInfoPasswordMode mode,
+            String databaseName,
             ConnectionStringPlaceholderResolver textResolver)
         {
             if (model == null)
@@ -151,44 +138,49 @@ namespace Banana.AutoCode.Core
                         var host = slashIndex >= 0 ? dataSource.Substring(0, slashIndex).Trim() : dataSource;
                         var instance = slashIndex >= 0 ? dataSource.Substring(slashIndex + 1).Trim() : String.Empty;
 
+                        // 实例也可能来自连接配置里单独填写的字段；只有两者都为空才视为没有实例。
+                        if (instance.Length == 0 && !String.IsNullOrWhiteSpace(model.ServerInstance))
+                        {
+                            instance = model.ServerInstance.Trim();
+                        }
+
                         AddServerFields(builder, host, port);
 
-                        // 默认实例没有实例名，不输出该行。
+                        // 确实没有实例名时不输出该行。
                         if (instance.Length > 0)
                         {
                             builder.AddValue(LabelInstance, instance, PlaceholderInstanceName);
                         }
+
+                        builder.AddValue(LabelDatabase, ResolveDatabaseName(databaseName, model), null);
                     }
 
-                    AddCredentialFields(builder, model, mode);
+                    AddCredentialFields(builder, model);
                     break;
 
                 case DbProviderConfig.MySql:
                     AddServerFields(builder, model.Server, port);
-                    AddCredentialFields(builder, model, mode);
+                    builder.AddValue(LabelDatabase, ResolveDatabaseName(databaseName, model), null);
+                    AddCredentialFields(builder, model);
                     break;
 
                 case DbProviderConfig.PostgreSQL:
                     AddServerFields(builder, model.Server, port);
-                    AddCredentialFields(builder, model, mode);
+                    builder.AddValue(LabelDatabase, ResolveDatabaseName(databaseName, model), null);
+                    AddCredentialFields(builder, model);
                     break;
 
                 case DbProviderConfig.Oracle:
                     AddServerFields(builder, model.Server, port);
                     builder.AddValue(LabelServiceName, model.Instance, PlaceholderServiceName);
-                    AddCredentialFields(builder, model, mode);
+                    AddCredentialFields(builder, model);
                     break;
 
                 case DbProviderConfig.SQLite:
                     // SQLite 没有主机/端口/用户名，库标识就是文件路径；
                     // 用「文件路径」标签而不是把路径塞进「主机」，避免误导。
                     builder.AddValue(LabelFilePath, model.Instance, PlaceholderFilePath);
-
-                    if (mode == DbConnectionInfoPasswordMode.IncludePassword)
-                    {
-                        builder.AddValue(LabelPassword, model.Password, PlaceholderPassword);
-                    }
-
+                    builder.AddValue(LabelPassword, model.Password, PlaceholderPassword);
                     break;
             }
 
@@ -234,14 +226,24 @@ namespace Banana.AutoCode.Core
             builder.AddValue(LabelPort, port.ToString(), null);
         }
 
-        private static void AddCredentialFields(InfoBuilder builder, DbViewModel model, DbConnectionInfoPasswordMode mode)
+        private static void AddCredentialFields(InfoBuilder builder, DbViewModel model)
         {
             builder.AddValue(LabelUser, model.User, PlaceholderUser);
+            builder.AddValue(LabelPassword, model.Password, PlaceholderPassword);
+        }
 
-            if (mode == DbConnectionInfoPasswordMode.IncludePassword)
+        /// <summary>
+        /// 库名优先取调用方确认的值（数据库节点自身），否则回退到连接配置里的库名；
+        /// Oracle 的 Instance 是服务名、SQLite 的 Instance 是文件路径，这两个分支不调用本方法。
+        /// </summary>
+        private static String ResolveDatabaseName(String databaseName, DbViewModel model)
+        {
+            if (!String.IsNullOrWhiteSpace(databaseName))
             {
-                builder.AddValue(LabelPassword, model.Password, PlaceholderPassword);
+                return databaseName;
             }
+
+            return model == null ? null : model.Instance;
         }
 
         /// <summary>

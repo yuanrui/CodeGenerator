@@ -2,7 +2,7 @@
 
 > 文档状态：与当前代码一致的使用说明。
 >
-> 事实基线：`Banana.AutoCode/Core/DbConnectionStringFormats.cs`（连接字符串拼装）、`Banana.AutoCode/Core/DbConnectionInfoFormatter.cs`（人读连接信息清单）与 `Banana.AutoCode/Forms/DbPanel.cs`（右键菜单入口）。文中示例均由实现实际生成，可与代码逐条对照。
+> 事实基线：`Banana.AutoCode/Core/DbConnectionStringFormats.cs`（连接字符串拼装）、`Banana.AutoCode/Core/DbConnectionInfoFormatter.cs`（人读连接参数清单）与 `Banana.AutoCode/Forms/DbPanel.cs`（右键菜单入口）。文中示例均由实现实际生成，可与代码逐条对照。
 
 ## 目录
 
@@ -12,7 +12,7 @@
 - [4. 适用性矩阵](#matrix)
 - [5. 各格式拆解](#formats)
 - [6. 编码与转义规则](#encoding)
-- [7. 连接信息清单（连接节点）](#info)
+- [7. 连接参数清单（连接节点与数据库节点）](#info)
 - [8. 已知限制](#limits)
 - [9. 菜单的边界行为](#edge)
 - [10. 与实现的对应关系](#impl)
@@ -25,21 +25,21 @@
 
 | 节点 | 菜单 | 产物 | 面向 |
 | --- | --- | --- | --- |
-| 连接节点 | 复制连接信息 / Copy connection info | 一行一项的纯文本清单 | 给人阅读、转发分享 |
-| 数据库节点 | 复制连接字符串 / Copy connection string | 九种生态/协议的连接字符串 | 给程序使用 |
+| 连接节点 | 复制连接参数 / Copy connection parameters | 一行一项的纯文本清单 | 给人阅读、转发分享 |
+| 数据库节点 | 复制连接参数 + 复制连接字符串 / Copy connection string | 纯文本清单；九种生态/协议的连接字符串 | 前者给人看，后者给程序用 |
 
-连接字符串菜单下列出九种格式；点击可用项即写入剪贴板。反馈为跟随鼠标的浮动提示（约 2.5 秒），同时写入输出面板日志，不弹模态对话框。
+数据库节点的菜单顺序固定为「复制连接参数」→ 分隔线 →「复制连接字符串 ▸ 九种格式」；连接节点只有「复制连接参数」一项。点击可用项即写入剪贴板。反馈为跟随鼠标的浮动提示（约 2.5 秒），同时写入输出面板日志，不弹模态对话框。
 
-连接配置取自被右键的数据库节点所属的连接（根节点的 `Tag`），库名取自数据库节点自身，不依赖「当前选中连接」这类隐式状态。连接节点只提供「复制连接信息」，表节点不提供任何菜单。
+两个菜单的连接配置都取自被右键节点所属的连接（连接节点用自身 `Tag`，数据库节点用根节点 `Tag`），库名取自数据库节点自身，不依赖「当前选中连接」这类隐式状态。表节点不提供任何菜单。
 
 <a id="password"></a>
 
 ## 2. 密码与敏感信息
 
 - **存储形式：明文。** 界面保存连接时，`DbConnBuilderPanel.AddOrUpdateConnectionStrings` 直接调用 `ConfigurationManager.OpenExeConfiguration(...).Save(...)`，把 `DbProviderConfig.ToSettings` 生成的连接串写入 `Config/db.config`，密码字段未做任何加密或混淆。读取侧 `DbViewExtension.ToXxxModel` 直接取 `builder.Password`，因此拼装时拿到的就是原始明文。
-- **连接字符串与信息清单都默认含真实密码**，否则复制出来的内容无法直接使用。这意味着剪贴板、终端历史、日志中都可能留下明文密码，请自行控制使用范围。
-- **反馈与日志只写格式名或模式**（例如「已复制：JDBC URL」「已复制连接信息（含明文密码）」），不会把含密码的正文写入输出面板或 `Trace`。
-- 连接节点的信息清单额外提供「不含密码」变体（见第 7 节），用于贴到工单、群聊等不需要凭据的场合。
+- **连接字符串与连接参数清单都固定包含真实密码**，否则复制出来的内容无法直接使用。这意味着剪贴板、终端历史、日志中都可能留下明文密码，请自行控制使用范围。
+- **反馈与日志只写格式名或结果类型**（例如「已复制：JDBC URL」「已复制连接参数（含明文密码）」），不会把含密码的正文写入输出面板或 `Trace`。
+- 连接参数清单固定包含密码，没有「不含密码」变体；需要不带凭据的场合请自行删除密码行。
 - 界面保存的账号密码本身就以明文存在于 `Config/db.config`，因此本功能没有引入新的泄露面，只是把同一份信息复制到剪贴板。
 
 <a id="placeholder"></a>
@@ -68,7 +68,7 @@
 | `ConnectionString_Placeholder_User` | `[用户名]` | `[user name]` | 账号为空 |
 | `ConnectionString_Placeholder_InstanceName` | `[实例名]` | `[instance name]` | SQL Server 写了 `host\` 但实例名为空 |
 | `ConnectionString_Placeholder_FilePath` | `[文件路径]` | `[file path]` | SQLite 文件路径为空 |
-| `ConnectionString_Placeholder_Password` | `[密码]` | `[password]` | 仅连接信息清单（第 7 节） |
+| `ConnectionString_Placeholder_Password` | `[密码]` | `[password]` | 仅连接参数清单（第 7 节） |
 
 占位词由 `Localization.resx`（英文，中性）/`Localization.zh-CN.resx`（中文）提供，跟随当前 UI 语言；格式类只持有键名，不写死文案。
 
@@ -85,7 +85,7 @@
 ### 3.4 密码为空
 
 - **连接字符串**：密码为空视为合法空密码（集成认证、信任认证、无密码库），输出 `Password=;`、`PWD={};`，URL 风格省略 `:password` 段，不产生占位符。若目标环境其实需要密码，请自行补 `Password=`。
-- **连接信息清单**：给人看时空密码无法区分「没有密码」和「忘了填」，因此统一输出 `[密码]` 占位符。
+- **连接参数清单**：给人看时空密码无法区分「没有密码」和「忘了填」，因此统一输出 `[密码]` 占位符。
 
 <a id="matrix"></a>
 
@@ -363,29 +363,36 @@ Go 的 MySQL DSN 与 PDO DSN 按各自语法原样拼接，不做编码。PHP �
 
 <a id="info"></a>
 
-## 7. 连接信息清单（连接节点）
+## 7. 连接参数清单（连接节点与数据库节点）
 
-连接节点右键「复制连接信息 / Copy connection info」，展开两个子项：
+两个节点共用同一套生成逻辑（`DbPanel.CreateConnectionInfoMenuItem`），输出固定包含密码，不再提供「含密码 / 不含密码」的子项或变体。
 
-| 子项 | 中文 | 英文 | 内容 |
-| --- | --- | --- | --- |
-| 含密码 | 含密码（明文） | Including password (plain text) | 输出真实密码（为空时 `[密码]`/`[password]`） |
-| 不含密码 | 不含密码 | Without password | 整行省略密码 |
+| 节点 | 菜单项与顺序 |
+| --- | --- |
+| 连接节点 | 复制连接参数 / Copy connection parameters |
+| 数据库节点 | 复制连接参数 → 分隔线 → 复制连接字符串 ▸ 九种格式 |
 
-**为什么做成两个子项而不是掩码 `******`：** 掩码版本复制后用户仍需手工删改，且掩码本身不是可用的值；两个子项语义明确，需要密码就直接拿，不需要就不会把密码带走。
+连接参数取自该节点所属连接的配置：连接节点用自身 `Tag`；数据库节点用父节点（根节点）的 `Tag`，不读取 `CurrentConnSetting`。库名在数据库节点上取自该节点自身的数据库名（不取配置里可能过期的值）；连接节点取配置里的库名，配置没有库名就不输出「数据库」行。
 
 ### 7.1 字段顺序
 
-按「他人复现连接时最需要先知道」的顺序：主机 → 端口 → 实例/服务名 → 用户名 → 密码。
+按「他人复现连接时最需要先知道」的顺序：主机 → 端口 → 实例/服务名 → 数据库 → 用户名 → 密码。
 
 | 数据库 | 输出的行 |
 | --- | --- |
-| SQL Server | 主机、端口、实例名（仅具名实例）、用户名、密码 |
-| MySQL / PostgreSQL | 主机、端口、用户名、密码 |
+| SQL Server | 主机、端口、实例名（仅具名实例）、数据库、用户名、密码 |
+| MySQL / PostgreSQL | 主机、端口、数据库、用户名、密码 |
 | Oracle | 主机、端口、服务名（SID/服务名）、用户名、密码 |
-| SQLite | 文件路径、密码（仅含密码变体） |
+| SQLite | 文件路径、密码 |
 
-清单**不含数据库类型与连接名称**：数据库类型已由各字段的取值与标签体现，连接名称只是本地配置的别名，对拿到清单的人复现连接没有帮助。清单也**不含数据库名**：库名属于数据库节点的职责（见第 5 节），连接节点只能看到连接级信息。清单还不含 `=`、`;` 等连接串语法，避免被当成可解析的连接串误用。
+库名取值规则：
+
+- **数据库节点**：始终取节点自身的数据库名（节点 `Tag` 上的 `Database.Name`），即使连接配置里的库名不同或为空也以节点为准。
+- **连接节点**：取连接配置里的库名（SQL Server 为 `Initial Catalog`，MySQL/PostgreSQL 为 `Database`）；没有则省略该行，不产生占位符。
+- **Oracle**：连接模型里的 `Instance` 是 `SERVICE_NAME`，节点名通常是 schema 用户而不是库名，因此只输出「服务名（SID/服务名）」行，不额外输出数据库行，避免同一值重复或语义冲突。
+- **SQLite**：库标识就是文件路径，只输出「文件路径」行，不重复输出数据库行。
+
+清单**不含数据库类型与连接名称**：数据库类型已由各字段的取值与标签体现，连接名称只是本地配置的别名，对拿到清单的人复现连接没有帮助。清单还不含 `=`、`;` 等连接串语法，避免被当成可解析的连接串误用。
 
 ### 7.2 端口
 
@@ -396,7 +403,14 @@ Go 的 MySQL DSN 与 PDO DSN 按各自语法原样拼接，不做编码。PHP �
 
 ### 7.3 SQL Server 具名实例
 
-`Data Source` 写成 `host\instance` 时，清单把主机与实例名拆成两行；没有具名实例（默认实例）时不输出「实例名」行，避免让阅读方以为漏填。
+实例名有两个来源，读取时会合并判断：
+
+- 连接配置的 `Data Source` 直接写成 `host\instance`；
+- 「连接配置」对话框里的「实例」字段。保存时该字段会写入 `Data Source=host\instance`（SQL Server 下「实例」表示具名实例，不再写入 `Initial Catalog`），读取时再拆回实例字段。
+
+清单把主机与实例名拆成两行；只要配置里存在实例值就输出「实例名」行，两者都为空（默认实例）时才省略，避免让阅读方以为漏填。
+
+> 旧版本保存的连接如果把实例填进了 `Initial Catalog`，配置里与真实库名无法区分，清单不会猜测，需要重新编辑一次连接并填写「实例」后保存。
 
 ### 7.4 Oracle 的 SID 与 Service Name
 
@@ -404,7 +418,7 @@ Go 的 MySQL DSN 与 PDO DSN 按各自语法原样拼接，不做编码。PHP �
 
 ### 7.5 SQLite 的特殊呈现
 
-SQLite 没有主机、端口、用户名，库标识就是文件路径。清单用「文件路径」标签输出路径，不把路径塞进「主机」；主机/端口/用户名三行整体不输出，避免机械输出空值造成误导。
+SQLite 没有主机、端口、用户名，库标识就是文件路径。清单用「文件路径」标签输出路径，不把路径塞进「主机」；主机/端口/用户名三行整体不输出，避免机械输出空值造成误导。密码照常输出（为空时 `[密码]`/`[password]`）。
 
 ### 7.6 空值呈现
 
@@ -412,28 +426,32 @@ SQLite 没有主机、端口、用户名，库标识就是文件路径。清单�
 
 ### 7.7 示例输出
 
-MySQL（端口显式配置为 3307，含密码）：
+MySQL（端口显式配置为 3307）：
 
 ```text
 主机: 10.0.0.8
 端口: 3307
+数据库: appdb
 用户名: app
 密码: S3cret
 ```
 
-SQL Server（端口为空，补 1433；具名实例，不含密码）：
+SQL Server（端口为空，补 1433；具名实例）：
 
 ```text
 主机: db1
 端口: 1433
 实例名: SQLEXPRESS
+数据库: MyDb
 用户名: sa
+密码: P@ssw0rd
 ```
 
-SQLite（不含密码）：
+SQLite（密码未填写）：
 
 ```text
 文件路径: D:\data\app.db
+密码: [密码]
 ```
 
 Oracle（端口为空，补 1521；缺服务名与密码）：
@@ -451,6 +469,7 @@ Oracle（端口为空，补 1521；缺服务名与密码）：
 ```text
 Host: 10.0.0.8
 Port: 3307
+Database: appdb
 User name: app
 Password: S3cret
 ```
@@ -459,23 +478,25 @@ Password: S3cret
 Host: db1
 Port: 1433
 Named instance: SQLEXPRESS
+Database: MyDb
 User name: sa
+Password: P@ssw0rd
 ```
 
 ```text
 File path: D:\data\app.db
+Password: [password]
 ```
 
 ### 7.8 复制提示
 
 | 情形 | 中文 | 英文 |
 | --- | --- | --- |
-| 含密码 | 已复制连接信息（含明文密码） | Copied connection info (contains plain-text password) |
-| 不含密码 | 已复制连接信息（不含密码） | Copied connection info (without password) |
+| 复制成功 | 已复制连接参数（含明文密码） | Copied connection parameters (contains plain-text password) |
 | 有占位符 | 追加「（含 {0} 处待填写）」 | 追加「 ({0} to fill in)」 |
 | 失败 | 复制失败：{0} | Copy failed: {0} |
 
-提示不包含连接名称，需要区分来源时以右键的节点为准。提示以鼠标旁的浮动 ToolTip 呈现，约 2.5 秒自动消失，不阻塞操作；日志只记模式（含/不含密码），不写清单正文。
+提示不包含连接名称，需要区分来源时以右键的节点为准。提示以鼠标旁的浮动 ToolTip 呈现，约 2.5 秒自动消失，不阻塞操作；日志只记结果类型，不写清单正文。
 
 <a id="limits"></a>
 
@@ -492,7 +513,7 @@ File path: D:\data\app.db
 | 达梦 | 全部灰显 | 面板没有达梦连接类型（`DbProviderConfig` 未注册），无法产生 `DbViewModel`；属于语义不存在，不是缺字段 |
 | 驱动名 | ODBC/OLE DB 使用常见发行版的驱动名（如 `ODBC Driver 17 for SQL Server`、`Oracle in OraClient19Home1`） | 驱动名随安装包与版本变化，目标机器若装的是其他版本需要手工替换 |
 | PDO 账号密码 | 不在 DSN 中 | PDO 通过构造参数传凭据；`sqlsrv` 也只用 `Server`/`Database` |
-| 连接信息清单的数据库名 | 不包含 | 连接节点只代表一条连接配置，库名由数据库节点决定（见第 7 节） |
+| 连接参数清单的数据库名 | 包含 | 数据库节点取节点自身库名，连接节点取配置库名；Oracle/SQLite 不输出数据库行（见第 7 节） |
 
 <a id="edge"></a>
 
@@ -500,15 +521,15 @@ File path: D:\data\app.db
 
 | 情形 | 行为 |
 | --- | --- |
-| 右键连接节点 | 弹「复制连接信息」，两个子项（含/不含密码） |
-| 右键数据库节点 | 弹「复制连接字符串」，九项格式；库名取该节点 |
+| 右键连接节点 | 弹「复制连接参数」，单项 |
+| 右键数据库节点 | 弹「复制连接参数」→ 分隔线 →「复制连接字符串」九项格式；库名取该节点 |
 | 右键表节点或空白处 | 不弹菜单，保持原有行为 |
 | 数据库节点取不到所属连接（节点绑定异常） | 不弹菜单，不做兜底猜测 |
 | Provider 不在 `DbProviderConfig._providerFactory` 中 | 不弹菜单 |
 | 连接缺少主机（SQLite 为文件路径）、库名、service 名或实例名 | 菜单仍弹出，对应位置输出占位符，菜单项后缀「（含 N 处待填写）」 |
-| 账号或密码为空 | 连接串照常生成（空密码语法）；信息清单输出 `[用户名]`/`[密码]` 占位符 |
+| 账号或密码为空 | 连接串照常生成（空密码语法）；连接参数清单输出 `[用户名]`/`[密码]` 占位符 |
 | 格式不适用于当前数据库类型 | 单项灰显，悬停提示「当前类型不支持此格式」，点击无效 |
-| 复制成功且无占位符 | 浮动提示「已复制：<格式名>」或「已复制连接信息（含明文密码）」 |
+| 复制成功且无占位符 | 浮动提示「已复制：<格式名>」或「已复制连接参数（含明文密码）」 |
 | 复制成功但有占位符 | 提示后追加「（含 N 处待填写）」 |
 | 剪贴板被其他进程占用 | 捕获异常，浮动提示「复制失败：<原因>」，不弹模态框 |
 
@@ -524,7 +545,7 @@ File path: D:\data\app.db
 | 百分号编码 | 同文件 `EncodeUrlComponent` |
 | ADO.NET 引号规则 | 同文件 `AdoQuote` |
 | ODBC/OLE DB 大括号规则 | 同文件 `OdbcValue` |
-| 连接信息清单 | `Core/DbConnectionInfoFormatter.cs` 的 `Build`；字段顺序见同文件 `Build` 内的 provider 分支 |
-| 端口默认值 | 信息清单用 `DbConnectionInfoFormatter.DefaultPorts` 常量表；连接字符串用 `DbConnectionStringFormats.GetDefaultPort` |
-| 两个菜单的构建与复制反馈 | `Forms/DbPanel.cs` 的 `tvDb_MouseDown` / `ShowConnectionStringMenu` / `ShowConnectionInfoMenu` / `ConnectionStringMenuItem_Click` / `ConnectionInfoMenuItem_Click` |
+| 连接参数清单 | `Core/DbConnectionInfoFormatter.cs` 的 `Build`；字段顺序见同文件 `Build` 内的 provider 分支 |
+| 端口默认值 | 连接参数清单用 `DbConnectionInfoFormatter.DefaultPorts` 常量表；连接字符串用 `DbConnectionStringFormats.GetDefaultPort` |
+| 两个菜单的构建与复制反馈 | `Forms/DbPanel.cs` 的 `tvDb_MouseDown` / `ShowConnectionStringMenu` / `ShowConnectionInfoMenu` / `CreateConnectionInfoMenuItem` / `ConnectionStringMenuItem_Click` / `ConnectionInfoMenuItem_Click` |
 | 本地化文案 | `Resources/Localization.resx`（英文，中性）与 `Resources/Localization.zh-CN.resx`（中文），键集合必须一致 |

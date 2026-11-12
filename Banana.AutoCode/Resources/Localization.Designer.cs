@@ -412,29 +412,11 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Copy connection info 的本地化字符串。
+        ///   查找类似 Copy connection parameters 的本地化字符串。
         /// </summary>
-        public static string ConnectionInfo_Menu_Copy {
+        public static string ConnectionInfo_Menu_CopyParams {
             get {
-                return ResourceManager.GetString("ConnectionInfo_Menu_Copy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Including password (plain text) 的本地化字符串。
-        /// </summary>
-        public static string ConnectionInfo_Menu_IncludePassword {
-            get {
-                return ResourceManager.GetString("ConnectionInfo_Menu_IncludePassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Without password 的本地化字符串。
-        /// </summary>
-        public static string ConnectionInfo_Menu_ExcludePassword {
-            get {
-                return ResourceManager.GetString("ConnectionInfo_Menu_ExcludePassword", resourceCulture);
+                return ResourceManager.GetString("ConnectionInfo_Menu_CopyParams", resourceCulture);
             }
         }
         
@@ -462,6 +444,15 @@ namespace Banana.AutoCode.Resources {
         public static string ConnectionInfo_Label_Instance {
             get {
                 return ResourceManager.GetString("ConnectionInfo_Label_Instance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Database 的本地化字符串。
+        /// </summary>
+        public static string ConnectionInfo_Label_Database {
+            get {
+                return ResourceManager.GetString("ConnectionInfo_Label_Database", resourceCulture);
             }
         }
         
@@ -502,20 +493,11 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Copied connection info (contains plain-text password) 的本地化字符串。
+        ///   查找类似 Copied connection parameters (contains plain-text password) 的本地化字符串。
         /// </summary>
-        public static string ConnectionInfo_CopiedWithPassword {
+        public static string ConnectionInfo_Copied {
             get {
-                return ResourceManager.GetString("ConnectionInfo_CopiedWithPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Copied connection info (without password) 的本地化字符串。
-        /// </summary>
-        public static string ConnectionInfo_CopiedWithoutPassword {
-            get {
-                return ResourceManager.GetString("ConnectionInfo_CopiedWithoutPassword", resourceCulture);
+                return ResourceManager.GetString("ConnectionInfo_Copied", resourceCulture);
             }
         }
         

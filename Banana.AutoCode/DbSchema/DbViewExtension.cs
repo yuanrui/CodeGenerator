@@ -42,6 +42,7 @@ namespace Banana.AutoCode.DbSchema
 
             var builder = new SqlConnectionStringBuilder(connSetting.ConnectionString);
             model.Server = builder.DataSource;
+            model.ServerInstance = GetSqlServerInstance(builder.DataSource);
             model.User = builder.UserID;
             model.Password = builder.Password;
             model.Instance = builder.InitialCatalog;
@@ -140,18 +141,56 @@ namespace Banana.AutoCode.DbSchema
 
         public static string ToSqlServerConnectionString(this DbViewModel model)
         {
+            var server = (model.Server ?? String.Empty).Trim();
+            var commaIndex = server.IndexOf(',');
+            var host = commaIndex >= 0 ? server.Substring(0, commaIndex).Trim() : server;
+            var portPart = commaIndex >= 0 ? server.Substring(commaIndex) : String.Empty;
+
+            // 具名实例单独存在于 ServerInstance；主机已写成 host\instance 时不重复拼接。
+            if (!String.IsNullOrWhiteSpace(model.ServerInstance) && host.IndexOf('\\') < 0)
+            {
+                host = host.Length == 0
+                    ? model.ServerInstance.Trim()
+                    : host.TrimEnd('\\') + "\\" + model.ServerInstance.Trim();
+            }
+
             var builder = new SqlConnectionStringBuilder();
-            builder.InitialCatalog = model.Instance;
-            builder.DataSource = model.Server;
+            if (!String.IsNullOrWhiteSpace(model.Instance))
+            {
+                builder.InitialCatalog = model.Instance;
+            }
+            builder.DataSource = host + portPart;
             builder.UserID = model.User;
             builder.Password = model.Password;
 
-            if (model.Port != 0 && model.Port != 1433)
+            // 端口已在 Data Source 里显式写出时不再追加，避免编辑后重复。
+            if (model.Port != 0 && model.Port != 1433 && portPart.Length == 0)
             {
                 builder.DataSource += "," + model.Port;
             }
 
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// 从 SQL Server 的 Data Source 中拆出具名实例；没有 <c>host\instance</c> 写法时返回空串。
+        /// </summary>
+        private static string GetSqlServerInstance(string dataSource)
+        {
+            if (String.IsNullOrWhiteSpace(dataSource))
+            {
+                return String.Empty;
+            }
+
+            var value = dataSource.Trim();
+            var commaIndex = value.IndexOf(',');
+            if (commaIndex >= 0)
+            {
+                value = value.Substring(0, commaIndex).Trim();
+            }
+
+            var slashIndex = value.IndexOf('\\');
+            return slashIndex >= 0 ? value.Substring(slashIndex + 1).Trim() : String.Empty;
         }
 
         public static string ToMySqlConnectionString(this DbViewModel model)
