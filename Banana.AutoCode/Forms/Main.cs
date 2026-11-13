@@ -50,12 +50,38 @@ namespace Banana.AutoCode
             Trace.Listeners.Add(new OutputTraceListener(OutputPanel));
             OutputPanel.Show(this.dockPanel, DockState.DockBottom);
 
+            // 关闭主窗口前把模板勾选的延迟保存落盘，避免状态丢失。
+            this.FormClosing += new FormClosingEventHandler(Main_FormClosing);
+
             CheckDirectoryPath();
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (TemplatePanel != null && !TemplatePanel.IsDisposed)
+            {
+                TemplatePanel.FlushPendingSelection();
+            }
         }
 
         private void Main_Load(object sender, EventArgs e)
         {
-            tsbtnDatabase_Click(sender, e);
+            // 启动时同时显示数据库面板（左侧）与模板面板（右侧），互不覆盖。
+            if (DbPanel.IsDisposed)
+            {
+                DbPanel = new DbPanel();
+            }
+
+            DbPanel.Show(this.dockPanel, DockState.DockLeft);
+            tsbtnDatabase.Checked = true;
+
+            if (TemplatePanel == null || TemplatePanel.IsDisposed)
+            {
+                TemplatePanel = new TemplatePanel();
+            }
+
+            TemplatePanel.Show(this.dockPanel, DockState.DockRight);
+            templateToolStripButton.Checked = true;
         }
 
         private void CheckDirectoryPath()
@@ -238,10 +264,21 @@ namespace Banana.AutoCode
                 return;
             }
 
-            var files = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories)
-                .Concat(Directory.EnumerateFiles(TEMPLATES_DIR, "*.ttinclude", SearchOption.AllDirectories));
-            
-            if (! files.Any())
+            // 只渲染被勾选的 .tt；.ttinclude 仅作为 include 被引用，不单独参与生成。
+            var allTemplates = Directory.EnumerateFiles(TEMPLATES_DIR, "*.tt", SearchOption.AllDirectories).ToList();
+            var files = new List<String>();
+
+            foreach (var path in allTemplates)
+            {
+                var relativePath = TemplateSelection.GetRelativePath(TEMPLATES_DIR, path);
+
+                if (TemplateSelection.IsEnabled(relativePath))
+                {
+                    files.Add(path);
+                }
+            }
+
+            if (files.Count == 0)
             {
                 Trace.WriteLine(Localization.No_Template_File);
                 return;
@@ -270,50 +307,116 @@ namespace Banana.AutoCode
 #endif
             var basePath = OUTPUT_DIR;
 
-            foreach (var path in files)
+            var tableList = tables.ToList();
+            var templateList = files.ToList();
+            var failures = new List<KeyValuePair<String, String>>();
+            var succeeded = 0;
+
+            Trace.WriteLine(String.Format(Localization.Templates_Selected_Count, templateList.Count));
+
+            for (var index = 0; index < templateList.Count; index++)
             {
-                var content = File.ReadAllText(path);
-                var templateName = Path.GetFileName(path);
-                Trace.WriteLine(Localization.Template + templateName);
+                var path = templateList[index];
+                var relativePath = TemplateSelection.GetRelativePath(TEMPLATES_DIR, path).Replace('\\', '/');
 
-                foreach (var table in tables)
+                Trace.WriteLine(String.Format(Localization.Template_Progress, index + 1, templateList.Count, relativePath));
+
+                try
                 {
-                    host.TemplateFile = path;
-                    host.Table = table;
+                    var content = File.ReadAllText(path);
+                    var templateName = Path.GetFileName(path);
+                    var errors = new List<String>();
 
-                    var outputPath = GetOutputPath(table, basePath);
-                    host.SetValue("OutputPath", outputPath);
-
-                    Trace.WriteLine(String.Format(Localization.Generate_Table, host.Table.Name, templateName, outputPath));
-                    var result = engine.ProcessTemplate(content, host);
-
-                    if (string.IsNullOrWhiteSpace(result))
+                    foreach (var table in tableList)
                     {
-                        Trace.WriteLine(String.Format(Localization.Finish_Generate_Empty, host.Table.DisplayName));
-                        continue;
+                        host.TemplateFile = path;
+                        host.Table = table;
+                        host.ClearErrors();
+
+                        var outputPath = GetOutputPath(table, basePath);
+                        host.SetValue("OutputPath", outputPath);
+
+                        Trace.WriteLine(String.Format(Localization.Generate_Table, host.Table.Name, templateName, outputPath));
+                        var result = engine.ProcessTemplate(content, host);
+
+                        // 模板解析/编译/运行时错误由引擎交给 host，不会以异常形式抛出，需要主动检查。
+                        if (host.Errors.Count > 0)
+                        {
+                            for (var errorIndex = 0; errorIndex < host.Errors.Count; errorIndex++)
+                            {
+                                errors.Add(String.Format("{0}: {1}", table.Name, FormatErrorReason(host.Errors[errorIndex].ErrorText)));
+                            }
+
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(result))
+                        {
+                            Trace.WriteLine(String.Format(Localization.Finish_Generate_Empty, host.Table.DisplayName));
+                            continue;
+                        }
+
+                        Object fileNameValue;
+                        var fileName = host.TryGetValue(FILE_NAME_KEY, out fileNameValue) ? fileNameValue as String : null;
+
+                        if (string.IsNullOrWhiteSpace(fileName))
+                        {
+                            fileName = host.Table.DisplayName;
+                        }
+                        else
+                        {
+                            host.SetValue(FILE_NAME_KEY, null);
+                        }
+
+                        var targetPath = Path.Combine(outputPath, fileName + host.FileExtension);
+
+                        File.WriteAllText(targetPath, result, new UTF8Encoding(true));
+                        Trace.WriteLine(String.Format(Localization.Finish_Generate, host.Table.DisplayName));
                     }
 
-                    var fileName = host.GetValue(FILE_NAME_KEY) as String;
-
-                    if (string.IsNullOrWhiteSpace(fileName))
+                    if (errors.Count > 0)
                     {
-                        fileName = host.Table.DisplayName;
+                        failures.Add(new KeyValuePair<String, String>(relativePath, String.Join("; ", errors.ToArray())));
                     }
                     else
                     {
-                        host.SetValue(FILE_NAME_KEY, null);
+                        succeeded++;
                     }
-
-                    var targetPath = Path.Combine(outputPath, fileName + host.FileExtension);
-
-                    File.WriteAllText(targetPath, result, new UTF8Encoding(true));
-                    Trace.WriteLine(String.Format(Localization.Finish_Generate, host.Table.DisplayName));
+                }
+                catch (Exception ex)
+                {
+                    failures.Add(new KeyValuePair<String, String>(relativePath, FormatErrorReason(ex.Message)));
                 }
             }
 
+            Trace.WriteLine(String.Format(Localization.Generate_Summary, succeeded, failures.Count));
+
+            foreach (var failure in failures)
+            {
+                Trace.WriteLine(String.Format(Localization.Generate_Failure_Item, failure.Key, failure.Value));
+            }
+
             var outputBasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, basePath);
-            Trace.WriteLine(Localization.Finished);
             //BuildThriftCodeAsync(outputBasePath);
+        }
+
+        private static String FormatErrorReason(String error)
+        {
+            if (String.IsNullOrEmpty(error))
+            {
+                return String.Empty;
+            }
+
+            var text = error.Replace("\r", " ").Replace("\n", " ");
+
+            while (text.IndexOf("  ", StringComparison.Ordinal) >= 0)
+            {
+                text = text.Replace("  ", " ");
+            }
+
+            text = text.Trim();
+
+            return text.Length > 300 ? text.Substring(0, 300) + "..." : text;
         }
 
         private void DoCommand(string thriftPath, string cmdText, string codePath)

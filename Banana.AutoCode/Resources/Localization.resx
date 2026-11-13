@@ -141,6 +141,18 @@
   <data name="No_Template_File" xml:space="preserve">
     <value>No template file. run stop.</value>
   </data>
+  <data name="Templates_Selected_Count" xml:space="preserve">
+    <value>Selected templates: {0}</value>
+  </data>
+  <data name="Template_Progress" xml:space="preserve">
+    <value>Template {0}/{1}: {2}</value>
+  </data>
+  <data name="Generate_Summary" xml:space="preserve">
+    <value>Generation finished: {0} succeeded, {1} failed.</value>
+  </data>
+  <data name="Generate_Failure_Item" xml:space="preserve">
+    <value>Failed template: {0}, reason: {1}</value>
+  </data>
   <data name="Output_Not_Exists" xml:space="preserve">
     <value>Output directory not exists, auto create.</value>
   </data>

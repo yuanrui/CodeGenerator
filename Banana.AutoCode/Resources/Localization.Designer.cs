@@ -142,6 +142,42 @@ namespace Banana.AutoCode.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Selected templates: {0} 的本地化字符串。
+        /// </summary>
+        public static string Templates_Selected_Count {
+            get {
+                return ResourceManager.GetString("Templates_Selected_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Template {0}/{1}: {2} 的本地化字符串。
+        /// </summary>
+        public static string Template_Progress {
+            get {
+                return ResourceManager.GetString("Template_Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Generation finished: {0} succeeded, {1} failed. 的本地化字符串。
+        /// </summary>
+        public static string Generate_Summary {
+            get {
+                return ResourceManager.GetString("Generate_Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed template: {0}, reason: {1} 的本地化字符串。
+        /// </summary>
+        public static string Generate_Failure_Item {
+            get {
+                return ResourceManager.GetString("Generate_Failure_Item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Output directory not exists, auto create. 的本地化字符串。
         /// </summary>
         public static string Output_Not_Exists {

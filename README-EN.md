@@ -251,7 +251,7 @@ If the diagram is not obvious, read these six steps first:
 1. **Startup**: `Program.Main` calls `SetEnvironment`, sets the current directory to the executable folder, writes `APP_DIR`, `OUTPUT_DIR`, and `TEMPLATES_DIR`, enables Oracle `BindByName`, lets `CultureHelper` choose the UI language, and finally calls `Application.Run(new Main())`.
 2. **Connection and metadata**: `DbPanel` reads connection names from `ConfigurationManager.ConnectionStrings`; selecting a connection calls `GetDatabases()` asynchronously, double-clicking a database calls `GetTables(db)`, and clicking a table calls `GetColumns(table)` in `TablePanel`.
 3. **Table selection**: `DbPanel.GetTables()` returns only checked tables under the **currently selected database node**. Nothing is generated without a database and checked tables.
-4. **Rendering**: `Main.DoRun` enumerates `*.tt` and `*.ttinclude` under `Templates`, sets host state for each template/table pair, and calls `ProcessTemplate`. Blank results are skipped; `FILE_NAME` overrides the default `DisplayName`.
+4. **Rendering**: `Main.DoRun` enumerates the checked `*.tt` files under `Templates` (`*.ttinclude` is include-only and never rendered on its own), sets host state for each template/table pair, and calls `ProcessTemplate`. Blank results are skipped; `FILE_NAME` overrides the default `DisplayName`.
 5. **Writing**: output defaults to `Output/<database>/<DisplayName><extension>`; templates using `TemplateFileManager` can write to custom subdirectories under `OutputPath`. Files are written as UTF-8 with BOM.
 6. **Thrift**: the toolbar Build button scans `*.thrift` under `Output` and invokes `Thrift/thrift.exe` for the fixed language set `java`, `csharp`, `js`, `js:ts`, `js:node`, `py`, and `cpp`.
 
@@ -415,7 +415,19 @@ For every `(template, table)` pair, `CustomHost` exposes the following to the te
 - `<#@ output extension=".cs" #>`: output extension; the host default is `.cs`.
 - `TemplateFileManager.ttinclude`: multi-file helper with `Manager.Create(host, GenerationEnvironment)`, `StartNewFile(name, folder)`, `EndBlock()`, and `Process(true)`.
 
-Templates live under `Templates`, end with `*.tt` or `*.ttinclude`, and follow [T4 template syntax](https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates). Each `*.tt` template runs once for every selected table.
+Templates live under `Templates`: templates end with `*.tt`, shared fragments end with `*.ttinclude`, and both follow [T4 template syntax](https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates). Each checked `*.tt` template runs once for every selected table.
+
+### Template Selection and Generation Scope
+
+The template panel (toolbar Templates) adds check boxes to the directory tree; generation renders only checked templates. At startup the database panel (left) and the template panel (right) are shown together, and the tree stays collapsed (only the first level is visible):
+
+- Only `*.tt` files are checkable and participate in generation filtering. Directory nodes support batch selection; `*.ttinclude`, `*.thrift`, and other files have no check state (and no check box is drawn) — `.ttinclude` files are referenced through `#@ include #` and are never generated on their own.
+- Multiple templates can be checked. On first use (no records in configuration) everything is checked, and templates without a record are also treated as checked, so new templates are never silently skipped.
+- Directory nodes are tri-state: all children checked, none checked, or partially checked (indeterminate); the state is computed from the whole subtree, including collapsed children. Clicking a directory checks or unchecks all of its templates at once.
+- Check state is stored in a dedicated configuration section named `templateSelection` (`Config/template-selection.config`, loaded through the same `ConfigurationManager` pipeline as `Config/setting.config`). Only unchecked templates are recorded: `<disabled><add path="EasyUI/Controller.tt" /></disabled>`, with paths relative to `Templates` and `/` as the separator, so moving the whole Templates directory does not invalidate it.
+- Every save rewrites the section from the `*.tt` files that currently exist, so records for deleted templates are removed automatically. If the section is missing or corrupted, selection falls back to "all checked" and the panel still opens.
+- Legacy `appSettings` keys `template.enabled:*` are migrated on first read (only entries with value `false`), then removed entirely so there is a single source of truth.
+- Unchecked templates are excluded from the template × table loop and produce no files. Generation first reports how many templates were selected, then prints `Template n/total: relative/path` for each template, and finally summarizes how many succeeded and failed, listing each failed template path and reason.
 
 A minimal entity template of about 30 lines:
 

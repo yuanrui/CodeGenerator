@@ -121,6 +121,7 @@
     <Compile Include="Core\Mono.TextTemplating\Tokeniser.cs" />
     <Compile Include="Core\SqlMapper.cs" />
     <Compile Include="Core\StringExtension.cs" />
+    <Compile Include="Core\TemplateSelection.cs" />
     <Compile Include="Core\VersionUtils.cs" />
     <Compile Include="DbSchema\Column.cs" />
     <Compile Include="DbSchema\Database.cs" />
@@ -294,6 +295,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Config\setting.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\template-selection.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">

@@ -251,7 +251,7 @@ AutoCode 采用「界面层 + 生成编排层 + 数据库元数据层 + 基础�
 1. **启动**：`Program.Main` 先调用 `SetEnvironment`，把当前目录设为 exe 所在目录，写入 `APP_DIR`、`OUTPUT_DIR`、`TEMPLATES_DIR` 环境变量，设置 Oracle `BindByName`，再由 `CultureHelper` 决定界面语言，最后 `Application.Run(new Main())`。
 2. **连接与元数据**：`DbPanel` 从 `ConfigurationManager.ConnectionStrings` 读取连接名；选择连接后异步调用 `GetDatabases()`，双击数据库节点时调用 `GetTables(db)` 填充表节点；点击表节点会在 `TablePanel` 中调用 `GetColumns(table)` 加载列（column）。
 3. **选择表**：`DbPanel.GetTables()` 只返回**当前数据库节点下被勾选**的表，未选择数据库或未勾选时不会生成。
-4. **渲染**：`Main.DoRun` 先枚举 `Templates` 下的 `*.tt` 和 `*.ttinclude`，再对每个模板、每张表设置宿主状态并调用 `ProcessTemplate`。结果为空白则跳过；模板若通过 `FILE_NAME` 指定文件名，则覆盖默认的 `DisplayName`。
+4. **渲染**：`Main.DoRun` 先枚举 `Templates` 下被勾选的 `*.tt`（`*.ttinclude` 仅作为 include，不单独渲染），再对每个模板、每张表设置宿主状态并调用 `ProcessTemplate`。结果为空白则跳过；模板若通过 `FILE_NAME` 指定文件名，则覆盖默认的 `DisplayName`。
 5. **落盘**：默认写入 `Output/<数据库名>/<DisplayName><扩展名>`；模板使用 `TemplateFileManager` 时，可写入 `OutputPath` 下的自定义子目录。写入编码为带 BOM 的 UTF-8。
 6. **Thrift**：工具栏 Build 按钮扫描 `Output` 下的 `*.thrift`，依次调用 `Thrift/thrift.exe`，目标语言固定为 `java`、`csharp`、`js`、`js:ts`、`js:node`、`py`、`cpp`。
 
@@ -415,7 +415,19 @@ ConfigurationManager.ConnectionStrings["mysql"]
 - `<#@ output extension=".cs" #>`：指定输出扩展名，宿主默认是 `.cs`。
 - `TemplateFileManager.ttinclude`：多文件输出辅助类，可调用 `Manager.Create(host, GenerationEnvironment)`、`StartNewFile(name, folder)`、`EndBlock()`、`Process(true)`。
 
-模板文件约定存放在 `Templates` 目录，文件名以 `*.tt` 或 `*.ttinclude` 结尾，语法遵循 [T4 模板语法](https://docs.microsoft.com/zh-cn/visualstudio/modeling/code-generation-and-t4-text-templates)。生成时每个 `*.tt` 模板都会对每张选中的表执行一次。
+模板文件约定存放在 `Templates` 目录：模板以 `*.tt` 结尾，公共片段以 `*.ttinclude` 结尾，语法遵循 [T4 模板语法](https://docs.microsoft.com/zh-cn/visualstudio/modeling/code-generation-and-t4-text-templates)。生成时每个被勾选的 `*.tt` 模板都会对每张选中的表执行一次。
+
+### 模板勾选与生成范围
+
+模板面板（工具栏 Templates）为目录树提供复选框，生成只渲染被勾选的模板；程序启动后同时显示数据库面板（左侧）与模板面板（右侧），目录树保持折叠（只显示第一层）：
+
+- 只有 `*.tt` 可勾选并参与生成过滤；目录节点可批量选择，`*.ttinclude`、`*.thrift` 等其他文件不提供可勾选态（也不绘制勾选框），`.ttinclude` 仅作为被 `#@ include #` 引用的片段，不单独生成。
+- 支持同时勾选多个模板；首次使用（配置里没有任何记录）默认全选，新增模板也按勾选处理，不会被静默漏掉。
+- 目录节点三态：子模板全部选中显示已选，全部未选显示未选，部分选中显示半勾选；三态按整棵子树（含折叠中的子项）统计。点击目录节点可批量全选或全不选。
+- 勾选状态保存在独立配置节点 `templateSelection` 中（`Config/template-selection.config`，与 `Config/setting.config` 共用同一套 `ConfigurationManager` 配置体系），只记录未勾选项：`<disabled><add path="EasyUI/Controller.tt" /></disabled>`，路径相对 `Templates` 且统一用 `/` 分隔，因此模板目录整体移动后仍然有效。
+- 每次保存都按当前实际存在的 `*.tt` 重写该节点，已删除模板的旧记录会被自动清除；节点缺失或损坏时回退为默认全选，不会导致面板打不开。
+- 旧版本写在 `appSettings` 的 `template.enabled:*` 键会在首次读取时迁移（仅迁移值为 `false` 的项），随后全部删除，避免两套存储并存。
+- 未勾选的模板不进入「模板 × 表」循环，也不产出文件。生成开始时输出本次选中的模板数量，每个模板输出「第 n/总数 个模板：相对路径」，全部结束后汇总成功/失败数量，并列出失败模板的路径与原因。
 
 一个约 30 行的最小实体模板：
 

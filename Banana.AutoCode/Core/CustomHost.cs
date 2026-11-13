@@ -28,6 +28,11 @@ namespace Banana.AutoCode.Core
 
         private Dictionary<string, object> _extendProperties = new Dictionary<string, object>();
 
+        public void ClearErrors()
+        {
+            Errors.Clear();
+        }
+
         public void SetValue(string key, object value)
         {
             _extendProperties[key] = value;
@@ -38,6 +43,11 @@ namespace Banana.AutoCode.Core
         {
             return _extendProperties[key];
             //return HostDomain.GetData(key);
+        }
+
+        public bool TryGetValue(string key, out object value)
+        {
+            return _extendProperties.TryGetValue(key, out value);
         }
 
         //the path and file name of the text template that is being processed  
@@ -158,10 +168,19 @@ namespace Banana.AutoCode.Core
                 return;
             }
 
+            // 复用基类的错误集合，便于调用方判断本次模板处理是否失败。
+            Errors.AddRange(errors);
+
             foreach (CompilerError error in errors)
             {
                 Trace.TraceError(error.ErrorText);
             }
+        }
+
+        // 保证通过 ITextTemplatingEngineHost 调用时也能收集到错误（基类已有显式实现，这里重新映射）。
+        void ITextTemplatingEngineHost.LogErrors(CompilerErrorCollection errors)
+        {
+            LogErrors(errors);
         }
     }
 }
