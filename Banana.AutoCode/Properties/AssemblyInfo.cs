@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("https://github.com/yuanrui")]
 [assembly: AssemblyProduct("Banana.AutoCode")]
-[assembly: AssemblyCopyright("Copyright © YuanRui 2017-2025")]
+[assembly: AssemblyCopyright("Copyright © YuanRui 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
