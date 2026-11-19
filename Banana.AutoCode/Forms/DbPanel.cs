@@ -39,6 +39,24 @@ namespace Banana.AutoCode.Forms
         private ContextMenuStrip _connectionInfoMenu;
         private ContextMenuStrip _connectionStringMenu;
 
+        // 在分级刷新中静默调整 ComboBox 选中项时，临时屏蔽
+        // SelectedIndexChanged，避免触发全量树重建覆盖局部刷新结果。
+        private bool _suppressConnectionChanged;
+
+        private void SuppressConnectionChanged(Action action)
+        {
+            var prev = _suppressConnectionChanged;
+            _suppressConnectionChanged = true;
+            try
+            {
+                action();
+            }
+            finally
+            {
+                _suppressConnectionChanged = prev;
+            }
+        }
+
         public string DatabaseName { get; private set; }
 
         public DbPanel()
@@ -126,9 +144,14 @@ namespace Banana.AutoCode.Forms
 
         protected void RefreshTreeView()
         {
-            InitConnStrings();
-            tvDb.Nodes.Clear();
+            // 记住当前选中的连接名，刷新配置后需要恢复。
+            var selectedName = cbConnStrings.SelectedItem != null
+                ? cbConnStrings.SelectedItem.ToString()
+                : null;
 
+            InitConnStrings();
+
+            // 关闭已打开的表面板并清空映射。
             foreach (DictionaryEntry item in TableMap)
             {
                 var form = item.Value as TablePanel;
@@ -141,8 +164,31 @@ namespace Banana.AutoCode.Forms
             }
 
             TableMap.Clear();
-            //cbConnStrings.Text = String.Empty;
 
+            // 恢复之前选中的连接；如果该连接已被删除，则保持未选中状态。
+            if (selectedName != null)
+            {
+                var index = cbConnStrings.Items.IndexOf(selectedName);
+                if (index >= 0)
+                {
+                    // 先清空树（InitConnStrings 里 Clear Items 已触发过一次事件，
+                    // 但 SelectedIndex 当时是 -1，tvDb 还没被清空；这里显式清空）。
+                    tvDb.Nodes.Clear();
+
+                    // 清空 ManagerMap，确保刷新时用最新配置重建 DbSchemaManager。
+                    // 键是 ConnectionStringSettings 对象实例，配置刷新后旧键
+                    // 可能已失效，整体清空最稳妥。
+                    ManagerMap.Clear();
+
+                    cbConnStrings.SelectedIndex = index;
+                    return;
+                }
+            }
+
+            // 没有可恢复的选中项，只清空树。
+            tvDb.Nodes.Clear();
+            CurrentConnSetting = null;
+            DatabaseName = null;
         }
 
         private void ResetDbNodeIcon(TreeNode dbNode)
@@ -672,6 +718,12 @@ namespace Banana.AutoCode.Forms
 
         private void cbConnStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // 分级刷新中静默调整 ComboBox 选中项时，不触发全量树重建。
+            if (_suppressConnectionChanged)
+            {
+                return;
+            }
+
             // Items 被清空（刷新配置）时选中项为 null，这里直接返回，避免空引用。
             if (cbConnStrings.SelectedItem == null)
             {
@@ -842,7 +894,372 @@ namespace Banana.AutoCode.Forms
 
         private void pboxDbRefresh_Click(object sender, EventArgs e)
         {
-            RefreshTreeView();
+            RefreshAtCurrentLevel();
+        }
+
+        /// <summary>
+        /// 按当前 TreeView 选中节点的层级，执行分级刷新：
+        /// - 未选中或选中连接根节点 → 刷新连接下拉列表 + 数据库列表，保留展开状态
+        /// - 选中数据库节点 → 刷新该数据库下的表列表
+        /// - 选中数据表节点 → 刷新该表对应的 TablePanel 字段内容
+        /// 任何情况下不破坏已有展开/折叠状态。
+        /// </summary>
+        private void RefreshAtCurrentLevel()
+        {
+            var prevConnName = cbConnStrings.SelectedItem?.ToString();
+
+            // 1. 始终先刷新 ComboBox 连接列表（纯配置读取，不碰树）
+            InitConnStrings();
+
+            // 2. 彻底清空 DbSchemaManager 缓存，让后续 GetManager() 都 new 干净实例。
+            //    DbSchemaManager 是轻量对象（每次构造只 new Provider + 拿 Thread slot DataContext 引用），
+            //    连接管理由内部 using (scope.Begin()) 保证 Open/Close 生命周期，
+            //    缓存反而容易因为 Thread slot 里的 DataContext 状态残留导致 "Connection is not open"。
+            ManagerMap.Clear();
+
+            var selectedNode = tvDb.SelectedNode;
+
+            // 3. 若连接已被删除，直接清空树并返回
+            if (prevConnName != null)
+            {
+                var curIdx = cbConnStrings.Items.IndexOf(prevConnName);
+                if (curIdx < 0)
+                {
+                    tvDb.Nodes.Clear();
+                    CurrentConnSetting = null;
+                    DatabaseName = null;
+                    return;
+                }
+            }
+
+            // 4. 恢复 ComboBox 选中项（静默，不触发 SelectedIndexChanged）
+            if (prevConnName != null)
+            {
+                var curIdx = cbConnStrings.Items.IndexOf(prevConnName);
+                if (curIdx >= 0 && curIdx != cbConnStrings.SelectedIndex)
+                {
+                    SuppressConnectionChanged(() =>
+                    {
+                        cbConnStrings.SelectedIndex = curIdx;
+                    });
+                }
+            }
+
+            // 5. 按当前选中层级，执行对应范围的刷新
+            if (selectedNode == null || selectedNode.Level == ROOT_NODE_LEVEL)
+            {
+                RefreshConnectionLevel();
+            }
+            else if (selectedNode.Level == DB_NODE_LEVEL)
+            {
+                RefreshDatabaseLevel(selectedNode);
+            }
+            else if (selectedNode.Level == TABLE_NODE_LEVEL)
+            {
+                RefreshTableLevel(selectedNode);
+            }
+        }
+
+        /// <summary>
+        /// 连接级刷新：重建根节点下的全部数据库节点。
+        /// 后台线程查库列表（避免 UI 卡死），UI 线程建树并恢复展开/勾选状态。
+        /// </summary>
+        private void RefreshConnectionLevel()
+        {
+            if (CurrentConnSetting == null)
+            {
+                return;
+            }
+
+            // ── UI 线程阶段：保存当前状态、清空旧面板 ──
+            var settings = ConfigurationManager.ConnectionStrings[CurrentConnSetting.Name];
+            if (settings == null)
+            {
+                CurrentConnSetting = null;
+                tvDb.Nodes.Clear();
+                return;
+            }
+
+            var expanded = SaveExpandedDbNames();
+            var checkedTables = SaveCheckedTables();
+
+            // 同步 ComboBox（静默）：确保 RefreshAtCurrentLevel 上层已设置好
+            SuppressConnectionChanged(() =>
+            {
+                var idx = cbConnStrings.Items.IndexOf(settings.Name);
+                if (idx >= 0 && cbConnStrings.SelectedIndex != idx)
+                {
+                    cbConnStrings.SelectedIndex = idx;
+                }
+            });
+
+            // 关闭该连接下已打开的表面板
+            CloseTablePanelsForConnection();
+
+            // ── 后台线程阶段：查库列表、构造 TreeNode 结构 ──
+            Task.Factory.StartNew(() =>
+            {
+                var manager = new DbSchemaManager(settings);
+                var dbs = manager.GetDatabases();
+
+                var root = new TreeNode(settings.Name, 0, 0);
+                root.Tag = settings;
+                root.ToolTipText = settings.ConnectionString;
+                root.ImageKey = DbProviderIcons.GetIconKey(settings.ProviderName);
+                root.SelectedImageKey = root.ImageKey;
+
+                foreach (var db in dbs)
+                {
+                    var dbNode = new TreeNode(db.Name, 1, 1);
+                    dbNode.Tag = db;
+                    dbNode.ToolTipText = db.Name;
+                    dbNode.ImageKey = DB_OFF_ICON;
+                    dbNode.SelectedImageKey = dbNode.ImageKey;
+                    root.Nodes.Add(dbNode);
+                }
+
+                return root;
+            }).ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    return;
+                }
+
+                var root = t.Result;
+                tvDb.InvokeIfRequired(tv =>
+                {
+                    CurrentConnSetting = settings;
+                    tv.Nodes.Clear();
+                    tv.Nodes.Add(root);
+                    tv.CheckBoxes = true;
+
+                    // 恢复展开状态和勾选状态
+                    RestoreExpandedDbNames(expanded);
+                    RestoreCheckedTables(checkedTables);
+                });
+            });
+        }
+
+        /// <summary>
+        /// 数据库级刷新：重新查询指定数据库下的所有表，重建表节点。
+        /// 后台线程查表列表，数据库节点本身保持原来的展开/折叠状态不变。
+        /// </summary>
+        private void RefreshDatabaseLevel(TreeNode dbNode)
+        {
+            var db = dbNode.Tag as Database;
+            if (db == null || CurrentConnSetting == null)
+            {
+                return;
+            }
+
+            // ── UI 线程阶段：保存勾选状态 ──
+            var checkedTables = new HashSet<string>();
+            foreach (TreeNode tableNode in dbNode.Nodes)
+            {
+                if (tableNode.Checked)
+                {
+                    checkedTables.Add(tableNode.Text);
+                }
+            }
+
+            var connSettings = CurrentConnSetting;
+
+            // ── 后台线程阶段：重新查 Tables ──
+            Task.Factory.StartNew(() =>
+            {
+                var manager = new DbSchemaManager(connSettings);
+                return manager.GetTables(db);
+            }).ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    return;
+                }
+
+                var tables = t.Result;
+
+                tvDb.InvokeIfRequired(_ =>
+                {
+                    // 同步回 Database 对象的 Tables 缓存
+                    db.Tables = tables;
+
+                    dbNode.Nodes.Clear();
+                    foreach (var table in tables)
+                    {
+                        var tableNode = new TreeNode(table.Name, 2, 2);
+                        tableNode.Tag = table;
+                        tableNode.ToolTipText = string.IsNullOrWhiteSpace(table.Comment) ? table.Name : table.Comment;
+                        tableNode.ImageKey = TABLE_OFF_ICON;
+                        tableNode.SelectedImageKey = tableNode.ImageKey;
+                        if (checkedTables.Contains(table.Name))
+                        {
+                            tableNode.Checked = true;
+                        }
+
+                        dbNode.Nodes.Add(tableNode);
+                    }
+                });
+            });
+        }
+
+        /// <summary>
+        /// 数据表级刷新：重新查询该表的字段结构，刷新已打开的 TablePanel 内容。
+        /// 后台线程查字段，表节点本身保持在树中，不影响其他节点状态。
+        /// </summary>
+        private void RefreshTableLevel(TreeNode tableNode)
+        {
+            var table = tableNode.Tag as Table;
+            if (table == null || CurrentConnSetting == null)
+            {
+                return;
+            }
+
+            var connSettings = CurrentConnSetting;
+
+            // ── 后台线程阶段：重新查字段 ──
+            Task.Factory.StartNew(() =>
+            {
+                var manager = new DbSchemaManager(connSettings);
+                return manager.GetColumns(table);
+            }).ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    return;
+                }
+
+                var columns = t.Result;
+
+                tvDb.InvokeIfRequired(_ =>
+                {
+                    // 更新 Table.Tag 里的缓存引用，让后续代码生成拿到最新字段
+                    table.Columns = columns;
+
+                    // 刷新已打开的 TablePanel（如果有）
+                    var key = cbConnStrings.Text + "." + table.ToString();
+                    var tableForm = TableMap[key] as TablePanel;
+                    if (tableForm != null && !tableForm.IsDisposed)
+                    {
+                        tableForm.RefreshFields(columns);
+                    }
+                });
+            });
+        }
+
+        // ──────────────────────────────────────────────────────────────────────
+        // 展开/勾选状态保存与恢复辅助
+        // ──────────────────────────────────────────────────────────────────────
+
+        private HashSet<string> SaveExpandedDbNames()
+        {
+            var set = new HashSet<string>();
+            foreach (TreeNode root in tvDb.Nodes)
+            {
+                foreach (TreeNode dbNode in root.Nodes)
+                {
+                    if (dbNode.IsExpanded)
+                    {
+                        set.Add(dbNode.Text);
+                    }
+                }
+            }
+
+            return set;
+        }
+
+        private void RestoreExpandedDbNames(HashSet<string> expanded)
+        {
+            foreach (TreeNode root in tvDb.Nodes)
+            {
+                foreach (TreeNode dbNode in root.Nodes)
+                {
+                    if (expanded.Contains(dbNode.Text))
+                    {
+                        dbNode.Expand();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 保存当前树中所有表节点的勾选状态。键为数据库名称，值为该数据库下被勾选的表名集合。
+        /// </summary>
+        private Dictionary<string, HashSet<string>> SaveCheckedTables()
+        {
+            var result = new Dictionary<string, HashSet<string>>();
+            foreach (TreeNode root in tvDb.Nodes)
+            {
+                foreach (TreeNode dbNode in root.Nodes)
+                {
+                    var checkedSet = new HashSet<string>();
+                    foreach (TreeNode tableNode in dbNode.Nodes)
+                    {
+                        if (tableNode.Checked)
+                        {
+                            checkedSet.Add(tableNode.Text);
+                        }
+                    }
+
+                    if (checkedSet.Count > 0)
+                    {
+                        result[dbNode.Text] = checkedSet;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void RestoreCheckedTables(Dictionary<string, HashSet<string>> saved)
+        {
+            foreach (TreeNode root in tvDb.Nodes)
+            {
+                foreach (TreeNode dbNode in root.Nodes)
+                {
+                    HashSet<string> checkedSet;
+                    if (!saved.TryGetValue(dbNode.Text, out checkedSet) || checkedSet == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (TreeNode tableNode in dbNode.Nodes)
+                    {
+                        if (checkedSet.Contains(tableNode.Text))
+                        {
+                            tableNode.Checked = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // ──────────────────────────────────────────────────────────────────────
+        // TablePanel 清理辅助
+        // ──────────────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// 关闭当前连接下所有已打开的 TablePanel。
+        /// </summary>
+        private void CloseTablePanelsForConnection()
+        {
+            var keysToRemove = new ArrayList();
+            foreach (DictionaryEntry item in TableMap)
+            {
+                var form = item.Value as TablePanel;
+                if (form == null)
+                {
+                    continue;
+                }
+
+                form.Close();
+                keysToRemove.Add(item.Key);
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                TableMap.Remove(key);
+            }
         }
 
         public void RemoveConnectionStrings(string name)

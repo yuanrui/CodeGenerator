@@ -44,5 +44,16 @@ namespace Banana.AutoCode.Forms
                 this.dgvColumns.DataSource = new DbSchemaManager(ConnSetting).GetColumns(Table);
             }
         }
+
+        /// <summary>
+        /// 刷新字段列表：用最新的 Columns 集合重新绑定 DataGridView。
+        /// 调用方负责重新查询 DbSchemaManager.GetColumns 以确保数据是最新的。
+        /// </summary>
+        public void RefreshFields(IEnumerable<Column> columns)
+        {
+            // 先解绑再重新绑定，强制 DataGridView 刷新显示。
+            this.dgvColumns.DataSource = null;
+            this.dgvColumns.DataSource = columns.ToList();
+        }
     }
 }
